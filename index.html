@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <meta charset="utf-8">
 <title>Tilt Tower</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="Pinball vertical: suba a torre por 5 eras, dos anos 60 ao futuro.">
 <meta name="theme-color" content="#0b0604">
 <link rel="manifest" href="manifest.webmanifest">
@@ -25,6 +25,12 @@
   color-scheme:dark;
 }
 [hidden]{display:none!important}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
+#rotate{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--bg);color:var(--cream);font-family:var(--f-display);text-align:center;padding:24px}
+#rotate .ph{width:46px;height:78px;border:4px solid var(--amber);border-radius:10px;animation:rot 1.8s ease-in-out infinite}
+#rotate p{margin:0;font-size:18px;letter-spacing:.06em}
+@keyframes rot{0%,30%{transform:rotate(-90deg)}60%,100%{transform:rotate(0)}}
+@media (orientation:landscape) and (pointer:coarse) and (max-height:600px){ #rotate{display:flex} }
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;overscroll-behavior:none}
 body{font-family:var(--f-body);font-size:16px}
 #app{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -123,6 +129,7 @@ body{font-family:var(--f-body);font-size:16px}
 @media (prefers-reduced-motion: reduce){.stars b{animation:none}}
 </style>
 
+<div id="rotate"><div class="ph"></div><p>Gire o celular<br>para a vertical</p></div>
 <div id="app">
   <canvas id="game" aria-label="Mesa de pinball do Tilt Tower"></canvas>
   <canvas id="fx" aria-hidden="true"></canvas>
@@ -1702,6 +1709,15 @@ function resize(){
   if(G.L) renderStatic(G.L);
 }
 window.addEventListener('resize', resize);
+// phone: no pinch/double-tap zoom and portrait only (landscape shows a "rotate" screen and pauses the game)
+['gesturestart','gesturechange','gestureend','dblclick'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive:false }));
+document.addEventListener('touchmove', e => { if(e.touches.length > 1) e.preventDefault(); }, { passive:false });
+let lastTouchEnd = 0; document.addEventListener('touchend', e => { const now = Date.now(); if(now - lastTouchEnd < 320 && e.target.closest && !e.target.closest('button,input,a')) e.preventDefault(); lastTouchEnd = now; }, { passive:false });
+window.addEventListener('wheel', e => { if(e.ctrlKey) e.preventDefault(); }, { passive:false });
+const phoneLandscape = matchMedia('(orientation:landscape) and (pointer:coarse) and (max-height:600px)');
+const onOrient = () => { if(phoneLandscape.matches && G.mode==='play' && !G.paused) togglePause(); };
+if(phoneLandscape.addEventListener) phoneLandscape.addEventListener('change', onOrient); else if(phoneLandscape.addListener) phoneLandscape.addListener(onOrient);
+try{ screen.orientation && screen.orientation.lock && screen.orientation.lock('portrait').catch(() => {}); }catch(_){}
 
 /* ---- static floor art (cached per floor) ---- */
 function renderStatic(L){
