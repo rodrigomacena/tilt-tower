@@ -1,0 +1,28 @@
+{
+  "name": "tilt-tower-app",
+  "version": "1.0.0",
+  "description": "Tilt Tower para Android e iOS (Capacitor)",
+  "scripts": {
+    "sync": "node scripts/sync-web.mjs && npx cap sync",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "icons": "npx capacitor-assets generate --iconBackgroundColor \"#0b0604\" --splashBackgroundColor \"#0b0604\""
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor-community/admob": "^8.3.0",
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0"
+  },
+  "private": true
+}

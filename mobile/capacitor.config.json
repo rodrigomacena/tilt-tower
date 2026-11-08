@@ -1,0 +1,12 @@
+{
+  "appId": "com.rodrigomacena.tilttower",
+  "appName": "Tilt Tower",
+  "webDir": "www",
+  "backgroundColor": "#0b0604",
+  "android": { "backgroundColor": "#0b0604" },
+  "ios": { "backgroundColor": "#0b0604", "contentInset": "never" },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 600, "backgroundColor": "#0b0604", "showSpinner": false },
+    "StatusBar": { "overlaysWebView": true, "style": "DARK" }
+  }
+}

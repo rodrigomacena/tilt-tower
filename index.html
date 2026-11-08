@@ -12,8 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Tilt Tower">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&family=Chakra+Petch:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: full-screen portrait pinball canvas; DOM screens (title, map, workshop, pause, results) float over an attract-mode table */
 :root{
@@ -49,6 +48,7 @@ body{font-family:var(--f-body);font-size:16px}
 .btn{font-family:var(--f-display);font-size:18px;letter-spacing:.03em;color:#2a1408;background:linear-gradient(180deg,#ffe3a6,#e8a94a 55%,#c07a26);
   border:0;border-radius:14px;padding:14px 26px;min-width:230px;cursor:pointer;box-shadow:0 2px 0 #fff3 inset,0 -3px 0 #0003 inset,0 6px 18px rgba(0,0,0,.45),0 0 24px rgba(255,170,70,.25)}
 .btn:active{transform:translateY(2px)}
+.btn.ad{background:linear-gradient(180deg,#a6f0e0,#3fb8a0 55%,#1f7d6c);font-size:15px}.btn.ad:disabled{opacity:.55}
 .btn:focus-visible,.ghost:focus-visible,.node:focus-visible,.buy:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
 .btn.alt{background:linear-gradient(180deg,#3c2412,#24130a);color:var(--cream);box-shadow:0 0 0 1px var(--line) inset,0 6px 18px rgba(0,0,0,.45)}
 .ghost{font-family:var(--f-body);font-weight:600;font-size:14px;color:var(--cream);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
@@ -185,6 +185,7 @@ body{font-family:var(--f-body);font-size:16px}
     <div class="stats" id="r-stats"></div>
     <p class="note" id="r-note" hidden></p>
     <div class="col">
+      <button class="btn ad" id="r-ad" hidden></button>
       <button class="btn" id="r-next">Próxima fase</button>
       <button class="btn alt" id="r-shop">Oficina</button>
       <button class="btn alt" id="r-map">Mapa</button>
@@ -195,6 +196,7 @@ body{font-family:var(--f-body);font-size:16px}
     <h2>Fim de jogo</h2>
     <p class="hint" id="v-text"></p>
     <div class="col">
+      <button class="btn ad" id="v-ad" hidden></button>
       <button class="btn" id="v-retry">Tentar de novo</button>
       <button class="btn alt" id="v-shop">Oficina</button>
       <button class="btn alt" id="v-map">Mapa</button>
@@ -5216,7 +5218,7 @@ function finishPhase(){
   const tip = medal < 3 ? 'Próxima medalha: '+(medal < 2 ? 'Prata com '+th.prata.toLocaleString('pt-BR') : 'Ouro com '+th.ouro.toLocaleString('pt-BR'))+' pontos.' : 'Medalha de ouro! Recorde máximo da fase.';
   $('r-note').hidden = false; $('r-note').textContent = note ? note+' '+tip : tip;
   $('r-next').hidden = i >= PHASES.length-1;
-  show('s-result');
+  show('s-result'); Ads.offer('r-ad', G.fichasRun);
   $('r-count').textContent = '+'+scoreF+(scoreF===1?' ficha':' fichas');
   setTimeout(tutorialShop, 900);
 }
@@ -5226,12 +5228,65 @@ function countUp(n){
   const tick = () => { k = Math.min(n, k+every); el.textContent = '+'+k+(k===1?' ficha':' fichas'); Snd.chime(k%3===0?0:1); if(k < n) setTimeout(tick, 70); };
   if(n > 0) setTimeout(tick, 500);
 }
+/* ---- ads: only inside the Android / iOS app (AdMob). The website stays ad-free. ----
+   rewarded: optional "watch an ad, double the fichas of this table" on the result and game-over screens
+   interstitial: at most one every 3 finished tables and 3 minutes, never before table 3, never right after a rewarded ad */
+const Ads = (() => {
+  const cap = window.Capacitor, native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
+  const P = native && cap.Plugins ? cap.Plugins.AdMob : null;
+  const os = native ? cap.getPlatform() : 'web';
+  // TESTING = true uses Google's public test ads. Before publishing: put the real ad unit IDs below and set TESTING = false.
+  const TESTING = true;
+  const UNITS = {
+    android:{ inter:'ca-app-pub-3940256099942544/1033173712', reward:'ca-app-pub-3940256099942544/5224354917' },
+    ios:{ inter:'ca-app-pub-3940256099942544/4411468910', reward:'ca-app-pub-3940256099942544/1712485313' },
+  };
+  const ids = UNITS[os] || {};
+  let ready = false, ends = 0, lastInter = 0, rewardedHere = false, busy = false;
+  const opt = id => ({ adId:id, isTesting:TESTING });
+  const quiet = on => { try { if(Snd.ac){ on ? Snd.ac.suspend() : Snd.ac.resume(); } } catch(e){} };
+  async function init(){
+    if(!P) return;
+    try {
+      await P.initialize({ initializeForTesting:TESTING });
+      try { const ci = await P.requestConsentInfo(); if(ci.isConsentFormAvailable && ci.status === 'REQUIRED') await P.showConsentForm(); } catch(e){}
+      if(os === 'ios'){ try { const t = await P.trackingAuthorizationStatus(); if(t.status === 'notDetermined') await P.requestTrackingAuthorization(); } catch(e){} }
+      ready = true; P.prepareInterstitial(opt(ids.inter)).catch(() => {}); P.prepareRewardVideoAd(opt(ids.reward)).catch(() => {});
+    } catch(e){}
+  }
+  // show the "double fichas" button on a result / game-over screen
+  function offer(btnId, amount){
+    const b = $(btnId); rewardedHere = false; ends++;
+    if(!ready || amount < 4){ b.hidden = true; return; }
+    b.hidden = false; b.disabled = false; b.textContent = '▶ Ver anúncio: +' + amount + ' fichas';
+    b.onclick = async () => {
+      if(busy) return; busy = true; b.disabled = true; quiet(true);
+      try {
+        await P.prepareRewardVideoAd(opt(ids.reward)).catch(() => {});
+        const r = await P.showRewardVideoAd();
+        if(r){ S.fichas += amount; G.fichasRun += amount; save(); rewardedHere = true; lastInter = Date.now(); b.textContent = '+' + amount + ' fichas recebidas!'; Snd.chime(0); Snd.chime(2, .12); }
+      } catch(e){ b.disabled = false; b.textContent = 'Anúncio indisponível agora'; }
+      quiet(false); busy = false; P.prepareRewardVideoAd(opt(ids.reward)).catch(() => {});
+    };
+  }
+  // run fn, showing an interstitial first when one is due
+  async function between(fn){
+    const due = ready && !busy && !rewardedHere && ends >= 3 && Date.now() - lastInter > 180000 && S.unlocked >= 3;
+    if(due){
+      busy = true; quiet(true);
+      try { await P.showInterstitial(); ends = 0; lastInter = Date.now(); } catch(e){}
+      quiet(false); busy = false; P.prepareInterstitial(opt(ids.inter)).catch(() => {});
+    }
+    fn();
+  }
+  return { init, offer, between, native, P };
+})();
 function showOver(){
   Music.set('menu');
   const scoreF = Math.floor(G.score / SCORE_PER_FICHA); S.fichas += scoreF; G.fichasRun += scoreF;
   if(G.score > (S.best[G.pi]||0)) S.best[G.pi] = G.score; save();
   $('v-text').textContent = 'Você fez '+G.score.toLocaleString('pt-BR')+' pontos. Os pontos viraram +'+scoreF+' fichas, e no total você guardou '+G.fichasRun+' fichas nesta tentativa. As fichas ficam com você: gaste na Oficina e tente de novo.';
-  show('s-over');
+  show('s-over'); Ads.offer('v-ad', G.fichasRun);
   setTimeout(tutorialShop, 900);
 }
 $('b-play').onclick = () => { Snd.init(); openMap(); };
@@ -5260,12 +5315,28 @@ $('pauseBtn').onclick = () => { Snd.init(); togglePause(); };
 $('p-resume').onclick = togglePause;
 $('p-restart').onclick = () => play(G.pi);
 $('p-map').onclick = () => { G.paused = false; openMap(); };
-$('r-next').onclick = () => play(Math.min(PHASES.length-1, G.pi+1));
+$('r-next').onclick = () => Ads.between(() => play(Math.min(PHASES.length-1, G.pi+1)));
 $('r-shop').onclick = () => openShop('s-map');
-$('r-map').onclick = openMap;
-$('v-retry').onclick = () => play(G.pi);
+$('r-map').onclick = () => Ads.between(openMap);
+$('v-retry').onclick = () => Ads.between(() => play(G.pi));
 $('v-shop').onclick = () => openShop('s-map');
-$('v-map').onclick = openMap;
+$('v-map').onclick = () => Ads.between(openMap);
+// native app: ads, status bar, Android back button, pause when the app goes to the background
+if(Ads.native){
+  const Pl = Capacitor.Plugins;
+  try { Pl.StatusBar && Pl.StatusBar.hide(); } catch(e){}
+  Ads.init();
+  if(Pl.App){
+    Pl.App.addListener('backButton', () => {
+      const open = screens.find(id => !$(id).hidden);
+      if(G.mode === 'play' && !open){ if(!G.paused) togglePause(); return; }
+      if(G.paused && open === 's-pause'){ togglePause(); return; }
+      if(!open || open === 's-title') Pl.App.minimizeApp(); else if(open === 's-map') show('s-title'); else openMap();
+    });
+    Pl.App.addListener('pause', () => { if(G.mode === 'play' && !G.paused) togglePause(); try { Snd.ac && Snd.ac.suspend(); } catch(e){} });
+    Pl.App.addListener('resume', () => { try { Snd.ac && Snd.ac.resume(); } catch(e){} });
+  }
+}
 soundLabel();
 
 /* =========================================================
@@ -5293,6 +5364,6 @@ function loop(now){
 const boot = () => { if(G.L) renderStatic(G.L); requestAnimationFrame(loop); };
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else boot();
 // installable PWA: offline play once loaded from the web
-if('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent/.test(location.hostname)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+if('serviceWorker' in navigator && !(window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent/.test(location.hostname)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
 </script>
