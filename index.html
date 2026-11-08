@@ -5233,9 +5233,77 @@ function countUp(n){
 /* ---- ads: only inside the Android / iOS app (AdMob). The website stays ad-free. ----
    rewarded: optional "watch an ad, double the fichas of this table" on the result and game-over screens
    interstitial: at most one every 3 finished tables and 3 minutes, never before table 3, never right after a rewarded ad */
+/* ADS_DEMO = true: outside the app (site / artifact) fake ads and a fake store show WHERE and WHEN the real ones would appear,
+   with the same rules. Turn it off (false) before going live. Inside the app the real AdMob / store are always used. */
+const ADS_DEMO = true;
+const DemoAds = (() => {
+  // fake ad creatives (an invented game, no real brands)
+  const CREATIVES = [
+    { bg:'linear-gradient(160deg,#1b2a6b,#5b2a8c 55%,#c2417a)', title:'Cristal Rush', sub:'Combine gemas e suba de nível!', cta:'INSTALAR', icon:'💎' },
+    { bg:'linear-gradient(160deg,#0f4d3a,#1d8a5c 55%,#d8c24a)', title:'Fazendinha Feliz', sub:'Plante, colha e decore a sua fazenda.', cta:'JOGAR GRÁTIS', icon:'🌻' },
+    { bg:'linear-gradient(160deg,#3a1010,#8a2b1d 55%,#e8902a)', title:'Corrida Turbo 3', sub:'O carro mais rápido da cidade é o seu.', cta:'BAIXAR', icon:'🏎️' },
+  ];
+  let n = 0;
+  function show(kind){
+    return new Promise((resolve, reject) => {
+      const c = CREATIVES[n++ % CREATIVES.length], reward = kind === 'reward', total = reward ? 15 : 5;
+      const o = document.createElement('div');
+      o.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px;background:' + c.bg;
+      o.innerHTML = '<div style="position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;font-size:11px;background:rgba(0,0,0,.45);padding:3px 8px;border-radius:4px;letter-spacing:.05em">ANÚNCIO · SIMULAÇÃO</div>'
+        + '<div data-x style="position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;min-width:34px;height:34px;border-radius:17px;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:14px;padding:0 10px;cursor:pointer"></div>'
+        + '<div style="font-size:84px;line-height:1">' + c.icon + '</div>'
+        + '<div style="font-size:32px;font-weight:800">' + c.title + '</div>'
+        + '<div style="font-size:17px;opacity:.9;max-width:300px">' + c.sub + '</div>'
+        + '<div style="margin-top:8px;font-size:15px">★★★★★ <span style="opacity:.75">4,7 · Grátis</span></div>'
+        + '<button style="margin-top:10px;font:800 18px system-ui;padding:14px 38px;border:0;border-radius:30px;background:#fff;color:#222">' + c.cta + '</button>'
+        + (reward ? '<div style="position:absolute;left:0;right:0;bottom:0;height:6px;background:rgba(0,0,0,.35)"><div data-bar style="height:100%;width:0;background:#ffd34a"></div></div><div data-r style="position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));font-size:14px;opacity:.9"></div>' : '');
+      document.body.appendChild(o);
+      const x = o.querySelector('[data-x]'), bar = o.querySelector('[data-bar]'), rt = o.querySelector('[data-r]');
+      const t0 = performance.now(); let done = false, iv = 0;
+      const end = ok => { if(done) return; done = true; clearInterval(iv); o.remove(); ok ? resolve(reward ? { type:'fichas', amount:1 } : undefined) : reject(new Error('closed')); };
+      const tick = () => {
+        const el = (performance.now() - t0)/1000, left = Math.max(0, Math.ceil(total - el));
+        if(reward){ bar.style.width = Math.min(100, el/total*100) + '%'; rt.textContent = left > 0 ? 'Recompensa em ' + left + ' s' : 'Recompensa garantida! Pode fechar.'; x.textContent = el >= 5 ? '✕' : String(Math.max(0, Math.ceil(5 - el))); }
+        else x.textContent = left > 0 ? String(left) : '✕';
+      };
+      iv = setInterval(tick, 200); tick();
+      x.onclick = () => {
+        const el = (performance.now() - t0)/1000;
+        if(!reward){ if(el >= total) end(true); return; }
+        if(el < 5) return;
+        if(el >= total) end(true); else if(confirm('Fechar o anúncio agora? Você perde a recompensa.')) end(false);
+      };
+    });
+  }
+  const ok = v => () => Promise.resolve(v);
+  return { initialize:ok(), requestConsentInfo:ok({ status:'NOT_REQUIRED' }), prepareInterstitial:ok(), prepareRewardVideoAd:ok(),
+    showInterstitial:() => show('inter'), showRewardVideoAd:() => show('reward') };
+})();
+const DemoShop = (() => {
+  // fake store sheet, like a store purchase confirmation
+  const KEY = 'tilttower.noads';
+  function purchaseProduct(){
+    return new Promise((resolve, reject) => {
+      const o = document.createElement('div');
+      o.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;font-family:system-ui,sans-serif';
+      o.innerHTML = '<div style="width:100%;max-width:480px;background:#fff;color:#222;border-radius:16px 16px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom))">'
+        + '<div style="font-size:11px;color:#888;letter-spacing:.05em">LOJA · SIMULAÇÃO (nada é cobrado)</div>'
+        + '<div style="display:flex;gap:12px;align-items:center;margin:14px 0"><img src="icons/icon-192.png" alt="" style="width:48px;height:48px;border-radius:10px"><div><div style="font-weight:700">Remover anúncios</div><div style="font-size:13px;color:#666">Tilt Tower · compra única</div></div><div style="margin-left:auto;font-weight:700">R$ 9,90</div></div>'
+        + '<button data-buy style="width:100%;font:700 16px system-ui;padding:14px;border:0;border-radius:24px;background:#1a73e8;color:#fff">Comprar</button>'
+        + '<button data-no style="width:100%;font:600 15px system-ui;padding:12px;border:0;background:none;color:#1a73e8;margin-top:6px">Cancelar</button></div>';
+      document.body.appendChild(o);
+      o.querySelector('[data-buy]').onclick = () => { o.remove(); resolve({ productIdentifier:'remover_anuncios', transactionId:'demo' }); };
+      o.querySelector('[data-no]').onclick = () => { o.remove(); reject(new Error('user cancelled')); };
+    });
+  }
+  const has = () => { try { return localStorage.getItem(KEY) === '1'; } catch(e){ return false; } };
+  return { purchaseProduct, getProduct:() => Promise.resolve({ product:{ priceString:'R$ 9,90' } }),
+    getPurchases:() => Promise.resolve({ purchases:has() ? [{ productIdentifier:'remover_anuncios', transactionId:'demo' }] : [] }),
+    restorePurchases:() => Promise.resolve() };
+})();
 const Ads = (() => {
   const cap = window.Capacitor, native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
-  const P = native && cap.Plugins ? cap.Plugins.AdMob : null;
+  const P = native && cap.Plugins ? cap.Plugins.AdMob : (ADS_DEMO ? DemoAds : null);
   const os = native ? cap.getPlatform() : 'web';
   // TESTING = true uses Google's public test ads. Before publishing: put the real ad unit IDs below and set TESTING = false.
   const TESTING = true;
@@ -5288,7 +5356,7 @@ const Ads = (() => {
 const Shop = (() => {
   const PRODUCT = 'remover_anuncios', KEY = 'tilttower.noads';
   const cap = window.Capacitor, native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
-  const P = native && cap.Plugins ? cap.Plugins.NativePurchases : null;
+  const P = native && cap.Plugins ? cap.Plugins.NativePurchases : (ADS_DEMO ? DemoShop : null);
   const os = native ? cap.getPlatform() : 'web';
   let owned = false, price = '', busy = false;
   try { owned = localStorage.getItem(KEY) === '1'; } catch(e){}
@@ -5343,7 +5411,9 @@ $('b-shop').onclick = () => { Snd.init(); openShop('s-title'); };
   const rb = $('b-reset'); let armT = -1e9;
   rb.onclick = () => {
     if(performance.now() - armT > 3500){ armT = performance.now(); rb.textContent = 'Toque de novo: apaga TUDO'; rb.classList.add('armed'); setTimeout(() => { if(performance.now() - armT >= 3400){ rb.textContent = 'Recomeçar campanha'; rb.classList.remove('armed'); } }, 3600); return; }
-    const keep = { sound:S.sound, music:S.music }; S = Object.assign(defSave(), keep); save(); location.reload();
+    const keep = { sound:S.sound, music:S.music }; S = Object.assign(defSave(), keep); save();
+    if(ADS_DEMO && !Ads.native){ try { localStorage.removeItem('tilttower.noads'); } catch(e){} } // demo only: the fake purchase is undone too
+    location.reload();
   };
 }
 $('b-music').onclick = toggleMusic; $('p-music').onclick = toggleMusic;
@@ -5370,6 +5440,7 @@ $('v-retry').onclick = () => Ads.between(() => play(G.pi));
 $('v-shop').onclick = () => openShop('s-map');
 $('v-map').onclick = () => Ads.between(openMap);
 // native app: ads, status bar, Android back button, pause when the app goes to the background
+if(!Ads.native && ADS_DEMO){ Ads.init(); Shop.init(); }
 if(Ads.native){
   const Pl = Capacitor.Plugins;
   try { Pl.StatusBar && Pl.StatusBar.hide(); } catch(e){}
@@ -5391,7 +5462,7 @@ soundLabel();
    BOOT
    ========================================================= */
 resize();
-window.__tiltTower = { drawBallSphere, artSet, startBonus, G, S, PHASES, startPhase, physStep, update, play, Y, draw, Music };
+window.__tiltTower = { showOver, finishPhase, Ads, Shop, drawBallSphere, artSet, startBonus, G, S, PHASES, startPhase, physStep, update, play, Y, draw, Music };
 eraLabel();
 goAttract(eraUnlocked()*10);
 show('s-title');
