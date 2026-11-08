@@ -2000,6 +2000,7 @@ function drawRailBase(r, y0, y1){
   ctx.lineCap='butt'; ctx.lineJoin='miter';
 }
 function drawBoss(B){
+  if(eraNow() >= 3 && artSet(eraNow()) && drawBossArt95(B)) return;
   if(E45_BOSSES.includes(B.type)) return drawBossE45(B);
   if(art60() && drawBossArt60(B)) return;
   if(eraNow() === 1 && artSet(1) && drawBossArt70(B)) return;
@@ -4375,6 +4376,8 @@ function loadArtSet(era, folder, names){
 loadArtSet(0, 'era1', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','rele.png','pendulo.png','jukebox.png']);
 loadArtSet(1, 'era2', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','prato.png','braco.png','lampada.png','globo.png']);
 loadArtSet(2, 'era3', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','fita.png','robo.png','fliperama.png']);
+loadArtSet(3, 'era4', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','bichinho.png','modem.png','poligono.png']);
+loadArtSet(4, 'era5', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','drone.png','buraco.png','cristal.png','ia.png']);
 const artSet = e => { const st = ART.sets[e]; return st && st.ok ? st : null; };
 const artOn = () => !!artSet(eraNow());
 const artOnL = L => !!artSet(ERA(L.pi));
@@ -4386,7 +4389,7 @@ function drawFloorArt60(x, L, f){
   const im = artSet(ERA(L.pi)).img.fundo, sc = FH/im.height, w = im.width*sc;
   x.drawImage(im, (W - w)/2, 0, w, FH);
   x.fillStyle = 'rgba(217,68,58,.16)'; x.beginPath(); x.moveTo(150,668); x.lineTo(210,668); x.lineTo(204,700); x.lineTo(156,700); x.fill();
-  if(f===0){ x.globalAlpha = .14; x.fillStyle = ['#2a4a42','#2a1430','#0c1030'][ERA(L.pi)] || '#2a4a42'; x.font = '26px "Bungee Inline", Bungee, sans-serif'; x.textAlign = 'center'; x.fillText('TILT TOWER', 180, 470); x.globalAlpha = 1; }
+  if(f===0){ x.globalAlpha = .14; x.fillStyle = ['#2a4a42','#2a1430','#0c1030','#123a38','#16283a'][ERA(L.pi)] || '#2a4a42'; x.font = '26px "Bungee Inline", Bungee, sans-serif'; x.textAlign = 'center'; x.fillText('TILT TOWER', 180, 470); x.globalAlpha = 1; }
 }
 function sprite(im, cx, cy, w, h, rot){
   ctx.save(); ctx.translate(cx, cy); if(rot) ctx.rotate(rot); ctx.drawImage(im, -w/2, -h/2, w, h); ctx.restore();
@@ -4548,6 +4551,80 @@ function drawBossArt80(B){
     ctx.globalAlpha = 1;
     for(const k of B.bricks){ if(!k.alive) continue; const col = NEON[k.row]; ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fillRect(k.x-8+2, k.y-8+3, 16, 16); ctx.fillStyle = `rgba(${col},.85)`; ctx.fillRect(k.x-8, k.y-8, 16, 16); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(k.x-8, k.y-8, 16, 3); ctx.strokeStyle = 'rgba(0,0,0,.4)'; ctx.lineWidth = 1; ctx.strokeRect(k.x-7.5, k.y-7.5, 15, 15); glow(ctx, k.x, k.y, 16, col, .12); }
     for(const sp of B.sparks){ glow(ctx, sp.x, sp.y, 20, NEON[3], .8); ctx.fillStyle = `rgb(${NEON[3]})`; ctx.fillRect(sp.x-4, sp.y-4, 8, 8); ctx.fillStyle = `rgba(${NEON[3]},.4)`; ctx.fillRect(sp.x-3-sp.vx*.03, sp.y-3-sp.vy*.03, 6, 6); }
+    return true;
+  }
+  return false;
+}
+function drawBossArt95(B){
+  const f = B.f, fl = B.flash, A = artSet(eraNow()).img;
+  const fade = (t0) => { if(B.dead && B.deadT > t0) ctx.globalAlpha = Math.max(0, 1-(B.deadT-t0)); };
+  if(B.type==='pet' && A.bichinho){
+    fade(1.4);
+    const aw = B.state==='awake' && !B.dead, im = A.bichinho, h = 150, w = h*im.width/im.height;
+    glow(ctx, B.px, B.py, 120, aw ? RAVE[2] : RAVE[0], .18 + fl*.4 + (aw ? .15 : 0));
+    shadowBlob(B.px + 8, B.py + 16, 62, 70, 0, .55);
+    ctx.drawImage(im, B.px - w/2, B.py - h/2, w, h);
+    if(aw){ ctx.strokeStyle = `rgba(${RAVE[2]},${.5 + .4*Math.sin(T*10)})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(B.px, B.py, w*.55, h*.55, 0, 0, TAU); ctx.stroke(); }
+    else if(!B.dead){ ctx.fillStyle = 'rgba(230,250,255,.8)'; ctx.font = '11px Bungee, sans-serif'; ctx.textAlign = 'left'; ctx.fillText('z', B.px + 46, B.py - 50 - Math.sin(T*2)*3); ctx.fillText('Z', B.px + 56, B.py - 66 - Math.sin(T*2 + 1)*3); }
+    ctx.globalAlpha = 1; return true;
+  }
+  if(B.type==='modem' && A.modem){
+    fade(1.4);
+    const im = A.modem, w = 176, h = w*im.height/im.width;
+    glow(ctx, 180, Y(f,55), 120, RAVE[3], .14 + fl*.4);
+    shadowBlob(188, Y(f,60), 92, 52, 0, .55);
+    ctx.drawImage(im, 180 - w/2, Y(f,2), w, h);
+    [110,180,250].forEach(sx => { ctx.fillStyle = '#e8e0cc'; ctx.beginPath(); ctx.roundRect(sx-12, Y(f,128), 24, 24, 3); ctx.fill(); ctx.fillStyle = '#1a1a1a'; ctx.fillRect(sx-6, Y(f,134), 12, 10); });
+    if(!B.dead){ const sx = [110,180,250][B.idx], py = Y(f,140), vuln = !(B.conn > 0);
+      ctx.strokeStyle = '#d8d0b8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(180, Y(f,98)); ctx.quadraticCurveTo((180+sx)/2, Y(f,124), sx, py-12); ctx.stroke();
+      if(vuln){ glow(ctx, sx, py, 36, RAVE[3], .55 + .3*Math.sin(T*9)); ctx.strokeStyle = `rgba(${RAVE[3]},.9)`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(sx, py, 18 + 2*Math.sin(T*9), 0, TAU); ctx.stroke(); }
+      ctx.globalAlpha = vuln ? 1 : .35 + .3*Math.random(); ctx.fillStyle = 'rgba(220,240,255,.85)'; ctx.beginPath(); ctx.roundRect(sx-8, py-11, 16, 20, 3); ctx.fill(); ctx.fillStyle = '#d0a040'; for(let k=0;k<4;k++) ctx.fillRect(sx-6+k*3.5, py+4, 2, 4); ctx.globalAlpha = 1; }
+    for(const d of B.discs){ ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(d.rot*.3); glow(ctx, 0, 0, 20, RAVE[3], .4); ctx.fillStyle = '#ffe860'; ctx.fillRect(-8,-8,16,16); ctx.fillStyle = '#1a1a1a'; ctx.font = '700 7px "Chakra Petch", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('01', 0, 3); ctx.restore(); }
+    ctx.globalAlpha = 1; return true;
+  }
+  if(B.type==='poly' && A.poligono){
+    fade(1.4);
+    const c = Math.cos(B.yaw), vuln = c > .55 && !B.dead, im = A.poligono, h = B.hr*2.6, w = h*im.width/im.height;
+    glow(ctx, B.hx, B.hy, 120, vuln ? '255,80,80' : RAVE[0], .2 + fl*.4);
+    shadowBlob(B.hx + 10, B.hy + 22, 50, 40, 0, .55);
+    ctx.save(); ctx.translate(B.hx, B.hy); ctx.scale(Math.max(.3, Math.abs(c)), 1); ctx.drawImage(im, -w/2, -h/2, w, h);
+    if(c < 0){ ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = 'rgba(10,16,30,.55)'; ctx.fillRect(-w/2, -h/2, w, h); }
+    ctx.restore();
+    if(vuln){ ctx.strokeStyle = `rgba(255,90,90,${.5 + .4*Math.sin(T*10)})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(B.hx, B.hy, B.hr + 12, 0, TAU); ctx.stroke(); }
+    for(const d of B.discs){ ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(d.rot); glow(ctx, 0, 0, 20, RAVE[0], .4); ctx.fillStyle = `hsl(${(d.rot*40)%360},70%,60%)`; ctx.beginPath(); ctx.moveTo(0,-14); ctx.lineTo(12,8); ctx.lineTo(-12,8); ctx.closePath(); ctx.fill(); ctx.restore(); }
+    ctx.globalAlpha = 1; return true;
+  }
+  if(B.type==='drone' && A.drone){
+    let x = B.dx, y = B.dy; if(B.dead){ y += B.deadT*B.deadT*400; if(B.deadT > 1.6) ctx.globalAlpha = Math.max(0, 1-(B.deadT-1.6)); }
+    const vent = B.state==='vent' && !B.dead, im = A.drone, w = B.dr*4.2, h = w*im.height/im.width;
+    shadowBlob(x + 10, y + 26, w*.42, w*.24, 0, .5);
+    glow(ctx, x, y, 90, vent ? '255,150,60' : HOLO[0], .2 + fl*.4 + (vent ? .2 : 0));
+    sprite(im, x, y, w, h, Math.sin(T*1.7)*.08);
+    if(vent){ for(let k=0;k<4;k++){ const a = k/4*TAU + .4; glow(ctx, x + Math.cos(a)*16, y + Math.sin(a)*16, 14, '255,150,60', .7); } }
+    else glow(ctx, x, y, 16, '255,40,40', .7);
+    ctx.globalAlpha = 1;
+    for(const sp of B.sparks){ glow(ctx, sp.x, sp.y, 18, HOLO[0], .8); ctx.strokeStyle = `rgb(${HOLO[1]})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(sp.x, sp.y); ctx.lineTo(sp.x - sp.vx*.04, sp.y - sp.vy*.04); ctx.stroke(); }
+    return true;
+  }
+  if(B.type==='hole' && A.buraco){
+    const d = 236;
+    if(!B.dead){ glow(ctx, B.cx, B.cy, 160, '170,120,255', .16 + fl*.4); ctx.save(); ctx.translate(B.cx, B.cy); ctx.scale(1, .82); ctx.beginPath(); ctx.arc(0, 0, d*.47, 0, TAU); ctx.clip(); ctx.rotate(T*.35); ctx.drawImage(A.buraco, -d/2, -d/2, d, d); ctx.restore(); }
+    else { ctx.globalAlpha = Math.max(0, 1 - B.deadT*.6); ctx.save(); ctx.translate(B.cx, B.cy); ctx.scale(1 - Math.min(.9, B.deadT*.4), .82*(1 - Math.min(.9, B.deadT*.4))); ctx.beginPath(); ctx.arc(0, 0, d*.47, 0, TAU); ctx.clip(); ctx.drawImage(A.buraco, -d/2, -d/2, d, d); ctx.restore(); ctx.globalAlpha = 1; }
+    if(!B.dead){ const ci = A.cristal, ch = 38, cw = ch*ci.width/ci.height; glow(ctx, B.kx, B.ky, 36, HOLO[0], .7 + fl*.3); sprite(ci, B.kx, B.ky, cw, ch, Math.sin(T*3)*.25); }
+    return true;
+  }
+  if(B.type==='ai' && A.ia){
+    fade(1.4);
+    const open = B.state==='open' && !B.dead, im = A.ia, side = im.width*.64, sx = (im.width - side)/2, sy = (im.height - side)/2, d = B.er*3.4;
+    glow(ctx, B.ex, B.ey, 140, open ? HOLO[2] : HOLO[0], .2 + fl*.45);
+    shadowBlob(B.ex + 8, B.ey + 14, d*.5, d*.42, 0, .5);
+    ctx.drawImage(im, sx, sy, side, side, B.ex - d/2, B.ey - d/2, d, d);
+    if(open){ glow(ctx, B.ex, B.ey, 30, HOLO[2], .55); ctx.strokeStyle = `rgba(${HOLO[2]},${.5 + .4*Math.sin(T*10)})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(B.ex, B.ey, B.er + 8, 0, TAU); ctx.stroke(); }
+    else if(!B.dead){ ctx.fillStyle = 'rgba(138,150,168,.92)'; ctx.beginPath(); ctx.ellipse(B.ex, B.ey, B.er*.62, B.er*.62*.35, 0, 0, TAU); ctx.fill(); }
+    if(!B.dead) for(let k=0;k<10;k++){ if(!B.plates[k]) continue; const a = B.rot + k/10*TAU, px = B.ex + Math.cos(a)*B.ring, py = B.ey + Math.sin(a)*B.ring;
+      ctx.save(); ctx.translate(px, py); ctx.rotate(a); ctx.fillStyle = 'rgba(232,238,244,.92)'; ctx.strokeStyle = `rgba(${HOLO[0]},.95)`; ctx.lineWidth = 1.4; ctx.beginPath(); for(let j=0;j<6;j++){ const b2 = j/6*TAU; ctx.lineTo(Math.cos(b2)*11, Math.sin(b2)*11); } ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    ctx.globalAlpha = 1;
+    for(const sp of B.sparks){ glow(ctx, sp.x, sp.y, 18, HOLO[2], .8); ctx.strokeStyle = `rgb(${HOLO[1]})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(sp.x, sp.y); ctx.lineTo(sp.x - sp.vx*.04, sp.y - sp.vy*.04); ctx.stroke(); }
     return true;
   }
   return false;
