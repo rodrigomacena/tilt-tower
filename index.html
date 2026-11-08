@@ -746,6 +746,35 @@ function addSling(L,f,A,B,Cc){
   [A,B,Cc].forEach(p=>addPost(L,f,p[0],p[1],4));
 }
 
+/* ---- layout variety: every floor gets its own (seeded, so always the same for that table) lower section, bumper formation, side obstacle and roof ---- */
+function rngFor(pi, f){ let a = (pi*7919 + f*104729 + 1337) >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0)/4294967296; }; }
+const pick = (R, arr) => arr[Math.floor(R()*arr.length)];
+let LAYR = Math.random;
+function sideBumpers(L,f,y,r){
+  // replaces the classic pair of side bumpers with one of several formations
+  const v = pick(LAYR, ['pair','pair','high','posts','mini','asymL','asymR']);
+  if(v==='pair'){ addBumper(L,f,84,y,r); addBumper(L,f,276,y,r); }
+  else if(v==='high'){ addBumper(L,f,70,y-28,r-2); addBumper(L,f,290,y-28,r-2); addPost(L,f,112,y+14,6); addPost(L,f,248,y+14,6); }
+  else if(v==='posts'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addPost(L,f,cx,y-20,7); addPost(L,f,cx-20,y+12,7); addPost(L,f,cx+20,y+12,7); } }
+  else if(v==='mini'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addBumper(L,f,cx-16,y-12,r-5); addBumper(L,f,cx+16,y+14,r-5); } }
+  else { const big = v==='asymL' ? 84 : 276, small = v==='asymL' ? 276 : 84; addBumper(L,f,big,y,r+4); addPost(L,f,small,y-16,7); addPost(L,f,small,y+18,7); }
+}
+function addLowSection(L,f,v){
+  if(v==='classic'){ addSling(L,f,[74,505],[74,572],[116,598]); addSling(L,f,[286,505],[286,572],[244,598]); }
+  else if(v==='short'){ addSling(L,f,[78,530],[78,575],[112,596]); addSling(L,f,[282,530],[282,575],[248,596]); addPost(L,f,180,500,6); }
+  else if(v==='posts'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addPost(L,f,m(78),512,6); addPost(L,f,m(94),546,6); addPost(L,f,m(110),580,6); addPost(L,f,m(128),520,5); } }
+  else if(v==='bumps'){ addBumper(L,f,96,540,14); addBumper(L,f,264,540,14); addPost(L,f,118,590,5); addPost(L,f,242,590,5); }
+  else if(v==='guides'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addSeg(L,f,m(70),500,m(118),596,{e:.7}); addPost(L,f,m(70),500,5); addPost(L,f,m(118),596,5); addPost(L,f,m(104),505,5); } }
+}
+function addSideFeature(L,f,side,v){
+  // side: 'L' or 'R' (the wall it hugs); everything lives in x 8..100 (or mirrored) and y 270..370
+  const m = x => side==='L' ? x : 360-x, sd = side==='L' ? 1 : -1;
+  if(v==='lane'){ addSeg(L,f,m(40),282,m(40),360,{r:3}); addPost(L,f,m(40),282,4); addPost(L,f,m(40),360,4); addCoin(L,f,m(24),322); }
+  else if(v==='pins'){ [[34,290],[58,290],[82,290],[46,318],[70,318],[58,346]].forEach(([x,y]) => addPost(L,f,m(x),y,4)); }
+  else if(v==='deflect'){ addSeg(L,f,m(8),270,m(56),326,{e:.8}); addPost(L,f,m(56),326,6); addBumper(L,f,m(36),356,11); }
+  else if(v==='flip'){ const F = mkFlipper(f,m(26),330,46,sd); F.r1 = 9; F.r2 = 5; L.flippers.push(F); addSeg(L,f,m(8),300,m(18),322,{r:3}); }
+  else if(v==='spin'){ L.spinners.push({ f, x1:m(sd>0 ? 10 : 56), x2:m(sd>0 ? 56 : 10), y:Y(f,320), ang:0, vel:0, acc:0, revs:0 }); addPost(L,f,m(60),300,5); addPost(L,f,m(60),344,5); }
+}
 function floorBase(L,f,o){
   addSeg(L,f,8,0,8,700); addSeg(L,f,352,0,352,700);
   // left inlane guide + deflector sealing the outlane
@@ -758,19 +787,25 @@ function floorBase(L,f,o){
     addSeg(L,f,322,690,352,690,{draw:false});
   } else { addSeg(L,f,322,470,322,700); addSeg(L,f,348,430,322,470); addPost(L,f,322,470,5); }
   addSeg(L,f,322,585,284,622);
-  addSling(L,f,[74,505],[74,572],[116,598]);
-  addSling(L,f,[286,505],[286,572],[244,598]);
+  addLowSection(L,f,o.low || 'classic');
   addSeg(L,f,92,646,150,700); addSeg(L,f,268,646,210,700);
   addSeg(L,f,8,700,150,700,{draw:false}); addSeg(L,f,210,700,352,700,{draw:false});
   const len = 64*(1+.06*S.up.length)*(1.12 - .14*DIFF(L.pi));
   L.flippers.push(mkFlipper(f,86,632,len,1), mkFlipper(f,274,632,len,-1));
-  if(o.top) addPoly(L,f,[[8,90],[30,32],[90,6],[270,6],[330,32],[352,90]]);
+  if(o.top){
+    const roofs = { arch:[[8,90],[30,32],[90,6],[270,6],[330,32],[352,90]], peak:[[8,96],[120,20],[180,6],[240,20],[352,96]], flat:[[8,60],[48,6],[312,6],[352,60]], round:[[8,120],[22,60],[60,22],[120,6],[240,6],[300,22],[338,60],[352,120]] };
+    addPoly(L,f,roofs[o.roof || 'arch']);
+  }
   L.kickers.push({ f, y:Y(f,686), fire:0 });
 }
 
 function modBumpers(L,f){
   const easy0 = f===0;
-  addBumper(L,f,110,240,20); addBumper(L,f,250,240,20); if(!easy0) addBumper(L,f,180,330,22);
+  const fm = easy0 ? 'tri' : pick(LAYR, ['tri','line','diamond','vee']);
+  if(fm==='tri'){ addBumper(L,f,110,240,20); addBumper(L,f,250,240,20); if(!easy0) addBumper(L,f,180,330,22); }
+  else if(fm==='line'){ addBumper(L,f,96,260,18); addBumper(L,f,180,236,19); addBumper(L,f,264,260,18); }
+  else if(fm==='diamond'){ addBumper(L,f,180,210,16); addBumper(L,f,126,268,16); addBumper(L,f,234,268,16); addBumper(L,f,180,326,16); }
+  else { addBumper(L,f,104,220,18); addBumper(L,f,256,220,18); addBumper(L,f,180,300,20); addPost(L,f,142,262,6); addPost(L,f,218,262,6); }
   addPost(L,f,70,150,7); if(f!==0) addPost(L,f,290,150,7);
   [[120,122],[150,104],[180,97],[210,104],[240,122]].forEach(p=>addCoin(L,f,...p));
   L.inserts.push({f,type:'star',x:180,y:Y(f,250)});
@@ -883,10 +918,17 @@ function mkRail(L,f,type,pts){
   const r = { f, type, path, x0:pts[0][0], y0:pts[0][1], tx:t0.tx, ty:t0.ty, mx0:pts[0][0]-22, mx1:pts[0][0]+22, locked:false, lockBy:null, lockObj:null, gk:.26, forced:0, cool:0, gate:null, used:0 };
   L.rails.push(r); return r;
 }
+// where a side ramp travels on the floor above: the classic big loop, a mid-height loop, a diagonal crossing or a short hook back to its own side
+const RAMP_ROUTES = {
+  loop:[[26,640],[34,330],[70,120],[180,78],[290,120],[320,260],[307,420],[307,505]],
+  mid:[[26,640],[30,470],[70,330],[180,290],[290,330],[312,420],[307,505]],
+  diag:[[26,640],[34,500],[110,400],[230,350],[300,390],[307,440],[307,505]],
+  hook:[[26,640],[26,520],[40,430],[70,420],[84,460],[84,505]]
+};
 function rampSide(L,f,side,lockObj,lockBy){
   const m = side==='L' ? (x=>x) : (x=>360-x);
   const pts = [[60,366],[44,250],[28,60]].map(p=>[m(p[0]),Y(f,p[1])])
-    .concat([[26,640],[34,330],[70,120],[180,78],[290,120],[320,260],[307,420],[307,505]].map(p=>[m(p[0]),Y(f+1,p[1])]));
+    .concat(RAMP_ROUTES[L.pi===0 ? 'loop' : pick(LAYR, Object.keys(RAMP_ROUTES))].map(p=>[m(p[0]),Y(f+1,p[1])]));
   const r = mkRail(L,f,'ramp',pts);
   r.mx0 = Math.min(m(8),m(94)); r.mx1 = Math.max(m(8),m(94));
   addSeg(L,f,m(94),395,m(94),350); addPost(L,f,m(94),350,5);
@@ -904,8 +946,9 @@ function rampCenter(L,f){
 function buildLevel(pi){
   const P = PHASES[pi], n = P.floors.length, L = newLevel(pi, n);
   P.floors.forEach((F,f) => {
-    const top = f===n-1;
-    floorBase(L,f,{plunger:f===0, top});
+    const top = f===n-1, R = rngFor(pi, f); LAYR = R;
+    const low = (pi===0 && f===0) ? 'classic' : pick(R, ['classic','classic','short','posts','bumps','guides']);
+    floorBase(L,f,{plunger:f===0, top, low, roof:pick(R, ['arch','peak','flat','round'])});
     let lockObj = null;
     if(F.m==='bumpers') modBumpers(L,f);
     else if(F.m==='roll') lockObj = modRoll(L,f);
@@ -922,12 +965,18 @@ function buildLevel(pi){
     else if(F.m==='code') lockObj = modCode(L,f);
     else if(F.m==='holo') lockObj = modHolo(L,f);
     else if(F.m==='well') modWell(L,f);
+    // side obstacle on the wall away from the side ramp (never on boss / orbit floors, never over the plunger lane)
+    if(F.m!=='boss' && F.m!=='orbit' && !(pi===0 && f===0) && R() < .8){
+      const side = F.up==='L' ? 'R' : F.up==='R' ? 'L' : (R() < .5 ? 'L' : 'R');
+      if(!(f===0 && side==='R')) addSideFeature(L,f,side,pick(R, ['lane','pins','deflect','flip','spin']));
+    }
     let rail = null;
     if(!top){
       if(F.m==='orbit') rail = rampCenter(L,f);
       else if(F.m==='elev') rail = L.saucers[L.saucers.length-1].rail;
       else rail = rampSide(L,f,F.up||'L', F.lock?lockObj:null, F.lock||null);
     }
+    LAYR = Math.random;
     L.floors.push({ m:F.m, rail, lockBy:F.lock||null, lockObj, cond:F.cond, reached:f===0 });
   });
   if(n > 1 && L.floors[0].rail && L.floors[0].rail.type==='ramp'){
@@ -2597,7 +2646,7 @@ function modDance(L,f){
   const d = { f, tiles:[], cleared:false, flash:0, cy:Y(f,290), resetT:0 };
   for(let r=0;r<3;r++) for(let c=0;c<3;c++) d.tiles.push({ x:130+c*50, y:Y(f,250+r*40), lit:false, flash:0, col:(r*3+c)%4 });
   L.dances.push(d);
-  addBumper(L,f,84,170,18); addBumper(L,f,276,170,18); addPost(L,f,180,190,6);
+  sideBumpers(L,f,170,18); addPost(L,f,180,190,6);
   [[130,200],[230,200],[180,372]].forEach(p=>addCoin(L,f,...p));
   return d;
 }
@@ -2605,7 +2654,7 @@ function modDisc(L,f){
   const t = { f, x:180, y:Y(f,270), r:64, w:2.4, on:true, ang:0, dir:1 };
   L.turntables.push(t);
   addPost(L,f,180,270,5);
-  addBumper(L,f,86,150,17); addBumper(L,f,274,150,17);
+  sideBumpers(L,f,150,17);
   [[180,184],[118,270],[242,270],[180,356]].forEach(p=>addCoin(L,f,...p));
   return t;
 }
@@ -3058,7 +3107,7 @@ const NEON = ['255,58,168','60,220,255','255,220,80','140,255,120'];
 function modInvaders(L,f){
   const bank = modDrop(L,f,5,300,105,30);
   bank.move = { base:105, amp:36, w:.9 }; bank.ph = 0; bank.pixel = true;
-  addBumper(L,f,84,170,17); addBumper(L,f,276,170,17);
+  sideBumpers(L,f,170,17);
   [[150,232],[210,232],[180,360]].forEach(p=>addCoin(L,f,...p));
   return bank;
 }
@@ -3070,7 +3119,7 @@ function modTape(L,f){
   const reels = [[110,215],[250,215]].map(([x,y]) => { const c = { f, x, y:Y(f,y), r:14, e:.5, kind:'reel' }; L.circles.push(c); return c; });
   const bt = { f, x0:70, x1:290, y:Y(f,282), h:12, dir:1, sp:240, t:0, off:0, reels };
   L.belts.push(bt);
-  addBumper(L,f,84,140,17); addBumper(L,f,276,140,17);
+  sideBumpers(L,f,140,17);
   [[120,330],[240,330],[180,170]].forEach(p=>addCoin(L,f,...p));
   return bt;
 }
@@ -3509,7 +3558,7 @@ function modCode(L,f){
   const cd = { f, btns:[], seq:[], step:0, cleared:false, flash:0, err:0, y:Y(f,300) };
   [[120,'255,70,70'],[180,'80,230,120'],[240,'90,150,255']].forEach(([x,col],i) => { const t = { x, y:Y(f,300), col, i, flash:0 }; addSeg(L,f,x-13,300,x+13,300,{kind:'code',ref:t,draw:false,r:4}); cd.btns.push(t); });
   codeShuffle(cd); L.codes.push(cd);
-  addBumper(L,f,84,170,17); addBumper(L,f,276,170,17);
+  sideBumpers(L,f,170,17);
   [[150,232],[210,232],[180,380]].forEach(p=>addCoin(L,f,...p));
   return cd;
 }
@@ -3525,7 +3574,7 @@ function codeHit(t){
 /* ---------- ERA 5 modules ---------- */
 function modHolo(L,f){
   const bank = modDrop(L,f,4,300,116,32); bank.holo = { per:3.4, off:1.1 }; bank.solid = true;
-  addBumper(L,f,84,170,17); addBumper(L,f,276,170,17);
+  sideBumpers(L,f,170,17);
   [[150,232],[210,232],[180,380]].forEach(p=>addCoin(L,f,...p));
   return bank;
 }
@@ -3533,7 +3582,7 @@ function holoStep(bk){ const solid = (G.t % bk.holo.per) < bk.holo.per - bk.holo
 function modWell(L,f){
   const w = { f, x:180, y:Y(f,268), r:130, k:900, ph:0 }; L.wells.push(w);
   addPost(L,f,180,268,8);
-  addBumper(L,f,84,150,17); addBumper(L,f,276,150,17);
+  sideBumpers(L,f,150,17);
   [[120,268],[240,268],[180,180],[180,356]].forEach(p=>addCoin(L,f,...p));
   return w;
 }
