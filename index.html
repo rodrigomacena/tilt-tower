@@ -25,6 +25,7 @@
   color-scheme:dark;
 }
 [hidden]{display:none!important}
+.ghost.danger{opacity:.75;font-size:.85em}.ghost.danger.armed{opacity:1;color:#ff8a7a;border-color:#ff8a7a}
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
 #rotate{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:var(--bg);color:var(--cream);font-family:var(--f-display);text-align:center;padding:24px}
 #rotate .ph{width:46px;height:78px;border:4px solid var(--amber);border-radius:10px;animation:rot 1.8s ease-in-out infinite}
@@ -144,6 +145,7 @@ body{font-family:var(--f-body);font-size:16px}
       <button class="btn alt" id="b-shop">Oficina</button>
       <button class="ghost" id="b-sound">Som: ligado</button>
       <button class="ghost" id="b-music">Música: ligada</button>
+      <button class="ghost danger" id="b-reset">Recomeçar campanha</button>
     </div>
     <p class="hint">Toque na metade esquerda ou direita da tela para usar os flippers. Mande a bola pelas rampas até o topo da torre.</p>
   </section>
@@ -2639,7 +2641,7 @@ function drawLight(vh){
 const eraNow = () => ERA(G.L ? G.L.pi : (G.pi||0));
 const e2now = () => eraNow()===1;
 const DISCO = ['255,120,40','230,70,160','150,80,230','255,190,60'];
-const PREVIEW_E2 = true; // prévia de desenvolvimento: Era 2 jogável sem terminar a Era 1
+const PREVIEW_E2 = false; // prévia de desenvolvimento: Era 2 jogável sem terminar a Era 1
 
 /* ---- modules ---- */
 function modDance(L,f){
@@ -5234,6 +5236,13 @@ function showOver(){
 }
 $('b-play').onclick = () => { Snd.init(); openMap(); };
 $('b-shop').onclick = () => { Snd.init(); openShop('s-title'); };
+{ // wipe the whole campaign (two taps to confirm); keeps only sound/music settings
+  const rb = $('b-reset'); let armT = -1e9;
+  rb.onclick = () => {
+    if(performance.now() - armT > 3500){ armT = performance.now(); rb.textContent = 'Toque de novo: apaga TUDO'; rb.classList.add('armed'); setTimeout(() => { if(performance.now() - armT >= 3400){ rb.textContent = 'Recomeçar campanha'; rb.classList.remove('armed'); } }, 3600); return; }
+    const keep = { sound:S.sound, music:S.music }; S = Object.assign(defSave(), keep); save(); location.reload();
+  };
+}
 $('b-music').onclick = toggleMusic; $('p-music').onclick = toggleMusic;
 $('b-sound').onclick = toggleSound; $('p-sound').onclick = toggleSound;
 function setQuality(high){
