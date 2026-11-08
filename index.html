@@ -4157,7 +4157,7 @@ function wrap(text, x, y, maxW, lh){
 /* ---- 3D view: the finished playfield frame is re-projected onto a tilted plane (far edge narrower and
    foreshortened, like looking down a real cabinet), then wooden side walls follow the perspective.
    HUD, banners and the glass layer are drawn flat afterwards. ---- */
-const T3 = { c:document.createElement('canvas'), far:.76, strips:150 };
+const T3 = { c:document.createElement('canvas'), far:.88, strips:150 };
 function tilt3D(d){
   const W2 = cv.width, H2 = cv.height, c = T3.c;
   if(c.width !== W2 || c.height !== H2){ c.width = W2; c.height = H2; }
@@ -4175,7 +4175,7 @@ function tilt3D(d){
     ctx.drawImage(c, bx, sy, bw, sh, bx + (bw-dw)/2, dy, dw, dh);
   }
   // depth: the far end sits a little deeper in shadow
-  const dg = ctx.createLinearGradient(0, 0, 0, H2*.55); dg.addColorStop(0, 'rgba(0,0,0,.32)'); dg.addColorStop(1, 'rgba(0,0,0,0)');
+  const dg = ctx.createLinearGradient(0, 0, 0, H2*.55); dg.addColorStop(0, 'rgba(0,0,0,.18)'); dg.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = dg; ctx.fillRect(bx, 0, bw, H2*.55);
   // cabinet side walls in perspective
   const inset = bw*(1-sF)/2;
