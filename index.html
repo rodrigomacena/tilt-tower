@@ -1,5 +1,17 @@
-<title>Tilt Tower Realista</title>
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Tilt Tower</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Pinball vertical: suba a torre por 5 eras, dos anos 60 ao futuro.">
+<meta name="theme-color" content="#0b0604">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tilt Tower">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&family=Chakra+Petch:wght@400;500;600;700&display=swap">
 <style>
@@ -122,22 +134,22 @@ body{font-family:var(--f-body);font-size:16px}
     <div class="era" id="t-era">ERA 1 · ANOS 60</div>
     <div class="col">
       <button class="btn" id="b-play">Jogar</button>
-      <button class="btn alt" id="b-shop">Oficina do Pino</button>
+      <button class="btn alt" id="b-shop">Oficina</button>
       <button class="ghost" id="b-sound">Som: ligado</button>
       <button class="ghost" id="b-music">Música: ligada</button>
     </div>
-    <p class="hint">Toque na metade esquerda ou direita da tela para usar os flippers. O Pino é a bola: mande ele pelas rampas até o topo da torre.</p>
+    <p class="hint">Toque na metade esquerda ou direita da tela para usar os flippers. Mande a bola pelas rampas até o topo da torre.</p>
   </section>
 
   <section class="screen" id="s-map" hidden>
     <div class="bar"><button class="ghost" id="m-back">Voltar</button><h2 id="m-title">Era 1 · Anos 60</h2><span class="wallet"><i></i><span id="m-fichas">0</span></span></div>
     <div class="eras" id="m-eras"></div>
     <div class="tower" id="m-list"></div>
-    <button class="btn alt" id="m-shop">Oficina do Pino</button>
+    <button class="btn alt" id="m-shop">Oficina</button>
   </section>
 
   <section class="screen" id="s-shop" hidden>
-    <div class="bar"><button class="ghost" id="o-back">Voltar</button><h2>Oficina do Pino</h2><span class="wallet"><i></i><span id="o-fichas">0</span></span></div>
+    <div class="bar"><button class="ghost" id="o-back">Voltar</button><h2>Oficina</h2><span class="wallet"><i></i><span id="o-fichas">0</span></span></div>
     <p class="sec">MELHORIAS</p>
     <div class="shop" id="o-list"></div>
     <p class="sec">PEÇAS DE ERA</p>
@@ -153,6 +165,7 @@ body{font-family:var(--f-body);font-size:16px}
       <button class="ghost" id="p-sound">Som: ligado</button>
       <button class="ghost" id="p-music">Música: ligada</button>
       <button class="ghost" id="p-quality">Qualidade: Alta</button>
+      <button class="ghost" id="p-3d">Visão 3D: ligada</button>
     </div>
   </section>
 
@@ -163,7 +176,7 @@ body{font-family:var(--f-body);font-size:16px}
     <p class="note" id="r-note" hidden></p>
     <div class="col">
       <button class="btn" id="r-next">Próxima fase</button>
-      <button class="btn alt" id="r-shop">Oficina do Pino</button>
+      <button class="btn alt" id="r-shop">Oficina</button>
       <button class="btn alt" id="r-map">Mapa</button>
     </div>
   </section>
@@ -173,7 +186,7 @@ body{font-family:var(--f-body);font-size:16px}
     <p class="hint" id="v-text"></p>
     <div class="col">
       <button class="btn" id="v-retry">Tentar de novo</button>
-      <button class="btn alt" id="v-shop">Oficina do Pino</button>
+      <button class="btn alt" id="v-shop">Oficina</button>
       <button class="btn alt" id="v-map">Mapa</button>
     </div>
   </section>
@@ -203,8 +216,8 @@ const UPG = [
   {id:'power',  name:'Flippers Fortes',  desc:'Lançamentos mais fortes, alcançam rampas com mais facilidade', max:5, cost:[30,60,100,150,220]},
   {id:'length', name:'Flippers Longos',  desc:'Flippers maiores: o vão do meio fica menor', max:3, cost:[60,120,200]},
   {id:'balls',  name:'Casco Reforçado',  desc:'+1 bola em cada fase', max:3, cost:[80,160,260]},
-  {id:'save',   name:'Salva-Bola',       desc:'Devolve o Pino se ele cair logo depois do lançamento', max:3, cost:[50,100,170]},
-  {id:'kick',   name:'Kickback',         desc:'Um pistão no vão central chuta o Pino de volta (cargas por fase)', max:3, cost:[40,90,150]},
+  {id:'save',   name:'Salva-Bola',       desc:'Devolve a bola se ela cair logo depois do lançamento', max:3, cost:[50,100,170]},
+  {id:'kick',   name:'Kickback',         desc:'Um pistão no vão central chuta a bola de volta (cargas por fase)', max:3, cost:[40,90,150]},
   {id:'magnet', name:'Ímã de Fichas',    desc:'Puxa as fichas de mais longe', max:5, cost:[20,40,70,110,160]},
   {id:'floorkick', name:'Empurrão Viajante', desc:'A cada troca de andar, o buraco do andar novo ganha 1 empurrão dourado', max:1, cost:[120]},
 ];
@@ -216,7 +229,7 @@ const SAVE_SECS = [0,5,8,12];
 const PHASES = [
   { name:'Salão de Bar', easy:true, floors:[{m:'bumpers',up:'L'},{m:'goal',cond:'always'}],
     golds:[[0,44,250],[1,180,110],[0,180,180]], enemies:[],
-    tip:'Mande o Pino numa das duas rampas: a da esquerda ou a do centro.' },
+    tip:'Mande a bola numa das duas rampas: a da esquerda ou a do centro.' },
   { name:'Fichas e Spinners', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'always'}],
     golds:[[0,40,200],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
     tip:'No andar da órbita, a rampa fica no centro. O spinner dá fichas.' },
@@ -228,10 +241,10 @@ const PHASES = [
     tip:'Sub-chefe! Acerte o botão de reset quando a proteção abrir.' },
   { name:'Corredor de Arame', floors:[{m:'roll',up:'L'},{m:'elev'},{m:'drop',up:'R',lock:'bank'},{m:'goal',cond:'bank'}],
     golds:[[0,176,92],[2,180,240],[3,180,120]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:1,x:270,y:340}],
-    tip:'O elevador no centro leva o Pino direto para o andar de cima.' },
+    tip:'O elevador no centro leva a bola direto para o andar de cima.' },
   { name:'Mariposas', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'roll',up:'L'},{m:'goal',cond:'targets'}],
     golds:[[1,180,45],[2,128,92],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:410,rx:100,ry:40}],
-    tip:'Mariposas freiam o Pino. Acerte-as com força para derrubá-las.' },
+    tip:'Mariposas freiam a bola. Acerte-as com força para derrubá-las.' },
   { name:'Pêndulo do Tilt', boss:'pendulum', floors:[{m:'drop',up:'L',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
     golds:[[0,180,240],[1,180,45],[2,300,430]], enemies:[{t:'roll',f:1,y:400,x1:90,x2:270}],
     tip:'Sub-chefe! Acerte o prumo do pêndulo com força.' },
@@ -243,14 +256,14 @@ const PHASES = [
     tip:'A torre mais alta da era. Cuidado com tudo.' },
   { name:'Jukebox Rex', boss:'jukebox', floors:[{m:'roll',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
     golds:[[0,176,92],[1,180,240],[2,180,45]], enemies:[{t:'roll',f:0,y:400,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
-    tip:'Chefe! Lance o Pino no slot de moedas quando a grade abrir.' },
+    tip:'Chefe! Lance a bola no slot de moedas quando a grade abrir.' },
   /* ---- ERA 2 · ANOS 70 ---- */
   { name:'Pista de Dança', floors:[{m:'dance',up:'L'},{m:'bumpers',up:'R'},{m:'goal',cond:'always'}],
     golds:[[0,180,372],[1,316,250],[2,180,110]], enemies:[],
-    tip:'Bem-vindo aos anos 70! Passe o Pino pelos ladrilhos da pista e suba pela rampa.' },
+    tip:'Bem-vindo aos anos 70! Passe a bola pelos ladrilhos da pista e suba pela rampa.' },
   { name:'Vinil Louco', floors:[{m:'disc',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
     golds:[[0,180,356],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'O toca-discos gira e arrasta o Pino. Use o giro a seu favor.' },
+    tip:'O toca-discos gira e arrasta a bola. Use o giro a seu favor.' },
   { name:'Salto Plataforma', floors:[{m:'bumpers',up:'L'},{m:'elev'},{m:'dance',up:'R',lock:'dance'},{m:'goal',cond:'always'}],
     golds:[[0,44,250],[1,180,150],[3,180,110]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:2,x:270,y:420}],
     tip:'Acenda os 9 ladrilhos da pista para abrir a rampa.' },
@@ -259,7 +272,7 @@ const PHASES = [
     tip:'Sub-chefe! Acerte a cabeça da agulha com força quando ela passar.' },
   { name:'Globinhos', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'disc',up:'L'},{m:'goal',cond:'bank'}],
     golds:[[1,180,45],[2,180,184],[3,180,120]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40}],
-    tip:'Globinhos freiam o Pino. Acerte-os com força.' },
+    tip:'Globinhos freiam a bola. Acerte-os com força.' },
   { name:'Noite de Sábado', floors:[{m:'drop',up:'L',lock:'bank'},{m:'dance',up:'R',lock:'dance'},{m:'elev'},{m:'goal',cond:'targets'}],
     golds:[[0,180,240],[1,180,372],[3,180,110]], enemies:[{t:'roll',f:2,y:420,x1:90,x2:270}],
     tip:'Alvos, pista e elevador. A noite é longa.' },
@@ -281,16 +294,16 @@ const PHASES = [
     tip:'Bem-vindo aos anos 80! Os alvos de pixel andam de um lado para o outro.' },
   { name:'Fita K7', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
     golds:[[0,180,330],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'A esteira da fita empurra o Pino para o lado e troca de direção.' },
+    tip:'A esteira da fita empurra a bola para o lado e troca de direção.' },
   { name:'Ataque Pixel', floors:[{m:'bumpers',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'elev'},{m:'goal',cond:'bank'}],
     golds:[[0,44,250],[1,180,400],[3,180,120]], enemies:[{t:'hop',f:0,x:270,y:430},{t:'hop',f:2,x:90,y:340}],
     tip:'Derrube os 5 pixels que se movem para abrir a rampa.' },
   { name:'Fita Embolada', boss:'tape', floors:[{m:'invaders',up:'L'},{m:'tape',up:'R'},{m:'boss'}],
     golds:[[0,180,400],[1,180,330],[2,60,430]], enemies:[],
-    tip:'Sub-chefe! Acerte o carretel que está brilhando. A fita solta gruda no Pino.' },
+    tip:'Sub-chefe! Acerte o carretel que está brilhando. A fita solta gruda na bola.' },
   { name:'Disquetes', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'invaders',up:'L',lock:'bank'},{m:'goal',cond:'targets'}],
     golds:[[0,180,330],[1,180,45],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40}],
-    tip:'Disquetes voadores freiam o Pino. Acerte-os com força.' },
+    tip:'Disquetes voadores freiam a bola. Acerte-os com força.' },
   { name:'Neon na Chuva', floors:[{m:'roll',up:'L',lock:'roll'},{m:'tape',up:'R'},{m:'elev'},{m:'goal',cond:'bank'}],
     golds:[[0,224,92],[1,180,330],[3,180,120]], enemies:[{t:'roll',f:2,y:420,x1:90,x2:270}],
     tip:'Acenda N-E-O-N nos corredores para abrir a rampa.' },
@@ -307,7 +320,7 @@ const PHASES = [
     golds:[[0,180,400],[1,180,330],[2,180,45]], enemies:[{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
     tip:'Chefe! Quebre os blocos da frente e acerte a tela com força.' },
   /* ---- ERA 4 · ANOS 90 ---- */
-  {name: 'Internet Discada', floors: [{m: 'portal', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'drop', up: 'L', lock: 'bank'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 120], [2, 180, 240], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}], tip: 'Bem-vindo aos anos 90! Os portais WWW teletransportam o Pino de um lado para o outro.'},
+  {name: 'Internet Discada', floors: [{m: 'portal', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'drop', up: 'L', lock: 'bank'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 120], [2, 180, 240], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}], tip: 'Bem-vindo aos anos 90! Os portais WWW teletransportam a bola de um lado para o outro.'},
   {name: 'Código Secreto', floors: [{m: 'code', up: 'L', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'portal', up: 'R'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 120], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'hop', f: 2, x: 270, y: 430}], tip: 'Acerte os botões na ordem de cores mostrada na telinha para abrir a rampa.'},
   {name: 'Skate Radical', floors: [{m: 'bumpers', up: 'L'}, {m: 'portal', up: 'R'}, {m: 'elev'}, {m: 'code', up: 'L', lock: 'code'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'hop', f: 3, x: 270, y: 430}], tip: 'Portais, elevador e código. Radical!'},
   {name: 'Bichinho Virtual', boss: 'pet', floors: [{m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 120], [2, 180, 150], [3, 60, 430]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Sub-chefe! Acerte o bichinho quando ele acordar. Dormindo, ele não sente nada.'},
@@ -318,7 +331,7 @@ const PHASES = [
   {name: 'Torre Online', floors: [{m: 'bumpers', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'portal', up: 'L'}, {m: 'invaders', up: 'R', lock: 'bank'}, {m: 'elev'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [3, 180, 400], [5, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 2, y: 420, x1: 90, x2: 270}, {t: 'hop', f: 3, x: 80, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'A torre mais alta da internet discada.'},
   {name: 'Chefão Poligonal', boss: 'poly', floors: [{m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'tape', up: 'L'}, {m: 'boss'}], golds: [[0, 180, 120], [3, 180, 150], [5, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}], tip: 'Chefe! A cabeça gira: acerte quando os olhos vermelhos estiverem virados para você.'},
   /* ---- ERA 5 · FUTURO ---- */
-  {name: 'Estação Orbital', floors: [{m: 'holo', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'well', up: 'L'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 400], [2, 180, 410], [3, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Bem-vindo ao futuro! Alvos holográficos somem e voltam. O poço de gravidade puxa o Pino.'},
+  {name: 'Estação Orbital', floors: [{m: 'holo', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'well', up: 'L'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 400], [2, 180, 410], [3, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Bem-vindo ao futuro! Alvos holográficos somem e voltam. O poço de gravidade puxa a bola.'},
   {name: 'Gravidade Zero', floors: [{m: 'well', up: 'L'}, {m: 'orbit', up: 'C'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'portal', up: 'L'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 400], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Derrube os hologramas enquanto estão sólidos.'},
   {name: 'Hologramas', floors: [{m: 'bumpers', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'elev'}, {m: 'well', up: 'L'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'roll', f: 3, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Use a gravidade para fazer curvas.'},
   {name: 'Sentinela Drone', boss: 'drone', floors: [{m: 'well', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 410], [2, 180, 45], [4, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Sub-chefe! Depois de atirar, o drone abre as saídas de ar: acerte nessa hora.'},
@@ -909,14 +922,14 @@ function startPhase(pi, attract=false){
   G.pi = pi; G.mode = attract ? 'attract' : 'play'; Music.set(attract ? 'menu' : 'play');
   G.L = buildLevel(pi); renderStatic(G.L);
   G.balls = attract ? 3 : 3 + S.up.balls + (pi===0 ? 2 : pi < 10 ? 1 : 0); G.score = 0; G.fichasRun = 0; G.golds = 0; G.lost = false;
-  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
+  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
   G.popups = []; G.parts = []; G.done = false; G.doneT = 0; G.shake = 0; G.gi = 1; G.floorMsg = null;
   G.press.L = G.press.R = false;
   newBall(); G.cam = clamp(G.ball.y - view.vh*.58, Y(G.L.n-1,0)-100, FH+20-view.vh); G.startTime = G.t;
   disp.reels = [0,0,0,0,0,0,0];
   if(!attract){
     const P = PHASES[pi];
-    G.banner = { title:`FASE ${pi+1}`, sub:P.name.toUpperCase(), hint:P.tip+(G.L.quest ? ` Missão: a chave do andar ${G.L.quest.kf+1} abre o cofre do andar ${G.L.quest.df+1}.` : '')+' REPLAY em '+TH(pi).replay[0].toLocaleString('pt-BR')+' pontos.', t:0, dur:3.6 };
+    G.banner = { title:`FASE ${pi+1}`, sub:P.name.toUpperCase(), hint:P.tip+(G.L.quest ? ' Há um cofre trancado nesta torre.' : '')+' REPLAY em '+TH(pi).replay[0].toLocaleString('pt-BR')+' pontos.', t:0, dur:3.6 };
   } else G.banner = null;
 }
 
@@ -1025,11 +1038,16 @@ function updateMovers(h){
 }
 
 function physStep(h){
-  const L = G.L, b = G.ball;
+  const L = G.L;
   updateFlippers(h); updateMovers(h);
   for(const bk of L.banks){ if(bk.move) moveBank(bk, h); if(bk.holo) holoStep(bk); }
   for(const r of L.rails) if(r.cool > 0) r.cool -= h;
   for(const sc of L.saucers) if(sc.cool > 0) sc.cool -= h;
+  ballStep(h);
+  if(G.extra && G.extra.length){ const main = G.ball; for(const eb of G.extra){ if(eb.dead) continue; G.ball = eb; ballStep(h); } G.ball = main; G.extra = G.extra.filter(e => !e.dead); }
+}
+function ballStep(h){
+  const L = G.L, b = G.ball;
   if(G.freeze && !b.held && !b.rail) return;
   if(b.held){ heldStep(h); return; }
   if(b.rail){ railStep(h); return; }
@@ -1083,8 +1101,8 @@ function physStep(h){
     }
   }
   // plunger state
-  G.inPlunger = b.x > 322 && b.y > Y(0,560) && b.y < Y(0,700);
-  if(b.y > Y(0,760)) drain();
+  if(!b.extra) G.inPlunger = b.x > 322 && b.y > Y(0,560) && b.y < Y(0,700);
+  if(b.y > Y(0,760)){ if(b.extra) b.dead = true; else drain(); }
 }
 function attachRail(r, u){
   const b = G.ball; b.rail = { r, s:2, u:Math.max(u, 200), hint:0 }; r.used++;
@@ -1230,7 +1248,7 @@ function bossCollide(h){
    ========================================================= */
 function addScore(v, x, y, quiet){
   if(G.mode!=='play') return;
-  const pts = v*G.bonusX*G.combo.n*(S.parts.includes('crown') ? 2 : 1); G.score += pts;
+  const pts = v*G.bonusX*G.combo.n*(S.parts.includes('crown') ? 2 : 1)*(G.multi ? 2 : 1); G.score += pts;
   if(!quiet || v>=100) popup('+'+pts.toLocaleString('pt-BR'), x, y, C.cream, .8);
   const th = TH(G.pi).replay;
   while(G.replayIdx < th.length && G.score >= th[G.replayIdx]){
@@ -1238,9 +1256,54 @@ function addScore(v, x, y, quiet){
     popup('REPLAY · +1 BOLA', G.ball.x, G.ball.y-36, C.gold, 1.8);
   }
 }
+function enemyShots(dt){
+  const L = G.L, b = G.ball; G.shots = G.shots || [];
+  if(G.mode === 'play' && !b.rail && !b.held){
+    const fN = clamp(floorOf(b.y), 0, L.n-1), D = DIFF(L.pi);
+    for(const e of L.enemies){
+      if(!e.alive || e.f !== fN) continue;
+      if(e.shotT === undefined) e.shotT = 1.5 + Math.random()*2;
+      e.shotT -= dt; e.charge = e.shotT < .45;
+      if(e.shotT <= 0){
+        e.shotT = 3.4 - 1.5*D + Math.random()*1.2;
+        const dx = b.x-e.x, dy = b.y-e.y, d = Math.hypot(dx,dy)||1, v = 200 + 90*D;
+        if(d < 420 && G.shots.length < 12){ G.shots.push({ x:e.x, y:e.y, vx:dx/d*v, vy:dy/d*v, life:3.2, t:0 }); Snd.tone(900, .07, 'square', .025, 300); }
+      }
+    }
+  }
+  const balls = [b].concat(G.extra || []);
+  for(const s of G.shots){
+    s.x += s.vx*dt; s.y += s.vy*dt; s.life -= dt; s.t += dt;
+    if(s.x < 10 || s.x > 350) s.life = 0;
+    for(const bb of balls){
+      if(bb.dead || bb.rail || bb.held) continue;
+      const dx = bb.x-s.x, dy = bb.y-s.y;
+      if(dx*dx + dy*dy < (BR+6)**2){ const sp = Math.hypot(s.vx, s.vy)||1; bb.vx += s.vx/sp*380; bb.vy += s.vy/sp*380 - 60; s.life = 0; sparks(s.x, s.y, QLIGHT[Math.min(4, eraNow())], 12); SFX.target(); G.shake = Math.max(G.shake, 3); break; }
+    }
+  }
+  G.shots = G.shots.filter(s => s.life > 0);
+}
+function drawShots(){
+  if(!G.shots || !G.shots.length) return;
+  const col = QLIGHT[Math.min(4, eraNow())];
+  for(const s of G.shots){
+    const sp = Math.hypot(s.vx, s.vy)||1, tx = s.x - s.vx/sp*14, ty = s.y - s.vy/sp*14;
+    const g = ctx.createLinearGradient(tx, ty, s.x, s.y); g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(1, `rgba(${col},.8)`);
+    ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(s.x, s.y); ctx.stroke(); ctx.lineCap = 'butt';
+    glow(ctx, s.x, s.y, 16, col, .8); ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, TAU); ctx.fill();
+  }
+}
+function startMultiball(x, y){
+  if(G.mode!=='play' || (G.extra && G.extra.length)) return;
+  x = clamp(x, 70, 290); G.extra = [];
+  for(let k=0;k<3;k++) G.extra.push({ x:x + (k-1)*24, y:y - 14, vx:(k-1)*260 + (Math.random()-.5)*60, vy:-880 - k*90, r:BR, rail:null, held:null, rot:0, trail:[], sq:0, extra:true });
+  G.multi = { t:0 }; G.banner = { title:'MULTIBALL', sub:'4 BOLAS · PONTOS EM DOBRO', hint:'', t:0, dur:2 };
+  SFX.win(); G.gi = .6; G.shake = Math.max(G.shake, 7); buzz(60); Music.set('boss');
+  for(let k=0;k<4;k++) setTimeout(() => sparks(x + (Math.random()-.5)*90, y + (Math.random()-.5)*60, C.gold, 18), k*120);
+}
 function comboHit(x, y){
   if(G.mode!=='play') return;
-  if(G.t - G.combo.last < 5){ G.combo.n = Math.min(5, G.combo.n+1); popup('COMBO x'+G.combo.n+'!', x, y-34, C.gold, 1.2); Snd.chime(0); }
+  if(G.t - G.combo.last < 5){ G.combo.n = Math.min(5, G.combo.n+1); popup('COMBO x'+G.combo.n+'!', x, y-34, C.gold, 1.2); Snd.chime(0); if(G.combo.n === 5 && !G.multiDone){ G.multiDone = true; startMultiball(x, y); } }
   G.combo.last = G.t;
 }
 function addFichas(n, x, y){ if(G.mode!=='play') return; G.fichasRun += n; S.fichas += n; popup('+'+n+' ficha'+(n>1?'s':''), x, y+16, C.gold, .9); }
@@ -1249,8 +1312,8 @@ function vaultHit(c, vn){
   if(Q.key.taken){
     Q.open = true; c.r = 0; c.y = -1e6; SFX.rampDone(); SFX.gold(); G.gi = .7; G.shake = Math.max(G.shake, 5); buzz(40);
     sparks(Q.door.x, Y(Q.df,400), C.gold, 30); addScore(5000, Q.door.x, Y(Q.df,400)-30); addFichas(20, Q.door.x, Y(Q.df,400)-10);
-    G.balls++; popup('COFRE ABERTO! +1 BOLA', 180, Y(Q.df,400)-60, C.gold, 2.2); comboHit(Q.door.x, Y(Q.df,400));
-  } else if(Q.msgT <= 0 && vn < -60){ Q.msgT = 2.5; SFX.relay(); popup(`CHAVE NO ANDAR ${Q.kf+1}`, Q.door.x < 180 ? 110 : 250, Y(Q.df,400)-34, C.red, 1.6); }
+    popup('COFRE ABERTO!', 180, Y(Q.df,400)-60, C.gold, 2.2); G.multiDone = true; startMultiball(Q.door.x, Y(Q.df,400)-40);
+  } else if(Q.msgT <= 0 && vn < -60){ Q.msgT = 2.5; SFX.relay(); popup('TRANCADO', Q.door.x < 180 ? 110 : 250, Y(Q.df,400)-34, C.red, 1.4); }
 }
 // key and vault: metal and light follow the era
 const QMETAL = [['#fff0c0','#c9963e','#4a2e0a'],['#ffffff','#b8bccb','#3a3c48'],['#e8f0ff','#8a98bc','#1a2038'],['#f0d8ff','#9a6ad0','#2a1040'],['#ffffff','#d8e2ec','#5a6878']];
@@ -1318,6 +1381,7 @@ function drawQuest(Q, vis){
 function popup(text, x, y, col, life=1.2){ G.popups.push({ text, x, y, col, t:0, life }); if(G.popups.length > 24) G.popups.shift(); }
 function sparksBase(x, y, col, n){ for(let i=0;i<n;i++){ const a = Math.random()*TAU, v = 80+Math.random()*260; G.parts.push({ x, y, vx:Math.cos(a)*v, vy:Math.sin(a)*v-60, life:.4+Math.random()*.5, t:0, col, s:1+Math.random()*2 }); } if(G.parts.length>300) G.parts.splice(0, G.parts.length-300); }
 function drain(){
+  if(G.mode==='play' && G.extra && G.extra.length){ const nb = G.extra.shift(); nb.extra = false; G.ball = nb; popup('BOLA EXTRA ASSUMIU', 180, Y(0,600), C.cream, 1.2); return; }
   const b = G.ball;
   if(G.mode==='attract'){ newBall(); G.autoLaunchT = .8; return; }
   if(G.done) return;
@@ -1330,6 +1394,7 @@ function drain(){
   newBall(); G.banner = { title:'DRAIN', sub:`${G.balls} BOLA${G.balls>1?'S':''} RESTANTE${G.balls>1?'S':''}`, hint:'', t:0, dur:1.6 };
 }
 function startTally(kind){
+  G.extra = []; G.multi = null; G.shots = [];
   Music.set('tally');
   const n = Math.floor(G.score / SCORE_PER_FICHA);
   G.mode = 'tally'; G.banner = null; G.floorMsg = null; G.press.L = G.press.R = false;
@@ -1468,6 +1533,7 @@ function update(dt){
     if(L.goalCond==='bank') L.exit.lit = L.goalBank.cleared;
   }
   bossUpdate(dt);
+  enemyShots(dt);
   danceUpdate(L, dt);
   beltUpdate(L, dt);
   for(const tt of L.turntables) if(tt.on) tt.ang += tt.w*tt.dir*dt;
@@ -1479,7 +1545,7 @@ function update(dt){
     const k = Q.key; k.ph += dt;
     if(!k.taken && G.mode==='play' && Math.hypot(b.x-k.x, b.y-k.y) < BR+12){
       k.taken = true; SFX.gold(); Snd.chime(0); Snd.chime(1,.12); sparks(k.x, k.y, C.gold, 22); G.gi = .8;
-      popup('CHAVE!', k.x, k.y-30, C.gold, 1.6); popup(`O COFRE FICA NO ANDAR ${Q.df+1}`, 180, k.y-56, C.cream, 2.4);
+      popup('CHAVE!', k.x, k.y-30, C.gold, 1.6); popup('ABRA O COFRE', 180, k.y-56, C.cream, 2);
     }
   }
   // coins & magnet
@@ -1498,6 +1564,8 @@ function update(dt){
   if(!G.anchor || b.rail || b.held || G.inPlunger || cradled || G.freeze || Math.hypot(b.x-G.anchor.x, b.y-G.anchor.y) > 10){ G.anchor = { x:b.x, y:b.y }; G.stillT = 0; }
   else { G.stillT += dt; if(G.stillT > 2.5){ b.vx = (Math.random()-.5)*500; b.vy = -480; G.stillT = 0; G.anchor = null; SFX.relay(); G.searches = (G.searches||0)+1; } }
   // ball cosmetics
+  for(const eb of (G.extra||[])) eb.rot += Math.hypot(eb.vx, eb.vy)*dt/BR*(eb.vx < 0 ? -1 : 1);
+  if(G.multi){ G.multi.t += dt; if(!(G.extra && G.extra.length)){ G.multi = null; popup('FIM DO MULTIBALL', 180, b.y-50, C.cream, 1.4); Music.set(L.boss && L.boss.intro && !L.boss.dead ? 'boss' : 'play'); } }
   b.rot += (b.vx/BR)*dt*.6; spinBall(b, dt);
   b.trail.unshift([b.x,b.y]); if(b.trail.length > 7) b.trail.pop();
   // camera
@@ -1695,6 +1763,7 @@ function eyes(x, y, r){
   ctx.strokeStyle='#111'; ctx.lineWidth=r*.12; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-r*.6,y-r*.42); ctx.lineTo(x-r*.15,y-r*.25); ctx.moveTo(x+r*.6,y-r*.42); ctx.lineTo(x+r*.15,y-r*.25); ctx.stroke(); ctx.lineCap='butt';
 }
 function drawEnemy(e){
+  if(e.charge && G.mode==='play'){ const col = QLIGHT[Math.min(4, eraNow())]; glow(ctx, e.x, e.y, e.r*2.8, col, .35 + .35*Math.sin(T*30)); }
   if(e2now()) return drawEnemyE2(e);
   if(eraNow()===2) return drawEnemyE3(e);
   if(eraNow()===3) return drawEnemyE4(e);
@@ -3890,14 +3959,15 @@ const SONG4N = (() => {
   add('intro', ['D','D','Bb','A']);
   add('V', VC, HOOK); add('pre', ['Bb','C','Bb','A']); add('C', CC, C); add('brk', ['D','D','D','A']);
   add('V', VC, HOOK); add('pre', ['Bb','C','Bb','A']); add('C', CC, C);
+  add('brk', ['D','D','D','A']); add('V', VC, HOOK); add('C', CC, C);
   add('bridge', ['D','D','F','C','D','D','Bb','A']); add('solo', SC, SO); add('C', CC, C); add('end', ['D','D','D','D']);
-  return { bpm:100, bossBpm:106, swing:0, bars, soloAt: bars.findIndex(b => b.p==='bridge') };
+  return { bpm:124, bossBpm:130, swing:0, bars, soloAt: bars.findIndex(b => b.p==='bridge') };
 })();
 Music.songs[3] = SONG4N;
-Music.distM = function(){ return this._dist || (this._dist = makeDist(Snd.mus, 16, .32, 3600)); };
+Music.distM = function(){ return this._dist || (this._dist = makeDist(Snd.mus, 4, .5, 3000)); };
 Music.gtr = function(at, n, d, power, mute, v=.045){
   const dest = this.distM(), notes = power ? [n, n+7, n+12] : [n];
-  for(const nn of notes) for(const dt of [-9, 9]) this.hit({ at, f:mtof(nn), d, type:'sawtooth', v:v/notes.length*1.6, detune:dt, lp:mute ? 900 : 5200, dest, sus:!mute, pan:dt<0 ? -.45 : .45 });
+  for(const nn of notes) for(const dt of [-4, 4]) this.hit({ at, f:mtof(nn), d, type:'sawtooth', v:v/notes.length*1.3, detune:dt, lp:mute ? 1500 : 4200, dest, sus:!mute, pan:dt<0 ? -.45 : .45 });
 };
 Music.play4 = function(step, at){
   const st = this.state, sg = this.song(), bi = Math.floor(step/16) % sg.bars.length, bar = sg.bars[bi], s = step % 16;
@@ -3909,8 +3979,8 @@ Music.play4 = function(step, at){
   if(p==='intro'){ if(bi >= 2 && s%2===0) this.nz(at, .03, .03, { hp:8000, pan:.3 }); if(bar.last && s>=8) this.snare(at, .06 + (s-8)*.03); }
   else if(p==='brk'){ if(s===0) this.kick(at, .6); if(s%4===2) this.nz(at, .12, .12, { bp:900, sweep:2600, q:3 }); }
   else if(p==='bridge'){ if(s%2===0 || full) this.kick(at, .5); if(s===8) this.gsnare(at, .34); if(s%4===0) this.nz(at, .3, .05, { lp:11000, hp:4000, pan:.3 }); }
-  else if(heavy){ if([0,3,8,10].includes(s)) this.kick(at, .62); if(s===4 || s===12) this.gsnare(at, .32); if(s%2===0) this.nz(at, .04, .045, { hp:7000, pan:.3 }); }
-  else { if([0,6,10].includes(s)) this.kick(at, .55); if(s===4 || s===12) this.snare(at, .26); if(s%2===1) this.nz(at, .02, .025, { hp:8500, pan:.3 }); if(s===14) this.nz(at, .1, .04, { hp:6000, pan:.3 }); }
+  else if(heavy){ if([0,2,6,8,10,14].includes(s)) this.kick(at, .6); if(s===4 || s===12) this.gsnare(at, .32); if(s%2===0) this.nz(at, .04, .045, { hp:7000, pan:.3 }); }
+  else { if([0,3,6,10,11].includes(s)) this.kick(at, .55); if(s===4 || s===12) this.snare(at, .26); this.nz(at, .02, s%2 ? .025 : .035, { hp:8500, pan:.3 }); if(s===14) this.nz(at, .1, .04, { hp:6000, pan:.3 }); }
   if(bar.first && s===0 && full && (heavy || p==='pre')) this.crash(at, .14);
   /* DJ scratches */
   if((p==='V' || p==='brk' || p==='intro') && bar.last && (s===12 || s===14)) this.nz(at, .1, .1, { bp:600, sweep:2800, q:3, pan:-.2 });
@@ -4084,6 +4154,44 @@ function wrap(text, x, y, maxW, lh){
   if(line) ctx.fillText(line, x, yy);
 }
 
+/* ---- 3D view: the finished playfield frame is re-projected onto a tilted plane (far edge narrower and
+   foreshortened, like looking down a real cabinet), then wooden side walls follow the perspective.
+   HUD, banners and the glass layer are drawn flat afterwards. ---- */
+const T3 = { c:document.createElement('canvas'), far:.76, strips:150 };
+function tilt3D(d){
+  const W2 = cv.width, H2 = cv.height, c = T3.c;
+  if(c.width !== W2 || c.height !== H2){ c.width = W2; c.height = H2; }
+  const x = c.getContext('2d'); x.setTransform(1,0,0,1,0,0); x.globalCompositeOperation = 'copy'; x.drawImage(cv, 0, 0); x.globalCompositeOperation = 'source-over';
+  const bx = view.ox*d, bw = W*view.scale*d, sF = T3.far, L = Math.log(1/sF), n = T3.strips;
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle = '#0b0604'; ctx.fillRect(0, 0, W2, H2);
+  if(view.ox > 1){ ctx.drawImage(c, 0, 0, bx, H2, 0, 0, bx, H2); ctx.drawImage(c, bx+bw, 0, W2-bx-bw, H2, bx+bw, 0, W2-bx-bw, H2); }
+  ctx.imageSmoothingEnabled = true;
+  // screen row t (0 = far/top, 1 = near/bottom): width scale k(t) = far + (1-far)t, source row v(t) = ln(k/far)/ln(1/far)
+  const vAt = t => Math.log((sF + (1-sF)*t)/sF)/L;
+  for(let i=0;i<n;i++){
+    const t0 = i/n, t1 = (i+1)/n, v0 = vAt(t0), v1 = vAt(t1), k = sF + (1-sF)*(t0+t1)/2, dw = bw*k;
+    const sy = v0*H2, sh = Math.max(1, (v1-v0)*H2), dy = Math.floor(t0*H2), dh = Math.ceil(t1*H2) - dy + 1;
+    ctx.drawImage(c, bx, sy, bw, sh, bx + (bw-dw)/2, dy, dw, dh);
+  }
+  // depth: the far end sits a little deeper in shadow
+  const dg = ctx.createLinearGradient(0, 0, 0, H2*.55); dg.addColorStop(0, 'rgba(0,0,0,.32)'); dg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = dg; ctx.fillRect(bx, 0, bw, H2*.55);
+  // cabinet side walls in perspective
+  const inset = bw*(1-sF)/2;
+  for(const side of [-1, 1]){
+    const ex = side < 0 ? bx : bx + bw, fx = ex - side*(-inset);
+    ctx.beginPath(); ctx.moveTo(ex, 0); ctx.lineTo(side < 0 ? bx + inset : bx + bw - inset, 0); ctx.lineTo(ex, H2); ctx.closePath();
+    const wg = ctx.createLinearGradient(ex, 0, side < 0 ? bx + inset : bx + bw - inset, 0);
+    wg.addColorStop(0, '#1e1008'); wg.addColorStop(.7, '#4a2a14'); wg.addColorStop(1, '#6a3e1e');
+    ctx.fillStyle = wg; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1*d;
+    for(let g=1; g<6; g++){ const u = g/6; ctx.beginPath(); ctx.moveTo(ex + (side < 0 ? 1 : -1)*inset*u, 0); ctx.lineTo(ex, H2*(.2 + u*.8)); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(255,220,170,.4)'; ctx.lineWidth = 1.5*d; ctx.beginPath(); ctx.moveTo(side < 0 ? bx + inset : bx + bw - inset, 0); ctx.lineTo(ex, H2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.lineWidth = 3*d; ctx.beginPath(); ctx.moveTo((side < 0 ? bx + inset : bx + bw - inset) + side*2*d, 0); ctx.lineTo(ex + side*2*d, H2); ctx.stroke();
+  }
+  ctx.restore();
+}
 function draw(){
   T = G.t;
   const d = view.dpr, s = view.scale*d, vh = view.vh;
@@ -4139,12 +4247,15 @@ function draw(){
   if(!b.rail) drawBall();
   for(const r of L.rails) drawRail(r, y0, y1);
   if(b.rail){ glow(ctx,b.x,b.y,30,C.warm,.25); drawBall(); }
+  for(const eb of (G.extra||[])){ if(eb.dead) continue; if(G.multi) glow(ctx, eb.x, eb.y, 26, C.gold, .25); drawPino(eb.x, eb.y, BR, eb.rot, clamp(eb.vx/300,-1,1), 0, 1); }
+  drawShots();
   for(const e of L.enemies) if(e.alive && e.type==='fly' && vis(e.y)) drawEnemy(e);
   if(G.freeze && G.mode==='play'){ const pul = .5+.5*Math.sin(T*6); glow(ctx,b.x,b.y,34,C.gold,.35+.3*pul); ctx.strokeStyle=`rgba(255,216,96,${.5+.4*pul})`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(b.x,b.y,BR+6+pul*4,0,TAU); ctx.stroke(); }
   drawParticlesPremium();
   ctx.textAlign='center';
   for(const p of G.popups){ const a = Math.min(1,(p.life-p.t)*3); ctx.fillStyle=`rgba(${p.col},${a})`; ctx.font = p.text.length>12 ? '13px Bungee, sans-serif' : '12px Bungee, sans-serif'; ctx.fillText(p.text, p.x, p.y); }
   ctx.restore();
+  if(S.view3d !== false) tilt3D(d);
   // screen space
   ctx.setTransform(s,0,0,s,view.ox*d,0);
   drawLight(vh); glassFX(vh); if(ERA(L.pi)===2) scanlines(vh);
@@ -4267,7 +4378,7 @@ function openShop(from){
   const parts = $('o-parts'); parts.replaceChildren();
   [['gear','Engrenagem Dourada','Nudge liberado: deslize o dedo para cima para sacudir a mesa. Três vezes seguidas dá TILT.','Derrote a Jukebox Rex (fase 10) para ganhar a Peça da Era 1.'],
    ['glitter','Purpurina Cósmica','Flipper do Meio liberado: aperte os dois flippers juntos e uma palheta sobe no vão central (recarga de 8 s).','Derrote o Rei do Globo (fase 20) para ganhar a Peça da Era 2.'],
-   ['coin','Ficha Infinita','CONTINUE liberado: uma vez por fase, o Pino volta quando cair.','Derrote o Mestre do Fliperama (fase 30) para ganhar a Peça da Era 3.'],
+   ['coin','Ficha Infinita','CONTINUE liberado: uma vez por fase, a bola volta quando cair.','Derrote o Mestre do Fliperama (fase 30) para ganhar a Peça da Era 3.'],
    ['turbo','Controle Turbo','Câmera lenta liberada: deslize o dedo para baixo (recarga de 10 s).','Derrote o Chefão Poligonal (fase 40) para ganhar a Peça da Era 4.'],
    ['crown','Coroa da Torre','Todos os pontos valem em dobro.','Derrote a IA Suprema (fase 50) para ganhar a Peça da Era 5.']].forEach(([id,name,on,off]) => {
     const has = S.parts.includes(id), el = document.createElement('div'); el.className = 'part' + (has ? '' : ' off');
@@ -4301,15 +4412,15 @@ function tutorialFirstPlay(){
   if(S.tutPlay || G.mode!=='play') return;
   S.tutPlay = true; save(); G.paused = true; $('pauseBtn').hidden = true;
   tutorial([
-    { img:'flip', t:'O Pino é a bola', p:'Toque na metade esquerda ou direita da tela para mexer os flippers. No teclado: setas ou Z e M.' },
-    { img:'ramp', t:'Suba a torre', p:'Toque para lançar. Mande o Pino pelas rampas, andar por andar, até o topo, e acerte a SAÍDA.' },
+    { img:'flip', t:'Os flippers', p:'Toque na metade esquerda ou direita da tela para mexer os flippers. No teclado: setas ou Z e M.' },
+    { img:'ramp', t:'Suba a torre', p:'Toque para lançar. Mande a bola pelas rampas, andar por andar, até o topo, e acerte a SAÍDA.' },
     { img:'coin', t:'Junte fichas', p:'As moedas da mesa viram fichas, e cada 5.000 pontos também viram 1 ficha. Fichas douradas valem 10!' },
   ], () => { G.paused = false; show(null); });
 }
 function tutorialShop(){
   if(S.tutShop) return;
   S.tutShop = true; save();
-  tutorial([{ img:'shop', t:'Melhore o Pino', p:`Você já tem ${S.fichas} fichas. Na Oficina do Pino você troca fichas por upgrades: flippers mais fortes e mais longos, bolas extras, salva-bola, kickback e mais.`,
+  tutorial([{ img:'shop', t:'Melhore sua mesa', p:`Você já tem ${S.fichas} fichas. Na Oficina você troca fichas por upgrades: flippers mais fortes e mais longos, bolas extras, salva-bola, kickback e mais.`,
     buttons:[{ label:'Abrir a Oficina', main:true, fn:close => { close(); openShop('s-map'); } }, { label:'Depois', fn:close => close() }] }]);
 }
 function play(i){ S.mapEra = Math.floor(i/10); startPhase(i); G.paused = false; show(null); tutorialFirstPlay(); }
@@ -4327,7 +4438,7 @@ function finishPhase(){
   let note = '';
   if(PHASES[i].boss==='jukebox'){ if(!S.parts.includes('gear')){ S.parts.push('gear'); } note = 'Era 1 concluída! Você ganhou a Engrenagem Dourada: o Nudge está liberado (deslize o dedo para cima). A Era 2 · Anos 70 está aberta!'; }
   if(PHASES[i].boss==='globe'){ if(!S.parts.includes('glitter')){ S.parts.push('glitter'); } note = 'Era 2 concluída! Você ganhou a Purpurina Cósmica: aperte os dois flippers juntos para ativar o Flipper do Meio. A Era 3 · Anos 80 vem a seguir.'; }
-  if(PHASES[i].boss==='arcade'){ if(!S.parts.includes('coin')){ S.parts.push('coin'); } note = 'Era 3 concluída! Você ganhou a Ficha Infinita: uma vez por fase, quando o Pino cair, ele volta com CONTINUE. A Era 4 · Anos 90 vem a seguir.'; }
+  if(PHASES[i].boss==='arcade'){ if(!S.parts.includes('coin')){ S.parts.push('coin'); } note = 'Era 3 concluída! Você ganhou a Ficha Infinita: uma vez por fase, quando a bola cair, ela volta com CONTINUE. A Era 4 · Anos 90 vem a seguir.'; }
   if(PHASES[i].boss==='poly'){ if(!S.parts.includes('turbo')){ S.parts.push('turbo'); } note = 'Era 4 concluída! Você ganhou o Controle Turbo: deslize o dedo para baixo para ativar a câmera lenta (recarga de 10 s). A Era 5 · Futuro vem a seguir.'; }
   if(PHASES[i].boss==='ai'){ if(!S.parts.includes('crown')){ S.parts.push('crown'); } note = 'VOCÊ ZEROU O TILT TOWER! Você ganhou a Coroa da Torre: todos os pontos valem em dobro, para sempre. Volte às fases para buscar as medalhas de ouro.'; }
   eraLabel();
@@ -4375,6 +4486,9 @@ function setQuality(high){
   resize();
 }
 $('p-quality').onclick = () => setQuality(!QUALITY.high);
+const view3dLabel = () => { $('p-3d').textContent = 'Visão 3D: ' + (S.view3d !== false ? 'ligada' : 'desligada'); };
+$('p-3d').onclick = () => { S.view3d = S.view3d === false; save(); view3dLabel(); };
+view3dLabel();
 $('m-back').onclick = () => show('s-title');
 $('m-shop').onclick = () => openShop('s-map');
 $('o-back').onclick = () => { if(shopReturn==='s-map') openMap(); else show(shopReturn); };
@@ -4414,5 +4528,7 @@ function loop(now){
 }
 const boot = () => { if(G.L) renderStatic(G.L); requestAnimationFrame(loop); };
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else boot();
+// installable PWA: offline play once loaded from the web
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/claude\.ai|claudeusercontent/.test(location.hostname)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
 </script>
