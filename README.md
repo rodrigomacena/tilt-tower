@@ -1,6 +1,6 @@
 # Tilt Tower
 
-Pinball vertical para celular em pé. Suba a torre andar por andar, pelas rampas, até a saída.
+Pinball vertical para celular em pé. Jogue em https://tilt-tower.vercel.app/ Suba a torre andar por andar, pelas rampas, até a saída.
 
 - 50 fases em 5 eras (anos 60, 70, 80, 90 e futuro), com 2 sub-chefes e 1 chefe por era
 - Oficina: troque fichas por melhorias
