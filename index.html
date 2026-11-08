@@ -2003,6 +2003,7 @@ function drawBoss(B){
   if(E45_BOSSES.includes(B.type)) return drawBossE45(B);
   if(art60() && drawBossArt60(B)) return;
   if(eraNow() === 1 && artSet(1) && drawBossArt70(B)) return;
+  if(eraNow() === 2 && artSet(2) && drawBossArt80(B)) return;
   if(B.type==='tape') return drawTapeBoss(B); if(B.type==='robot') return drawRobot(B); if(B.type==='arcade') return drawArcadeBoss(B);
   if(B.type==='needle') return drawNeedle(B); if(B.type==='lava') return drawLava(B); if(B.type==='globe') return drawGlobe(B);
   const f = B.f, fl = B.flash;
@@ -3964,7 +3965,7 @@ function makeDist(dest, drive, gain, lpf){
   pre.connect(sh); sh.connect(hp); hp.connect(mid); mid.connect(lp); lp.connect(out); out.connect(dest);
   return pre;
 }
-const distSfx = () => Snd.distS || (Snd.distS = makeDist(Snd.sfx, 10, .5, 4200));
+const distSfx = () => !Snd.ac ? null : (Snd.distS || (Snd.distS = makeDist(Snd.sfx, 10, .5, 4200)));
 const sv = o => Snd.voice(Object.assign({ pan:Snd.pan() }, o));
 const sn = (d, v, lp, hp, delay, o) => Snd.noise(d, v, lp, hp, delay||0, o||{});
 const sChord = (fs, o) => fs.forEach((f,i) => sv(Object.assign({}, o, { f, delay:(o.delay||0) + i*(o.stag||0) })));
@@ -4373,6 +4374,7 @@ function loadArtSet(era, folder, names){
 }
 loadArtSet(0, 'era1', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','rele.png','pendulo.png','jukebox.png']);
 loadArtSet(1, 'era2', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','prato.png','braco.png','lampada.png','globo.png']);
+loadArtSet(2, 'era3', ['fundo.jpg','bola.png','serra.png','pistao.png','mariposa.png','bumper.png','flipper.png','fita.png','robo.png','fliperama.png']);
 const artSet = e => { const st = ART.sets[e]; return st && st.ok ? st : null; };
 const artOn = () => !!artSet(eraNow());
 const artOnL = L => !!artSet(ERA(L.pi));
@@ -4384,7 +4386,7 @@ function drawFloorArt60(x, L, f){
   const im = artSet(ERA(L.pi)).img.fundo, sc = FH/im.height, w = im.width*sc;
   x.drawImage(im, (W - w)/2, 0, w, FH);
   x.fillStyle = 'rgba(217,68,58,.16)'; x.beginPath(); x.moveTo(150,668); x.lineTo(210,668); x.lineTo(204,700); x.lineTo(156,700); x.fill();
-  if(f===0){ x.globalAlpha = .14; x.fillStyle = ERA(L.pi)===1 ? '#2a1430' : '#2a4a42'; x.font = '26px "Bungee Inline", Bungee, sans-serif'; x.textAlign = 'center'; x.fillText('TILT TOWER', 180, 470); x.globalAlpha = 1; }
+  if(f===0){ x.globalAlpha = .14; x.fillStyle = ['#2a4a42','#2a1430','#0c1030'][ERA(L.pi)] || '#2a4a42'; x.font = '26px "Bungee Inline", Bungee, sans-serif'; x.textAlign = 'center'; x.fillText('TILT TOWER', 180, 470); x.globalAlpha = 1; }
 }
 function sprite(im, cx, cy, w, h, rot){
   ctx.save(); ctx.translate(cx, cy); if(rot) ctx.rotate(rot); ctx.drawImage(im, -w/2, -h/2, w, h); ctx.restore();
@@ -4506,6 +4508,46 @@ function drawBossArt70(B){
     }
     ctx.globalAlpha = 1;
     for(const sp of B.sparks){ glow(ctx, sp.x, sp.y, 22, C.gold, .9); glint(sp.x, sp.y, 6, .9); }
+    return true;
+  }
+  return false;
+}
+function drawBossArt80(B){
+  const f = B.f, fl = B.flash, A = artSet(2).img;
+  if(B.type==='tape'){
+    if(B.dead && B.deadT > 1.4) ctx.globalAlpha = Math.max(0, 1-(B.deadT-1.4));
+    const im = A.fita, w = 230, h = w*im.height/im.width, top = B.hubs[0].y - h*.33;
+    glow(ctx, 180, top + h*.4, 160, NEON[0], .14 + fl*.4);
+    shadowBlob(190, top + h*.45 + 12, w*.55, h*.5, 0, .55);
+    ctx.drawImage(im, 180 - w/2, top, w, h);
+    B.hubs.forEach((hb, i) => { if(i === B.open && !B.dead){ glow(ctx, hb.x, hb.y, 46, NEON[0], .55 + .3*Math.sin(T*8)); ctx.strokeStyle = `rgba(${NEON[0]},.95)`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(hb.x, hb.y, 20 + 3*Math.sin(T*8), 0, TAU); ctx.stroke(); } });
+    ctx.globalAlpha = 1;
+    for(const d of B.loops){ ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(d.ph); ctx.strokeStyle = '#7a4a2a'; ctx.lineWidth = 2.4; ctx.beginPath(); for(let k=0;k<=24;k++){ const a = k/24*TAU*2, rr = d.r*(.6 + .4*Math.sin(a*1.5 + d.ph*3)); ctx.lineTo(Math.cos(a)*rr, Math.sin(a)*rr); } ctx.stroke(); ctx.restore(); glow(ctx, d.x, d.y, d.r*2, '200,140,90', .15); }
+    return true;
+  }
+  if(B.type==='robot'){
+    let rx = B.rx, ry = B.ry;
+    if(B.dead){ ry += B.deadT*B.deadT*420; if(B.deadT > 1.6) ctx.globalAlpha = Math.max(0, 1-(B.deadT-1.6)); }
+    const freeze = B.state==='freeze' && !B.dead, im = A.robo, h = 76, w = h*im.width/im.height;
+    shadowBlob(rx + 8, ry + 16, 34, 18, 0, .55);
+    glow(ctx, rx, ry, 80, freeze ? NEON[2] : NEON[1], .2 + fl*.5 + (freeze ? .2 : 0));
+    sprite(im, rx, ry, w, h, freeze || B.dead ? 0 : B.spin);
+    if(freeze){ ctx.strokeStyle = `rgba(${NEON[2]},${.5 + .4*Math.sin(T*12)})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(rx, ry, B.rr + 10, 0, TAU); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    return true;
+  }
+  if(B.type==='arcade'){
+    if(B.dead && B.deadT > 1.4) ctx.globalAlpha = Math.max(0, 1-(B.deadT-1.4));
+    const im = A.fliperama, h = 196, w = h*im.width/im.height, top = Y(f,4);
+    glow(ctx, 180, Y(f,100), 170, NEON[0], .15 + fl*.4);
+    shadowBlob(190, Y(f,112), w*.6, h*.55, 0, .55);
+    ctx.drawImage(im, 180 - w/2, top, w, h);
+    if(fl > .3){ ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fl*.5; ctx.drawImage(im, 180 - w/2, top, w, h); ctx.restore(); }
+    const blink = Math.sin(T*5) > 0 && !B.dead;
+    ctx.fillStyle = blink ? `rgb(${NEON[2]})` : 'rgba(255,220,80,.25)'; ctx.font = '700 7px "Chakra Petch", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('INSERT COIN', 180, Y(f,206));
+    ctx.globalAlpha = 1;
+    for(const k of B.bricks){ if(!k.alive) continue; const col = NEON[k.row]; ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fillRect(k.x-8+2, k.y-8+3, 16, 16); ctx.fillStyle = `rgba(${col},.85)`; ctx.fillRect(k.x-8, k.y-8, 16, 16); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect(k.x-8, k.y-8, 16, 3); ctx.strokeStyle = 'rgba(0,0,0,.4)'; ctx.lineWidth = 1; ctx.strokeRect(k.x-7.5, k.y-7.5, 15, 15); glow(ctx, k.x, k.y, 16, col, .12); }
+    for(const sp of B.sparks){ glow(ctx, sp.x, sp.y, 20, NEON[3], .8); ctx.fillStyle = `rgb(${NEON[3]})`; ctx.fillRect(sp.x-4, sp.y-4, 8, 8); ctx.fillStyle = `rgba(${NEON[3]},.4)`; ctx.fillRect(sp.x-3-sp.vx*.03, sp.y-3-sp.vy*.03, 6, 6); }
     return true;
   }
   return false;
