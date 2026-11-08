@@ -1,0 +1,421 @@
+<title>Tilt Tower Pinballvania</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&family=Chakra+Petch:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: landscape phone hero (live room), control strip, Zone 1 map, ability cards, rules, first-build scope, approval list */
+:root{
+  --bg:#0b0604; --panel:#1c0f06; --panel2:#2a170a; --line:#5a3c1e; --ink:#f6ecd4; --mute:#cdb68a;
+  --amber:#ffb347; --teal:#6fc7b8; --red:#e0483a; --gold:#ffd860; --cream:#f3e6c4;
+  --f-display:"Bungee", "Impact", system-ui, sans-serif;
+  --f-inline:"Bungee Inline", "Bungee", "Impact", sans-serif;
+  --f-body:"Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:radial-gradient(1100px 520px at 70% -10%, #3a1c08 0%, transparent 60%),radial-gradient(800px 500px at 0% 30%, #0f2e2a 0%, transparent 60%),var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:36px 80px;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{text-wrap:balance;margin:0} p{margin:0}
+.eyebrow{font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal)}
+.top{display:flex;flex-direction:column;gap:14px}
+.logo{font-family:var(--f-inline);font-weight:400;font-size:clamp(44px,8vw,86px);line-height:.9;color:var(--amber);text-shadow:0 0 22px rgba(255,179,71,.5),4px 4px 0 #8a2a12}
+.logo span{color:var(--cream);text-shadow:0 0 18px rgba(111,199,184,.45),4px 4px 0 #2a6a60}
+.top p{max-width:66ch;color:var(--mute);font-size:17px}
+.top p b{color:var(--ink)}
+.phone{width:100%;max-width:860px;margin:0 auto;padding:12px;border-radius:40px;background:linear-gradient(160deg,#3a2a1c,#120a04 40%,#2a1c10);box-shadow:0 0 0 1px #5a4028,0 40px 110px -20px rgba(255,170,70,.35)}
+.phone canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:28px;background:#000;max-width:100%}
+.cap{max-width:860px;margin:10px auto 0;color:var(--mute);font-size:14px;text-align:center}
+section{display:flex;flex-direction:column;gap:22px}
+section > h2{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,3.4vw,36px)}
+section > p.lead{color:var(--mute);max-width:70ch}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ctl{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.ctl b{font-family:var(--f-display);font-weight:400;font-size:15px;color:var(--amber)}
+.ctl span{font-size:14px;color:var(--mute)}
+.mapbox{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;overflow-x:auto}
+.mapbox svg{display:block;min-width:760px;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13px;color:var(--mute)}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.route{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;counter-reset:s;padding:0;margin:0;list-style:none}
+.route li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;font-size:14px;color:var(--mute)}
+.route li::before{counter-increment:s;content:counter(s);font-family:var(--f-display);color:var(--amber);font-size:16px}
+.route li b{color:var(--ink)}
+.abil{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card canvas{display:block;width:100%;aspect-ratio:8/5;max-width:100%}
+.card div{padding:12px 14px 16px;display:flex;flex-direction:column;gap:4px}
+.card small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.card b{font-family:var(--f-display);font-weight:400;font-size:16px}
+.card span{font-size:13px;color:var(--mute)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rule{border-left:3px solid var(--amber);background:var(--panel);border-radius:0 14px 14px 0;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.rule b{font-weight:700}
+.rule span{font-size:14px;color:var(--mute)}
+.scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.scope div{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--mute)}
+.scope b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.ask{background:linear-gradient(180deg,#2a170a,#1c0f06);border:1px solid #7a5028;border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:14px}
+.ask h2{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,3vw,30px)}
+.ask ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.ask li{display:grid;grid-template-columns:24px 1fr;gap:10px}
+.ask li::before{content:"";width:14px;height:14px;margin-top:5px;border-radius:50%;border:2px solid var(--amber)}
+.ask li span{color:var(--mute)}
+@media (max-width:860px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.rules,.scope,.route{grid-template-columns:1fr}}
+@media (max-width:440px){.controls{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Conceito visual v3 · para aprovação</div>
+    <h1 class="logo">Tilt Tower <span>Pinballvania</span></h1>
+    <p>O Tilt Tower vira um <b>metroidvania em que toda sala é uma mesa de pinball</b>. O celular fica deitado, o Pino continua sendo a bola e o jogador continua controlando só os flippers. O mundo é uma máquina gigante com cerca de 60 salas em 5 zonas, com portas trancadas, chaves, chefes, habilidades que abrem caminhos novos, tiro e loja.</p>
+  </header>
+
+  <div>
+    <div class="phone"><canvas id="room" aria-label="Sala de exemplo animada: Pino atirando em mariposas entre bumpers e flippers"></canvas></div>
+    <p class="cap">Sala 1-4 · Porta Vermelha. O Pino atira em quem estiver no caminho, a saída da direita está trancada e a canaleta da esquerda leva de volta à sala 1-3.</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Controle</div>
+    <h2>Continua sendo só flipper</h2>
+    <div class="controls">
+      <div class="ctl"><b>Metade esquerda</b><span>Flippers do lado esquerdo da sala (de chão, de parede ou de teto).</span></div>
+      <div class="ctl"><b>Metade direita</b><span>Flippers do lado direito.</span></div>
+      <div class="ctl"><b>As duas juntas</b><span>Habilidade equipada: tiro do Canhão, Ímã, Bola de Chumbo, Multiball.</span></div>
+      <div class="ctl"><b>Deslizar para cima</b><span>Nudge: um empurrãozinho no ar para atravessar vãos.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Mapa</div>
+    <h2>Zona 1 · Salão (anos 60)</h2>
+    <p class="lead">A primeira zona tem 12 salas, mais uma secreta e a saída para a Zona 2. Cada retângulo é uma mesa. As linhas são as canaletas e os tubos que ligam uma sala à outra.</p>
+    <div class="mapbox"><svg id="map" viewBox="0 0 860 330" role="img" aria-label="Mapa da Zona 1 com 14 salas"></svg></div>
+    <div class="legend">
+      <span><i style="background:#3a2412;border:1px solid #cdb68a"></i>Sala comum</span>
+      <span><i style="background:#6fc7b8"></i>Trava de Bola (salvar)</span>
+      <span><i style="background:#ffd860"></i>Oficina (loja)</span>
+      <span><i style="background:#e0483a"></i>Chave ou porta vermelha</span>
+      <span><i style="background:#c0582a"></i>Sub-chefe</span>
+      <span><i style="background:#8a1a12;border:1px solid #ff9a7a"></i>Chefe</span>
+      <span><i style="background:transparent;border:2px dashed #6fc7b8"></i>Precisa de habilidade</span>
+    </div>
+    <ol class="route">
+      <li><span>Você começa na <b>Entrada</b> e atravessa o <b>Corredor dos Bumpers</b>.</span></li>
+      <li><span>No <b>Vão do Salão</b> há uma passagem lá no alto que ainda não dá para alcançar.</span></li>
+      <li><span>A <b>Porta Vermelha</b> está trancada. Você desce pelo buraco do Vão até o <b>Porão dos Alvos</b>.</span></li>
+      <li><span>Derrubar todos os alvos abre o <b>Cofre Vermelho</b>, onde está a <b>Ficha Mestra vermelha</b>.</span></li>
+      <li><span>A <b>Trava de Bola</b> salva o jogo e devolve você à Entrada por um atalho.</span></li>
+      <li><span>Com a ficha, a porta abre: <b>Relé Tagarela</b>, depois a <b>Oficina</b>.</span></li>
+      <li><span>O <b>Pêndulo do Tilt</b> dá o <b>Canhão</b>. O tiro abre a sala secreta, atrás de um vidro.</span></li>
+      <li><span>A <b>Jukebox Rex</b> dá o <b>Nudge</b>. Agora você volta ao Vão, alcança a passagem e segue para a Discoteca.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="eyebrow">Habilidades</div>
+    <h2>Cada chefe muda a física do Pino</h2>
+    <p class="lead">Uma habilidade nova por zona. Todas servem para lutar e também para abrir caminhos em salas que você já visitou.</p>
+    <div class="abil" id="abil"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Regras</div>
+    <h2>Como o pinball vira metroidvania</h2>
+    <div class="rules">
+      <div class="rule"><b>Casco</b><span>O Pino tem 6 pontos de vida. Tiros e inimigos tiram 1. Cair no DRAIN de uma sala tira 2 e devolve o Pino à entrada da sala.</span></div>
+      <div class="rule"><b>Trava de Bola</b><span>Prender o Pino na trava salva o jogo e recupera o Casco. Com o Casco zerado, você volta à última trava com tudo o que conquistou.</span></div>
+      <div class="rule"><b>Fichas Mestras</b><span>Chaves coloridas que abrem os portões da mesma cor. Cada zona tem pelo menos uma.</span></div>
+      <div class="rule"><b>Canhão</b><span>Cada batida de flipper dispara na direção do movimento. Upgrades: tiro triplo, teleguiado e perfurante.</span></div>
+      <div class="rule"><b>Oficina</b><span>Fichas compram Casco extra, flippers mais fortes, tiros melhores e o ímã de fichas.</span></div>
+      <div class="rule"><b>Mapa</b><span>Mostra as salas visitadas, os portões trancados e a % de exploração. As salas secretas dão fichas douradas.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Evolução</div>
+    <h2>Nada volta ao zero</h2>
+    <p class="lead">Morrer custa só o caminho de volta. Tudo o que o jogador conquista fica guardado para sempre, e cada partida deixa a máquina mais aberta do que estava.</p>
+    <div class="rules">
+      <div class="rule"><b>Portas e portões</b><span>Uma vez aberta, uma porta fica aberta. Alvos derrubados que abrem passagens não voltam a subir.</span></div>
+      <div class="rule"><b>Atalhos</b><span>Vencer uma sala libera canaletas de volta para a Trava mais próxima, então o caminho fica mais curto a cada vez.</span></div>
+      <div class="rule"><b>Itens e habilidades</b><span>Fichas Mestras, peças de chefe e upgrades da Oficina nunca se perdem.</span></div>
+      <div class="rule"><b>Fichas</b><span>As fichas que você pegou ficam com você mesmo se o Casco zerar.</span></div>
+      <div class="rule"><b>Chefes e salas</b><span>Chefe vencido não volta. Salas já limpas guardam o que foi coletado e o mapa revelado.</span></div>
+      <div class="rule"><b>Casco que cresce</b><span>Fragmentos de Casco escondidos aumentam a vida máxima. Juntar 4 dá um ponto a mais.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Primeira entrega</div>
+    <h2>Fatia vertical: a Zona 1 completa</h2>
+    <div class="scope">
+      <div><b>Mundo</b>12 salas no celular deitado, 1 sala secreta, canaletas entre as salas, mapa com % de exploração.</div>
+      <div><b>Progressão</b>1 porta trancada com Ficha Mestra, 2 Travas de Bola, Oficina com 6 upgrades.</div>
+      <div><b>Combate</b>Canhão com tiro, 3 tipos de inimigo que atiram de volta, Casco de 6 pontos.</div>
+      <div><b>Chefes</b>Relé Tagarela e Pêndulo do Tilt (sub-chefes) e Jukebox Rex (chefe), adaptados para salas largas.</div>
+    </div>
+  </section>
+
+  <section class="ask">
+    <div class="eyebrow">Para você aprovar</div>
+    <h2>O que eu preciso que você confirme</h2>
+    <ul>
+      <li><div><b>Sala de exemplo.</b> <span>Celular deitado, flippers de chão e de parede, saídas pelas bordas e o visual dos anos 60.</span></div></li>
+      <li><div><b>Mapa da Zona 1.</b> <span>12 salas, a porta vermelha com chave e a passagem que só abre depois do chefe.</span></div></li>
+      <li><div><b>Evolução permanente.</b> <span>Morrer só leva o Pino de volta à última Trava de Bola. Portas, atalhos, itens, fichas, chefes vencidos e mapa ficam guardados.</span></div></li>
+      <li><div><b>Habilidades e ordem.</b> <span>Canhão e Nudge na Zona 1; Ímã, Bola de Chumbo e Multiball nas zonas seguintes.</span></div></li>
+      <li><div><b>Versão vertical atual.</b> <span>Sugiro manter a versão vertical publicada como está e fazer o Pinballvania como jogo novo, aproveitando a física e os desenhos.</span></div></li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+const DPR = Math.min(2, window.devicePixelRatio || 1), TAU = Math.PI*2;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rnd = i => { const s = Math.sin(i*127.1+311.7)*43758.5453; return s-Math.floor(s); };
+const lin = (c,x0,y0,x1,y1,st) => { const g = c.createLinearGradient(x0,y0,x1,y1); st.forEach((s,i)=>g.addColorStop(i/(st.length-1),s)); return g; };
+const glowCache = {};
+function glow(c,x,y,r,col,a){
+  if(a<=.01) return;
+  if(!glowCache[col]){ const k = document.createElement('canvas'); k.width = k.height = 64; const g = k.getContext('2d'); const gr = g.createRadialGradient(32,32,0,32,32,32); gr.addColorStop(0,`rgba(${col},1)`); gr.addColorStop(.35,`rgba(${col},.4)`); gr.addColorStop(1,`rgba(${col},0)`); g.fillStyle = gr; g.fillRect(0,0,64,64); glowCache[col] = k; }
+  const o = c.globalCompositeOperation; c.globalCompositeOperation = 'lighter'; c.globalAlpha = Math.min(1,a); c.drawImage(glowCache[col],x-r,y-r,r*2,r*2); c.globalAlpha = 1; c.globalCompositeOperation = o;
+}
+const C = { warm:'255,205,140', amber:'255,170,80', red:'255,80,55', teal:'111,199,184', gold:'255,200,90', white:'255,255,255', blue:'140,200,255' };
+let T = 0;
+
+function table(c,w,h,seed){
+  c.fillStyle = lin(c,0,0,0,h,['#1d4440','#122b29','#08171a']); c.fillRect(0,0,w,h);
+  for(let i=0;i<Math.round(w*h/9000);i++){
+    const x = rnd(seed+i)*w, y = rnd(seed+i+50)*h, s = 6+rnd(seed+i+9)*16;
+    c.globalAlpha = .06+rnd(seed+i+3)*.06; c.strokeStyle = '#f3e6c4'; c.fillStyle = '#f3e6c4'; c.lineWidth = 1.3;
+    if(i%2){ c.beginPath(); for(let k=0;k<8;k++){ const a=k/8*TAU; c.moveTo(x+Math.cos(a)*s*.25,y+Math.sin(a)*s*.25); c.lineTo(x+Math.cos(a)*s,y+Math.sin(a)*s);} c.stroke(); }
+    else { c.save(); c.translate(x,y); c.rotate(rnd(seed+i+7)*TAU); c.beginPath(); c.moveTo(-s,0); c.quadraticCurveTo(0,-s*1.1,s,0); c.quadraticCurveTo(0,-s*.45,-s,0); c.fill(); c.restore(); }
+  }
+  c.globalAlpha = 1;
+}
+function beams(c,w,h){
+  c.save(); c.globalCompositeOperation = 'lighter';
+  [{x:.28,a:.15,sp:.3,k:1},{x:.8,a:-.12,sp:.16,k:.5}].forEach(b=>{
+    const x0 = b.x*w, L = h*1.5, a = b.a+Math.sin(T*.3+b.x)*.04;
+    const g = c.createLinearGradient(x0,0,x0+Math.sin(a)*L,Math.cos(a)*L); g.addColorStop(0,`rgba(255,214,160,${.28*b.k})`); g.addColorStop(1,'rgba(255,214,160,0)');
+    c.fillStyle = g; c.beginPath(); c.moveTo(x0-5,-10); c.lineTo(x0+Math.sin(a-b.sp)*L,Math.cos(a-b.sp)*L); c.lineTo(x0+Math.sin(a+b.sp)*L,Math.cos(a+b.sp)*L); c.lineTo(x0+5,-10); c.fill();
+  });
+  for(let i=0;i<50;i++){ const y = ((rnd(i)+T*(.01+rnd(i+9)*.015))%1)*h, x = rnd(i+3)*w*.55+Math.sin(T+i)*6; c.fillStyle = `rgba(255,236,205,${.25+.35*Math.sin(T*2+i)**2})`; c.fillRect(x,y,1.4,1.4); }
+  c.restore();
+  const v = c.createRadialGradient(w/2,h/2,h*.3,w/2,h/2,w*.62); v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(20,8,0,.6)'); c.fillStyle = v; c.fillRect(0,0,w,h);
+}
+function wall(c,pts,wd=4.5){
+  c.lineCap='round'; c.lineJoin='round';
+  c.strokeStyle='rgba(0,0,0,.45)'; c.lineWidth=wd+1.5; c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(p[0]+3,p[1]+4):c.moveTo(p[0]+3,p[1]+4)); c.stroke();
+  c.strokeStyle='#cdb47a'; c.lineWidth=wd; c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p)); c.stroke();
+  c.strokeStyle='rgba(255,248,224,.85)'; c.lineWidth=1.2; c.beginPath(); pts.forEach((p,i)=>i?c.lineTo(p[0]-.8,p[1]-.8):c.moveTo(p[0]-.8,p[1]-.8)); c.stroke();
+}
+function bumper(c,x,y,r,f){
+  glow(c,x,y,r*3.2,C.warm,.2+f*.5);
+  c.fillStyle='rgba(0,0,0,.45)'; c.beginPath(); c.ellipse(x+4,y+6,r,r*.95,0,0,TAU); c.fill();
+  const sk = c.createRadialGradient(x-r*.3,y-r*.3,1,x,y,r); sk.addColorStop(0,'#fff7e0'); sk.addColorStop(.5,'#e8d9b0'); sk.addColorStop(1,'#8a7a54'); c.fillStyle = sk; c.beginPath(); c.arc(x,y,r,0,TAU); c.fill();
+  c.strokeStyle='#e9eefa'; c.lineWidth=2; c.beginPath(); c.arc(x,y,r*.86,0,TAU); c.stroke();
+  const cg = c.createRadialGradient(x-r*.25,y-r*.3,1,x,y,r*.7); cg.addColorStop(0,f>.3?'#fff':'#ff8a7a'); cg.addColorStop(.45,'#d9443a'); cg.addColorStop(1,'#5a1010'); c.fillStyle = cg; c.beginPath(); c.arc(x,y,r*.68,0,TAU); c.fill();
+  c.fillStyle='rgba(255,240,200,.9)'; c.font=`700 ${Math.round(r*.42)}px "Chakra Petch", sans-serif`; c.textAlign='center'; c.textBaseline='middle'; c.fillText('100',x,y+1); c.textBaseline='alphabetic';
+  if(f>.05){ glow(c,x,y,r*1.8,C.white,f*.5); c.strokeStyle=`rgba(255,220,180,${f})`; c.lineWidth=2; c.beginPath(); c.arc(x,y,r*(1.1+(1-f)*.9),0,TAU); c.stroke(); }
+}
+function flipper(c,px,py,len,a,lit){
+  const dx = Math.cos(a), dy = Math.sin(a), tx = px+dx*len, ty = py+dy*len, r1 = 10, r2 = 5, nx = -dy, ny = dx;
+  const path = (o=0) => { c.beginPath(); c.moveTo(px+nx*r1+o,py+ny*r1+o); c.lineTo(tx+nx*r2+o,ty+ny*r2+o); c.arc(tx+o,ty+o,r2,a+Math.PI/2,a-Math.PI/2,true); c.lineTo(px-nx*r1+o,py-ny*r1+o); c.arc(px+o,py+o,r1,a-Math.PI/2,a+Math.PI/2,true); c.closePath(); };
+  glow(c,(px+tx)/2,(py+ty)/2,len*.8,C.warm,.12+lit*.4);
+  c.fillStyle='rgba(0,0,0,.45)'; path(4); c.fill();
+  c.fillStyle = lin(c,px+nx*r1,py+ny*r1,px-nx*r1,py-ny*r1,['#fff8e6','#ece0c2','#9c8f6c']); path(); c.fill();
+  c.strokeStyle='#d02a20'; c.lineWidth=2.4; path(); c.stroke();
+  c.fillStyle='#c9a24a'; c.beginPath(); c.arc(px,py,3.6,0,TAU); c.fill();
+  if(lit>.05){ c.save(); c.globalCompositeOperation='lighter'; c.strokeStyle=`rgba(255,255,255,${lit*.8})`; c.lineWidth=3; path(); c.stroke(); c.restore(); }
+}
+function sling(c,A,B,Cc,f){
+  c.fillStyle = lin(c,A[0],A[1],Cc[0],Cc[1],['rgba(111,199,184,.85)','rgba(243,230,196,.8)']); c.beginPath(); c.moveTo(...A); c.lineTo(...B); c.lineTo(...Cc); c.closePath(); c.fill();
+  c.strokeStyle='#e9d7a0'; c.lineWidth=1.4; c.stroke();
+  c.strokeStyle = f>.2?'#fff':'#f2efe6'; c.lineWidth=4+f*2; c.lineCap='round'; c.beginPath(); c.moveTo(...A); c.lineTo(...Cc); c.stroke();
+  if(f>.05) glow(c,(A[0]+Cc[0])/2,(A[1]+Cc[1])/2,40,C.teal,f*.6);
+}
+function pino(c,x,y,r,rot,extra){
+  glow(c,x,y,r*3,C.warm,.3);
+  c.save(); c.fillStyle='rgba(0,0,0,.4)'; c.beginPath(); c.ellipse(x+4,y+6,r*.95,r*.8,0,0,TAU); c.fill(); c.translate(x,y);
+  const g = c.createRadialGradient(-r*.35,-r*.45,r*.1,0,0,r); g.addColorStop(0,'#fff0c0'); g.addColorStop(.3,'#d8a64a'); g.addColorStop(.8,'#8a5a1c'); g.addColorStop(1,'#3c2508');
+  c.fillStyle = extra==='lead' ? (()=>{ const q = c.createRadialGradient(-r*.35,-r*.45,r*.1,0,0,r); q.addColorStop(0,'#c9ccd6'); q.addColorStop(.4,'#5a5f6e'); q.addColorStop(1,'#14161c'); return q; })() : g;
+  c.beginPath(); c.arc(0,0,r,0,TAU); c.fill();
+  c.save(); c.beginPath(); c.arc(0,0,r,0,TAU); c.clip();
+  c.strokeStyle='rgba(60,30,6,.55)'; c.lineWidth=1; c.beginPath(); c.moveTo(-r,r*.32); c.quadraticCurveTo(0,r*.55,r,r*.32); c.stroke();
+  for(let k=0;k<8;k++){ const a = rot+k/8*TAU, cz = Math.cos(a); if(cz<0) continue; c.fillStyle=`rgba(255,226,160,${.4+cz*.6})`; c.beginPath(); c.arc(Math.sin(a)*r*.86, r*.42, 1+cz*.6, 0, TAU); c.fill(); }
+  c.restore();
+  c.fillStyle='#2a1a08'; c.beginPath(); c.arc(0,-r*.1,r*.42,0,TAU); c.fill(); c.strokeStyle='#e9d7a0'; c.lineWidth=1.4; c.stroke();
+  glow(c,0,-r*.1,r*.6,'255,150,60',.8+.2*Math.sin(T*23));
+  c.fillStyle='rgba(255,255,255,.8)'; c.beginPath(); c.ellipse(-r*.42,-r*.6,r*.2,r*.1,-.6,0,TAU); c.fill();
+  c.restore();
+}
+function moth(c,x,y,r,flash){
+  const flap = Math.sin(T*16);
+  glow(c,x,y,r*2.4,flash>0?C.white:C.amber,.3+flash*.5);
+  for(const sx of [-1,1]){ c.save(); c.translate(x+sx*r*.6,y); c.scale(sx,1); c.rotate(-.3-flap*.4); c.fillStyle='rgba(255,230,190,.55)'; c.strokeStyle='rgba(200,160,110,.8)'; c.lineWidth=1.1; c.beginPath(); c.ellipse(r*.8,-r*.1,r*.85,r*.45,-.2,0,TAU); c.fill(); c.stroke(); c.restore(); }
+  c.fillStyle='#9aa3b8'; c.fillRect(x-r*.35,y+r*.55,r*.7,r*.4);
+  c.fillStyle='rgba(255,240,200,.45)'; c.beginPath(); c.arc(x,y,r*.78,0,TAU); c.fill();
+  glow(c,x,y,r*1.5,'255,200,120',.6+.3*Math.sin(T*20));
+  c.fillStyle='#fff'; for(const ex of [-.3,.3]){ c.beginPath(); c.ellipse(x+ex*r,y,r*.18,r*.24,0,0,TAU); c.fill(); }
+  c.fillStyle='#111'; for(const ex of [-.3,.3]){ c.beginPath(); c.arc(x+ex*r+.6,y+1,r*.09,0,TAU); c.fill(); }
+  c.strokeStyle='#111'; c.lineWidth=1.4; c.beginPath(); c.moveTo(x-r*.5,y-r*.36); c.lineTo(x-r*.12,y-r*.22); c.moveTo(x+r*.5,y-r*.36); c.lineTo(x+r*.12,y-r*.22); c.stroke();
+}
+function coin(c,x,y,ph,gold){
+  const s = Math.abs(Math.cos(T*3+ph)), r = gold?8:6;
+  glow(c,x,y,gold?26:14,C.gold,gold?.6:.4);
+  c.fillStyle = gold?'#ffd860':'#d8a64a'; c.beginPath(); c.ellipse(x,y,r*s+1,r,0,0,TAU); c.fill();
+  c.fillStyle='#fff3c8'; c.beginPath(); c.ellipse(x-1.4*s,y-2,2*s+.3,2,0,0,TAU); c.fill();
+}
+
+/* ================= ROOM SCENE ================= */
+const RW = 640, RH = 360;
+const room = document.getElementById('room'); room.width = RW*DPR; room.height = RH*DPR; const rc = room.getContext('2d');
+const K = [[0,350,312],[0.9,350,312],[1.05,330,250],[1.22,306,138],[1.32,284,126],[1.55,215,96],[1.8,150,112],[2.0,112,152],[2.3,96,210],[2.6,140,262],[2.85,210,294],[3.1,268,308],[3.3,290,312],[3.5,290,312],[3.62,318,250],[3.85,405,180],[4.05,398,240],[4.25,372,290],[4.4,350,312]];
+const CYC = 4.4;
+function pathAt(t){ t = ((t%CYC)+CYC)%CYC; for(let i=0;i<K.length-1;i++){ if(t<=K[i+1][0]){ const a=K[i], b=K[i+1], u=(t-a[0])/((b[0]-a[0])||1); return [a[1]+(b[1]-a[1])*u, a[2]+(b[2]-a[2])*u]; } } return [K[0][1],K[0][2]]; }
+const flipCurve = (c,s) => c>s && c<s+.5 ? (c<s+.07 ? (c-s)/.07 : c<s+.3 ? 1 : 1-(c-s-.3)/.2) : 0;
+const bolts = [], shots = [], sparks = [];
+let lastBolt = 0, lastShot = [0,.6], prevT = 0;
+const moths = [{cx:150,cy:70,rx:40,ry:12,ph:0,fl:0},{cx:500,cy:100,rx:60,ry:18,ph:2,fl:0}];
+const coins = [[200,60,0],[240,48,1],[280,44,2],[480,200,3],[520,200,4]];
+const bump = [[306,112,18],[420,158,18],[210,172,16]];
+function drawRoom(t){
+  T = t; const c = rc; c.setTransform(DPR,0,0,DPR,0,0);
+  const dt = Math.min(.05, Math.max(0, t-prevT)); prevT = t;
+  const cyc = t % CYC, [px,py] = pathAt(t), [qx,qy] = pathAt(t-.03), vx = (px-qx)/.03, vy = (py-qy)/.03, sp = Math.hypot(vx,vy);
+  table(c,RW,RH,7);
+  // drain glow
+  c.fillStyle='rgba(224,72,58,.22)'; c.beginPath(); c.moveTo(300,340); c.lineTo(340,340); c.lineTo(334,360); c.lineTo(306,360); c.fill();
+  c.fillStyle='rgba(255,150,130,.6)'; c.font='700 8px "Chakra Petch", sans-serif'; c.textAlign='center'; c.fillText('DRAIN', 320, 356);
+  // walls & guides
+  wall(c,[[10,10],[10,236]]); wall(c,[[630,10],[630,56]]); wall(c,[[630,136],[630,250]]); wall(c,[[10,10],[630,10]]);
+  wall(c,[[10,236],[246,326]]); wall(c,[[630,250],[394,326]]);
+  // left exit canaleta
+  c.lineCap='round'; c.strokeStyle='rgba(0,0,0,.3)'; c.lineWidth=26; c.beginPath(); c.moveTo(96,206); c.quadraticCurveTo(40,120,6,42); c.stroke();
+  c.strokeStyle='rgba(255,214,150,.22)'; c.lineWidth=24; c.beginPath(); c.moveTo(90,200); c.quadraticCurveTo(34,114,0,36); c.stroke();
+  c.strokeStyle='#e9d7a0'; c.lineWidth=2; for(const o of [-11,11]){ c.beginPath(); c.moveTo(90+o,200); c.quadraticCurveTo(34+o,114,0+o*.3,36+o); c.stroke(); }
+  for(let k=0;k<6;k++){ const u = (k/6 + t*.8)%1, x = 90*(1-u)*(1-u)+2*34*u*(1-u)+0, y = 200*(1-u)*(1-u)+2*114*u*(1-u)+36*u*u; glow(c,x,y,10,C.warm,.6*(1-u)); }
+  c.fillStyle='#ffe2a0'; c.font='10px Bungee, sans-serif'; c.textAlign='left'; c.fillText('◀ SALA 1-3', 22, 30);
+  // right locked gate
+  const gp = .5+.5*Math.sin(t*5);
+  glow(c,630,96,60,C.red,.3+gp*.25);
+  for(let k=0;k<5;k++){ c.fillStyle='#e0483a'; c.fillRect(616+k*3.2,58,2,76); }
+  c.fillStyle='#2a0c06'; c.beginPath(); c.roundRect(596,82,30,26,6); c.fill(); c.strokeStyle='#ff9a7a'; c.lineWidth=1.5; c.stroke();
+  c.strokeStyle='#ffd0c0'; c.lineWidth=2.2; c.beginPath(); c.arc(611,84,6,Math.PI,0); c.stroke(); c.fillStyle='#ffd0c0'; c.fillRect(604,84,14,10);
+  c.fillStyle=`rgba(255,190,170,${.6+gp*.4})`; c.font='700 8px "Chakra Petch", sans-serif'; c.textAlign='right'; c.fillText('PRECISA DA', 590, 90); c.fillText('FICHA VERMELHA', 590, 100);
+  // slings
+  const fl = (s) => flipCurve(cyc, s);
+  sling(c,[204,250],[204,300],[244,312], cyc>3.0&&cyc<3.15?1:0);
+  sling(c,[436,250],[436,300],[396,312], cyc>4.15&&cyc<4.3?1:0);
+  // coins
+  coins.forEach(([x,y,ph],i)=>coin(c,x,y,ph,i===2));
+  // bumpers
+  bump.forEach(([x,y,r]) => { const d = Math.hypot(px-x,py-y); bumper(c,x,y,r,Math.max(0,Math.min(1,1-(d-(r+11))/18))); });
+  // wall flipper (right wall)
+  const wf = flipCurve((t+1.7)%3.3, 0);
+  flipper(c,622,216,52,Math.PI-.95+wf*.75,wf*.6);
+  c.fillStyle='rgba(243,230,196,.7)'; c.font='700 7px "Chakra Petch", sans-serif'; c.textAlign='center'; c.fillText('FLIPPER DE PAREDE', 588, 252);
+  // floor flippers
+  const R = fl(.9), Lf = fl(3.5);
+  flipper(c,256,326,60,.45-Lf*.9,cyc>3.5&&cyc<3.75?1-(cyc-3.5)*4:0);
+  flipper(c,384,326,60,Math.PI-.45+R*.9,cyc>.9&&cyc<1.15?1-(cyc-.9)*4:0);
+  // moths
+  moths.forEach((m,i)=>{ m.ph += dt*.9; m.x = m.cx+Math.sin(m.ph)*m.rx; m.y = m.cy+Math.sin(m.ph*2)*m.ry; m.fl = Math.max(0,m.fl-dt*3);
+    if(t-lastShot[i] > 1.4){ lastShot[i] = t; const d = Math.hypot(px-m.x,py-m.y)||1; shots.push({x:m.x,y:m.y,vx:(px-m.x)/d*130,vy:(py-m.y)/d*130,life:3}); }
+    moth(c,m.x,m.y,12,m.fl); });
+  // bolts from Pino
+  if(sp > 250 && t-lastBolt > .28){ lastBolt = t; let tx = vx/sp, ty = vy/sp; const m = moths.reduce((a,b)=>Math.hypot(b.x-px,b.y-py)<Math.hypot(a.x-px,a.y-py)?b:a); const dm = Math.hypot(m.x-px,m.y-py); if(dm < 260){ tx = (m.x-px)/dm; ty = (m.y-py)/dm; } bolts.push({x:px,y:py,vx:tx*460,vy:ty*460,life:.8}); }
+  for(const b of bolts){ b.x += b.vx*dt; b.y += b.vy*dt; b.life -= dt; for(const m of moths){ if(Math.hypot(b.x-m.x,b.y-m.y) < 14){ b.life = 0; m.fl = 1; for(let k=0;k<8;k++){ const a=Math.random()*TAU; sparks.push({x:m.x,y:m.y,vx:Math.cos(a)*160,vy:Math.sin(a)*160,life:.4}); } } }
+    glow(c,b.x,b.y,12,C.gold,.9); c.strokeStyle='#fff6d0'; c.lineWidth=2.5; c.lineCap='round'; c.beginPath(); c.moveTo(b.x,b.y); c.lineTo(b.x-b.vx*.02,b.y-b.vy*.02); c.stroke(); }
+  for(const s of shots){ s.x += s.vx*dt; s.y += s.vy*dt; s.life -= dt; glow(c,s.x,s.y,10,C.red,.9); c.fillStyle='#ffd0c0'; c.beginPath(); c.arc(s.x,s.y,2.6,0,TAU); c.fill(); }
+  for(const s of sparks){ s.x += s.vx*dt; s.y += s.vy*dt; s.life -= dt; glow(c,s.x,s.y,6,C.warm,s.life*2); }
+  [bolts,shots,sparks].forEach(a=>{ for(let i=a.length-1;i>=0;i--) if(a[i].life<=0) a.splice(i,1); });
+  // Pino
+  if(sp > 400) for(let k=1;k<6;k++){ const [tx,ty] = pathAt(t-k*.02); glow(c,tx,ty,14*(1-k*.12),C.warm,.12); }
+  pino(c,px,py,11,t*6*Math.sign(vx||1));
+  beams(c,RW,RH);
+  // HUD
+  c.fillStyle='rgba(20,10,4,.72)'; c.beginPath(); c.roundRect(14,16,214,30,10); c.fill();
+  c.fillStyle='#f3e6c4'; c.font='700 9px "Chakra Petch", sans-serif'; c.textAlign='left'; c.fillText('CASCO', 24, 35);
+  for(let k=0;k<6;k++){ c.fillStyle = k<4 ? '#e0483a' : 'rgba(224,72,58,.22)'; c.beginPath(); c.roundRect(62+k*15,25,11,12,3); c.fill(); }
+  c.fillStyle = lin(c,160,22,174,36,['#fff0c0','#d8a64a','#7a4a12']); c.beginPath(); c.arc(167,31,6.5,0,TAU); c.fill();
+  c.fillStyle='#ffd9a0'; c.font='12px Bungee, sans-serif'; c.fillText('148', 178, 36);
+  c.fillStyle='rgba(20,10,4,.72)'; c.beginPath(); c.roundRect(236,16,92,30,10); c.fill();
+  glow(c,252,31,12,C.gold,.6); c.fillStyle='#ffd860'; c.beginPath(); c.arc(252,31,5,0,TAU); c.fill();
+  c.fillStyle='#f3e6c4'; c.font='700 9px "Chakra Petch", sans-serif'; c.fillText('CANHÃO', 264, 35);
+  // minimap
+  c.fillStyle='rgba(20,10,4,.75)'; c.beginPath(); c.roundRect(520,14,106,44,8); c.fill();
+  const mm = [[0,1],[1,1],[2,1],[3,1],[2,2],[1,2],[0,2]];
+  mm.forEach(([x,y],i)=>{ const cur = i===3; c.fillStyle = cur ? '#ffb347' : '#5a3c1e'; c.fillRect(528+x*16,18+y*12,13,9); if(cur){ glow(c,528+x*16+6,18+y*12+4,12,C.amber,.6+.3*Math.sin(t*6)); } });
+  c.fillStyle='#e0483a'; c.fillRect(528+4*16,18+12,13,9); c.fillStyle='#2a0c06'; c.font='700 7px sans-serif'; c.textAlign='center'; c.fillText('?', 528+4*16+6, 18+12+8);
+  c.fillStyle='rgba(243,230,196,.8)'; c.font='700 8px "Chakra Petch", sans-serif'; c.textAlign='left'; c.fillText('SALA 1-4', 24, 60);
+  // touch zones
+  c.fillStyle='rgba(255,255,255,.05)'; c.fillRect(0,RH-26,RW/2-1,26); c.fillRect(RW/2+1,RH-26,RW/2-1,26);
+  c.fillStyle='rgba(243,230,196,.55)'; c.font='700 8px "Chakra Petch", sans-serif'; c.textAlign='center';
+  c.fillText('◀ FLIPPERS DA ESQUERDA', RW*.22, RH-10); c.fillText('FLIPPERS DA DIREITA ▶', RW*.78, RH-10); c.fillText('AS DUAS: HABILIDADE', RW/2, RH-34);
+}
+
+/* ================= MAP ================= */
+const ROOMS = [
+  {id:'1-1',n:'Entrada',c:0,r:1,t:'start'},{id:'1-2',n:'Corredor dos Bumpers',c:1,r:1},{id:'1-3',n:'Vão do Salão',c:2,r:1},
+  {id:'1-4',n:'Porta Vermelha',c:3,r:1,t:'door'},{id:'1-5',n:'Porão dos Alvos',c:2,r:2},{id:'1-6',n:'Cofre Vermelho',c:1,r:2,t:'key'},
+  {id:'1-7',n:'Trava de Bola',c:0,r:2,t:'save'},{id:'1-8',n:'Relé Tagarela',c:4,r:1,t:'sub'},{id:'1-9',n:'Oficina',c:5,r:1,t:'shop'},
+  {id:'1-10',n:'Pêndulo do Tilt',c:5,r:2,t:'sub',rw:'Canhão'},{id:'1-11',n:'Antessala',c:6,r:1,t:'save'},{id:'1-12',n:'Jukebox Rex',c:7,r:1,t:'boss',rw:'Nudge'},
+  {id:'1-13',n:'Saída: Discoteca',c:2,r:0,t:'exit'},{id:'?',n:'Sala secreta',c:6,r:0,t:'secret'},
+];
+const LINKS = [['1-1','1-2'],['1-2','1-3'],['1-3','1-4'],['1-4','1-8','red'],['1-3','1-5'],['1-5','1-6'],['1-6','1-7'],['1-7','1-1'],['1-8','1-9'],['1-9','1-10'],['1-9','1-11'],['1-11','1-12'],['1-3','1-13','Nudge'],['1-11','?','Canhão']];
+const svg = document.getElementById('map'), NS = 'http://www.w3.org/2000/svg';
+const cw = 100, ch = 92, ox = 20, oy = 24, bw = 88, bh = 64;
+const pos = r => ({ x: ox + r.c*cw, y: oy + r.r*ch, w: r.t==='boss' ? bw+20 : bw, h: bh });
+const el = (tag, at, parent=svg) => { const e = document.createElementNS(NS, tag); for(const k in at) e.setAttribute(k, at[k]); parent.append(e); return e; };
+const byId = Object.fromEntries(ROOMS.map(r=>[r.id,r]));
+LINKS.forEach(([a,b,kind]) => {
+  const A = pos(byId[a]), B = pos(byId[b]);
+  const x1 = A.x+A.w/2, y1 = A.y+A.h/2, x2 = B.x+B.w/2, y2 = B.y+B.h/2;
+  const col = kind==='red' ? '#e0483a' : kind ? '#6fc7b8' : '#cdb68a';
+  el('line',{x1,y1,x2,y2,stroke:col,'stroke-width':kind?3:4,'stroke-dasharray':kind && kind!=='red' ? '6 5' : 'none','stroke-linecap':'round'});
+  if(kind){ const mx = (x1+x2)/2, my = (y1+y2)/2; el('circle',{cx:mx,cy:my,r:11,fill:'#1c0f06',stroke:col,'stroke-width':2}); const t = el('text',{x:mx,y:my+4,'text-anchor':'middle','font-size':10,fill:col,'font-family':'Chakra Petch, sans-serif','font-weight':700}); t.textContent = kind==='red' ? '🔒' : kind==='Nudge' ? 'N' : 'C'; }
+});
+const FILL = { start:'#4a2e14', save:'#1f4a44', shop:'#5a4410', key:'#5a1a12', door:'#3a2412', sub:'#5a2a10', boss:'#5a120c', exit:'#1c2a2a', secret:'#1c0f06' };
+const STROKE = { save:'#6fc7b8', shop:'#ffd860', key:'#e0483a', door:'#e0483a', sub:'#e08040', boss:'#ff9a7a', exit:'#6fc7b8', secret:'#6fc7b8' };
+ROOMS.forEach(r => {
+  const p = pos(r), g = el('g',{});
+  el('rect',{x:p.x,y:p.y,width:p.w,height:p.h,rx:10,fill:FILL[r.t]||'#3a2412',stroke:STROKE[r.t]||'#cdb68a','stroke-width':r.t==='boss'?2.5:1.5,'stroke-dasharray':(r.t==='exit'||r.t==='secret')?'5 4':'none'},g);
+  const id = el('text',{x:p.x+8,y:p.y+16,'font-size':10,fill:STROKE[r.t]||'#ffb347','font-family':'Bungee, sans-serif'},g); id.textContent = r.id;
+  const words = r.n.split(' '); let line = '', lines = [];
+  words.forEach(w => { if((line+' '+w).trim().length > 13){ lines.push(line.trim()); line = w; } else line += ' '+w; }); lines.push(line.trim());
+  lines.forEach((ln,i) => { const t = el('text',{x:p.x+8,y:p.y+32+i*12,'font-size':10.5,fill:'#f6ecd4','font-family':'Chakra Petch, sans-serif','font-weight':600},g); t.textContent = ln; });
+  if(r.rw){ const t = el('text',{x:p.x+p.w-8,y:p.y+p.h-8,'text-anchor':'end','font-size':9,fill:'#ffd860','font-family':'Chakra Petch, sans-serif','font-weight':700},g); t.textContent = '+ '+r.rw; }
+});
+
+/* ================= ABILITIES ================= */
+const AB = [
+  ['Zona 1 · chefe','Nudge','Um empurrão no ar. Atravessa vãos e corrige tacadas.', (c,t)=>{ wall(c,[[10,110],[70,110]]); wall(c,[[150,110],[230,110]]); c.fillStyle='rgba(224,72,58,.25)'; c.fillRect(72,110,76,40); const u = (t%2.4)/2.4, x = 40+u*150, y = 96 - Math.sin(u*Math.PI)*50 + (u>.5?(u-.5)*-30:0); if(u>.45&&u<.6){ glow(c,x,y+14,24,C.teal,.8); c.strokeStyle='#6fc7b8'; c.lineWidth=2.5; c.beginPath(); c.moveTo(x,y+30); c.lineTo(x,y+16); c.lineTo(x-5,y+21); c.moveTo(x,y+16); c.lineTo(x+5,y+21); c.stroke(); } pino(c,x,Math.min(y,98),10,t*6); }],
+  ['Zona 1 · sub-chefe','Canhão','Cada batida de flipper dispara. Derruba inimigos e quebra vidros.', (c,t)=>{ const x = 50+Math.sin(t*1.4)*20; pino(c,x,90,10,t*5); for(let k=0;k<3;k++){ const u = ((t*1.6)+k/3)%1, bx = x+14+u*130; glow(c,bx,90,10,C.gold,.9*(1-u)); c.fillStyle='#fff6d0'; c.fillRect(bx-5,89,10,2.5); } T = t; moth(c,200,88,13,(t*1.6)%1>.85?1:0); }],
+  ['Zona 2','Ímã','Gruda em trilhos de metal, até no teto, para chegar ao alto.', (c,t)=>{ c.fillStyle='#59627a'; c.fillRect(20,22,200,8); c.fillStyle='#c9d2e3'; c.fillRect(20,22,200,2); const x = 30+((t*50)%180); for(let k=0;k<3;k++){ const u = ((t*.9)+k/3)%1; c.strokeStyle=`rgba(140,200,255,${(1-u)*.7})`; c.lineWidth=2; c.beginPath(); c.arc(x,42,10+u*16,0,TAU); c.stroke(); } pino(c,x,42,10,t*6); }],
+  ['Zona 4','Bola de Chumbo','Fica pesado e quebra pisos frágeis, abrindo atalhos para baixo.', (c,t)=>{ const u = (t%2)/2, y = Math.min(96, 20+u*u*300); const broke = y>=96; c.strokeStyle = broke?'rgba(200,230,255,.3)':'rgba(200,230,255,.85)'; c.lineWidth=3; c.beginPath(); c.moveTo(40,108); c.lineTo(200,108); c.stroke(); if(broke){ for(let k=0;k<7;k++){ const a = -Math.PI/2+(k-3)*.4, d = (u-.27)*120; c.fillStyle='rgba(200,230,255,.8)'; c.fillRect(120+Math.cos(a)*d, 108+Math.sin(a)*d*.5+d*.6, 5, 2); } } pino(c,120,broke?96+(u-.27)*90:y,11,0,'lead'); }],
+  ['Zona 5','Multiball','Divide o Pino em dois para apertar dois botões ao mesmo tempo.', (c,t)=>{ const u = (t%2.4)/2.4, sp = Math.min(1,u*2)*60; for(const s of [-1,1]){ const on = u>.55; c.fillStyle = on ? '#ffd860' : '#7a6a4a'; c.fillRect(120+s*70-12,124,24,6); if(on) glow(c,120+s*70,124,20,C.gold,.7); } pino(c,120-sp*(u>.5?1.15:1),70+u*40,10,t*5); pino(c,120+sp*(u>.5?1.15:1),70+u*40,10,-t*5); }],
+];
+const abil = document.getElementById('abil'); const abViews = [];
+AB.forEach(([tag,name,desc,fn]) => {
+  const card = document.createElement('article'); card.className='card';
+  const cv = document.createElement('canvas'); cv.width = 240*DPR; cv.height = 150*DPR; cv.setAttribute('aria-hidden','true');
+  const d = document.createElement('div'); d.innerHTML = '<small></small><b></b><span></span>';
+  d.querySelector('small').textContent = tag; d.querySelector('b').textContent = name; d.querySelector('span').textContent = desc;
+  card.append(cv,d); abil.append(card); abViews.push({ c:cv.getContext('2d'), fn, seed:abViews.length*13 });
+});
+function drawAbil(t){ abViews.forEach(v => { const c = v.c; c.setTransform(DPR,0,0,DPR,0,0); T = t; table(c,240,150,v.seed); v.fn(c,t); T = t; beams(c,240,150); }); }
+
+const t0 = performance.now();
+function frame(){ const t = (performance.now()-t0)/1000; drawRoom(t); drawAbil(t); if(!reduce) requestAnimationFrame(frame); }
+const go = () => requestAnimationFrame(frame);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(go); else go();
+})();
+</script>
