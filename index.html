@@ -48,7 +48,7 @@ body{font-family:var(--f-body);font-size:16px}
 .btn{font-family:var(--f-display);font-size:18px;letter-spacing:.03em;color:#2a1408;background:linear-gradient(180deg,#ffe3a6,#e8a94a 55%,#c07a26);
   border:0;border-radius:14px;padding:14px 26px;min-width:230px;cursor:pointer;box-shadow:0 2px 0 #fff3 inset,0 -3px 0 #0003 inset,0 6px 18px rgba(0,0,0,.45),0 0 24px rgba(255,170,70,.25)}
 .btn:active{transform:translateY(2px)}
-.btn.ad{background:linear-gradient(180deg,#a6f0e0,#3fb8a0 55%,#1f7d6c);font-size:15px}.btn.ad:disabled{opacity:.55}
+.btn.ad{background:linear-gradient(180deg,#a6f0e0,#3fb8a0 55%,#1f7d6c);font-size:15px}.btn.ad:disabled{opacity:.55}.btn.noads{font-size:15px}.btn.noads:disabled{opacity:.6}
 .btn:focus-visible,.ghost:focus-visible,.node:focus-visible,.buy:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
 .btn.alt{background:linear-gradient(180deg,#3c2412,#24130a);color:var(--cream);box-shadow:0 0 0 1px var(--line) inset,0 6px 18px rgba(0,0,0,.45)}
 .ghost{font-family:var(--f-body);font-weight:600;font-size:14px;color:var(--cream);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
@@ -145,6 +145,8 @@ body{font-family:var(--f-body);font-size:16px}
       <button class="btn alt" id="b-shop">Oficina</button>
       <button class="ghost" id="b-sound">Som: ligado</button>
       <button class="ghost" id="b-music">Música: ligada</button>
+      <button class="btn alt noads" id="b-noads" hidden>Remover anúncios</button>
+      <button class="ghost" id="b-restore" hidden>Restaurar compras</button>
       <button class="ghost danger" id="b-reset">Recomeçar campanha</button>
     </div>
     <p class="hint">Toque na metade esquerda ou direita da tela para usar os flippers. Mande a bola pelas rampas até o topo da torre.</p>
@@ -5271,7 +5273,7 @@ const Ads = (() => {
   }
   // run fn, showing an interstitial first when one is due
   async function between(fn){
-    const due = ready && !busy && !rewardedHere && ends >= 3 && Date.now() - lastInter > 180000 && S.unlocked >= 3;
+    const due = ready && !Shop.noAds() && !busy && !rewardedHere && ends >= 3 && Date.now() - lastInter > 180000 && S.unlocked >= 3;
     if(due){
       busy = true; quiet(true);
       try { await P.showInterstitial(); ends = 0; lastInter = Date.now(); } catch(e){}
@@ -5281,6 +5283,52 @@ const Ads = (() => {
   }
   return { init, offer, between, native, P };
 })();
+/* ---- in-app purchase "Remover anúncios" (one-time, non-consumable), only in the app ----
+   Product ID must be created with the same name in the Play Console and App Store Connect. */
+const Shop = (() => {
+  const PRODUCT = 'remover_anuncios', KEY = 'tilttower.noads';
+  const cap = window.Capacitor, native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
+  const P = native && cap.Plugins ? cap.Plugins.NativePurchases : null;
+  const os = native ? cap.getPlatform() : 'web';
+  let owned = false, price = '', busy = false;
+  try { owned = localStorage.getItem(KEY) === '1'; } catch(e){}
+  const noAds = () => owned;
+  function grant(){ owned = true; try { localStorage.setItem(KEY, '1'); } catch(e){} ui(); }
+  const isOurs = t => t && t.productIdentifier === PRODUCT && (os !== 'android' || t.purchaseState === undefined || String(t.purchaseState) === '1');
+  function ui(msg){
+    const b = $('b-noads'), r = $('b-restore'); if(!b) return;
+    if(!P){ b.hidden = r.hidden = true; return; }
+    if(owned){ b.hidden = false; b.disabled = true; b.textContent = 'Sem anúncios ✓'; r.hidden = true; return; }
+    b.hidden = false; b.disabled = busy; b.textContent = msg || ('Remover anúncios' + (price ? ' · ' + price : ''));
+    r.hidden = os !== 'ios'; // Apple requires a visible "restore" option; Android restores on its own at start
+  }
+  async function restore(silent){
+    if(!P) return;
+    try {
+      if(!silent && os === 'ios') await P.restorePurchases();
+      const { purchases } = await P.getPurchases({ productType:'inapp' });
+      if((purchases || []).some(isOurs)) grant(); else if(!silent) ui('Nenhuma compra encontrada');
+    } catch(e){ if(!silent) ui('Não deu para restaurar agora'); }
+  }
+  async function buy(){
+    if(!P || owned || busy) return;
+    busy = true; ui('Abrindo a loja…');
+    try {
+      const t = await P.purchaseProduct({ productIdentifier:PRODUCT, productType:'inapp', quantity:1 });
+      busy = false;
+      if(isOurs(t) || (t && t.transactionId)) { grant(); Snd.chime(0); Snd.chime(1, .12); Snd.chime(2, .24); }
+      else ui();
+    } catch(e){ busy = false; ui(/cancel/i.test(String(e && (e.message || e.code))) ? '' : 'Compra não concluída'); if(!$('b-noads').textContent) ui(); }
+  }
+  async function init(){
+    ui(); if(!P) return;
+    restore(true);
+    try { const { product } = await P.getProduct({ productIdentifier:PRODUCT, productType:'inapp' }); if(product && product.priceString){ price = product.priceString; ui(); } } catch(e){}
+  }
+  return { init, buy, restore, noAds, ui };
+})();
+$('b-noads').onclick = () => { Snd.init(); Shop.buy(); };
+$('b-restore').onclick = () => Shop.restore(false);
 function showOver(){
   Music.set('menu');
   const scoreF = Math.floor(G.score / SCORE_PER_FICHA); S.fichas += scoreF; G.fichasRun += scoreF;
@@ -5325,7 +5373,7 @@ $('v-map').onclick = () => Ads.between(openMap);
 if(Ads.native){
   const Pl = Capacitor.Plugins;
   try { Pl.StatusBar && Pl.StatusBar.hide(); } catch(e){}
-  Ads.init();
+  Ads.init(); Shop.init();
   if(Pl.App){
     Pl.App.addListener('backButton', () => {
       const open = screens.find(id => !$(id).hidden);

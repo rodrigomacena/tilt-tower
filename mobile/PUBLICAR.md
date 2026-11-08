@@ -36,6 +36,20 @@ Regras atuais dos anúncios:
 - **Premiado:** é opcional. Nas telas de resultado e de fim de jogo, o botão "Ver anúncio: +N fichas" dobra as fichas da mesa.
 - **Intersticial:** no máximo um a cada 3 mesas terminadas e a cada 3 minutos. Nunca aparece antes da mesa 3 nem logo depois de um premiado.
 
+## Compra "Remover anúncios"
+
+A compra é feita pelo plugin `@capgo/native-purchases`, direto no Google Play Billing e no StoreKit, sem servidor. Ela é única (não é assinatura) e desliga os anúncios de tela cheia para sempre. O botão premiado "+fichas" continua, porque é opcional.
+
+1. Crie o produto com o ID **`remover_anuncios`** nas duas lojas:
+   - **Play Console** › Monetizar › Produtos › Produtos no app: crie, defina o preço e ative.
+   - **App Store Connect** › seu app › Compras no app: tipo **Não consumível**, mesmo ID, preço, captura de tela e envio junto com a versão.
+2. No Xcode, adicione a capability **In-App Purchase** em Signing & Capabilities.
+3. Para testar:
+   - Android: use contas em Configuração › Teste de licença, com o app instalado pela faixa de teste.
+   - iOS: use uma conta Sandbox.
+4. Restauração: no Android a compra volta sozinha quando o app abre. No iPhone também aparece o botão "Restaurar compras", que a Apple exige.
+5. O botão "Recomeçar campanha" não apaga a compra (ela fica guardada em `tilttower.noads`).
+
 ## Android (dá para fazer neste PC Windows)
 
 1. Instale o **Android Studio** (ele já vem com o Java e o SDK).
