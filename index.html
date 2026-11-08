@@ -1065,12 +1065,12 @@ function ballStep(h){
   const sp = Math.hypot(b.vx,b.vy); if(sp > 1700){ b.vx *= 1700/sp; b.vy *= 1700/sp; }
   // rails entry
   for(const r of L.rails){
-    if(r.type==='elev' || r.locked || r.cool > 0) continue;
+    if(r.type==='elev' || r.locked || r.cool > 0 || G.multi) continue;
     if(b.x > r.mx0 && b.x < r.mx1 && Math.abs(b.y-r.y0) < (r.my||18) && b.vy < -380 && Math.abs(b.vx) < -b.vy*.75 && (G.t - (G.lastFlipHit||-9) < 1.6 || b.vy < -850)){ attachRail(r, Math.max(-b.vy, b.vx*r.tx + b.vy*r.ty)); return; }
   }
   // saucers
   for(const sc of L.saucers){
-    if(!sc.visible || sc.cool > 0) continue;
+    if(!sc.visible || sc.cool > 0 || (G.multi && sc.kind==='elev')) continue;
     const dx = b.x-sc.x, dy = b.y-sc.y;
     const cr = sc.kind==='exit' ? Math.round(22 - 9*DIFF(G.pi)) : 14;
     if(dx*dx+dy*dy < cr*cr && sp < 1150){ b.held = { sc, t:0 }; b.vx = b.vy = 0; SFX.saucer(); return; }
@@ -1100,6 +1100,15 @@ function ballStep(h){
     }
   }
   // plunger state
+  if(G.multi){
+    const top = Y(G.multi.f, 10), bot = Y(G.multi.f, 694);
+    if(b.y < top){ b.y = top; b.vy = Math.abs(b.vy)*.5; }
+    if(b.y > bot){
+      if(b.extra){ b.dead = true; SFX.drain(); return; }
+      if(G.extra && G.extra.length){ const nb = G.extra.shift(); nb.extra = false; G.ball = nb; popup('BOLA PERDIDA', 180, bot-60, C.red, 1); return; }
+    }
+    jackpotCheck(b);
+  }
   if(!b.extra) G.inPlunger = b.x > 322 && b.y > Y(0,560) && b.y < Y(0,700);
   if(b.y > Y(0,760)){ if(b.extra) b.dead = true; else drain(); }
 }
@@ -1292,11 +1301,56 @@ function drawShots(){
     glow(ctx, s.x, s.y, 16, col, .8); ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, TAU); ctx.fill();
   }
 }
+function jackpotCheck(b){
+  const M = G.multi; if(!M || G.mode !== 'play') return;
+  for(const j of M.jp){
+    if(!j.lit || Math.hypot(b.x-j.x, b.y-j.y) > 20) continue;
+    j.lit = false; j.flash = 1; M.got++; addScore(10000, j.x, j.y-24); SFX.gold(); G.gi = .7; G.shake = Math.max(G.shake, 4); buzz(30);
+    popup('JACKPOT!', j.x, j.y-44, C.gold, 1.6); sparks(j.x, j.y, C.gold, 22);
+    if(M.jp.every(q => !q.lit)) M.sup = { x:180, y:Y(M.f,300), flash:0 };
+  }
+  const sp = M.sup;
+  if(sp && Math.hypot(b.x-sp.x, b.y-sp.y) < 24){
+    M.sup = null; addScore(50000, sp.x, sp.y-30); SFX.win(); G.gi = .5; G.shake = Math.max(G.shake, 9); buzz(80);
+    G.banner = { title:'SUPER JACKPOT', sub:'+50.000 × MULTIPLICADORES', hint:'', t:0, dur:1.8 };
+    for(let k=0;k<5;k++) setTimeout(() => sparks(sp.x + (Math.random()-.5)*120, sp.y + (Math.random()-.5)*80, C.gold, 20), k*100);
+    M.jp.forEach(q => q.lit = true);
+  }
+}
+function drawJackpots(){
+  const M = G.multi; if(!M) return;
+  const col = QLIGHT[Math.min(4, eraNow())];
+  for(const j of M.jp){
+    j.flash = Math.max(0, j.flash - .03);
+    if(!j.lit){ ctx.strokeStyle = `rgba(${col},${.15 + j.flash*.6})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(j.x, j.y, 15, 0, TAU); ctx.stroke(); continue; }
+    const k = .5 + .5*Math.sin(T*8 + j.x);
+    glow(ctx, j.x, j.y, 44, C.gold, .35 + .3*k);
+    ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.beginPath(); ctx.arc(j.x+1.5, j.y+2.5, 16, 0, TAU); ctx.fill();
+    const g = ctx.createRadialGradient(j.x-4, j.y-5, 1, j.x, j.y, 15); g.addColorStop(0, '#fff6d0'); g.addColorStop(.5, '#ffc84a'); g.addColorStop(1, '#8a5a10');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(j.x, j.y, 15, 0, TAU); ctx.fill();
+    ctx.strokeStyle = `rgba(${col},.9)`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(j.x, j.y, 18 + 3*k, 0, TAU); ctx.stroke();
+    ctx.fillStyle = '#3a2408'; ctx.font = '11px Bungee, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('J', j.x, j.y+1); ctx.textBaseline = 'alphabetic';
+  }
+  const sp = M.sup;
+  if(sp){
+    const k = .5 + .5*Math.sin(T*10);
+    glow(ctx, sp.x, sp.y, 80, C.gold, .45 + .35*k);
+    for(let i=0;i<3;i++){ ctx.strokeStyle = `rgba(${col},${.8 - i*.22})`; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(sp.x, sp.y, 20 + i*8 + k*4, T*2 + i, T*2 + i + Math.PI*1.4); ctx.stroke(); }
+    const g = ctx.createRadialGradient(sp.x-5, sp.y-6, 1, sp.x, sp.y, 20); g.addColorStop(0, '#ffffff'); g.addColorStop(.45, '#ffd860'); g.addColorStop(1, '#a86a10');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sp.x, sp.y, 20, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#3a2408'; ctx.font = '9px Bungee, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('SUPER', sp.x, sp.y+3);
+  }
+  // sealed-floor markers over the ramp mouths
+  ctx.fillStyle = `rgba(255,70,60,${.5 + .3*Math.sin(T*6)})`; ctx.font = '700 8px "Chakra Petch", sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('RAMPAS FECHADAS NO MULTIBALL', 180, Y(M.f, 440));
+}
 function startMultiball(x, y){
   if(G.mode!=='play' || (G.extra && G.extra.length)) return;
   x = clamp(x, 70, 290); G.extra = [];
   for(let k=0;k<3;k++) G.extra.push({ x:x + (k-1)*24, y:y - 14, vx:(k-1)*260 + (Math.random()-.5)*60, vy:-880 - k*90, r:BR, rail:null, held:null, rot:0, trail:[], sq:0, extra:true });
-  G.multi = { t:0 }; G.banner = { title:'MULTIBALL', sub:'4 BOLAS · PONTOS EM DOBRO', hint:'', t:0, dur:2 };
+  const mf = clamp(floorOf(y), 0, G.L.n-1);
+  G.multi = { t:0, f:mf, jp:[[100,360],[180,250],[260,360]].map(([jx,jy]) => ({ x:jx, y:Y(mf,jy), lit:true, flash:0 })), sup:null, got:0 };
+  G.banner = { title:'MULTIBALL', sub:'ANDAR SELADO · ACERTE OS JACKPOTS', hint:'', t:0, dur:2.2 };
   SFX.win(); G.gi = .6; G.shake = Math.max(G.shake, 7); buzz(60); Music.set('boss');
   for(let k=0;k<4;k++) setTimeout(() => sparks(x + (Math.random()-.5)*90, y + (Math.random()-.5)*60, C.gold, 18), k*120);
 }
@@ -1568,7 +1622,8 @@ function update(dt){
   b.rot += (b.vx/BR)*dt*.6; spinBall(b, dt);
   b.trail.unshift([b.x,b.y]); if(b.trail.length > 7) b.trail.pop();
   // camera
-  const target = clamp(b.y - view.vh*.58, Y(L.n-1,0)-100, FH+20-view.vh);
+  const mf = G.multi ? G.multi.f : -1;
+  const target = mf >= 0 ? (view.vh >= FH ? Y(mf, FH/2) - view.vh/2 : Y(mf, FH) + 16 - view.vh) : clamp(b.y - view.vh*.58, Y(L.n-1,0)-100, FH+20-view.vh);
   if(!isFinite(G.cam)) G.cam = target;
   G.cam += (target-G.cam)*Math.min(1, dt*(b.rail?7:4.5));
   G.shake = Math.max(0, G.shake - dt*20);
@@ -4248,6 +4303,7 @@ function draw(){
   if(b.rail){ glow(ctx,b.x,b.y,30,C.warm,.25); drawBall(); }
   for(const eb of (G.extra||[])){ if(eb.dead) continue; if(G.multi) glow(ctx, eb.x, eb.y, 26, C.gold, .25); drawPino(eb.x, eb.y, BR, eb.rot, clamp(eb.vx/300,-1,1), 0, 1); }
   drawShots();
+  drawJackpots();
   for(const e of L.enemies) if(e.alive && e.type==='fly' && vis(e.y)) drawEnemy(e);
   if(G.freeze && G.mode==='play'){ const pul = .5+.5*Math.sin(T*6); glow(ctx,b.x,b.y,34,C.gold,.35+.3*pul); ctx.strokeStyle=`rgba(255,216,96,${.5+.4*pul})`; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(b.x,b.y,BR+6+pul*4,0,TAU); ctx.stroke(); }
   drawParticlesPremium();
