@@ -165,7 +165,6 @@ body{font-family:var(--f-body);font-size:16px}
       <button class="ghost" id="p-sound">Som: ligado</button>
       <button class="ghost" id="p-music">Música: ligada</button>
       <button class="ghost" id="p-quality">Qualidade: Alta</button>
-      <button class="ghost" id="p-3d">Visão 3D: ligada</button>
     </div>
   </section>
 
@@ -4255,7 +4254,6 @@ function draw(){
   ctx.textAlign='center';
   for(const p of G.popups){ const a = Math.min(1,(p.life-p.t)*3); ctx.fillStyle=`rgba(${p.col},${a})`; ctx.font = p.text.length>12 ? '13px Bungee, sans-serif' : '12px Bungee, sans-serif'; ctx.fillText(p.text, p.x, p.y); }
   ctx.restore();
-  if(S.view3d !== false) tilt3D(d);
   // screen space
   ctx.setTransform(s,0,0,s,view.ox*d,0);
   drawLight(vh); glassFX(vh); if(ERA(L.pi)===2) scanlines(vh);
@@ -4486,9 +4484,6 @@ function setQuality(high){
   resize();
 }
 $('p-quality').onclick = () => setQuality(!QUALITY.high);
-const view3dLabel = () => { $('p-3d').textContent = 'Visão 3D: ' + (S.view3d !== false ? 'ligada' : 'desligada'); };
-$('p-3d').onclick = () => { S.view3d = S.view3d === false; save(); view3dLabel(); };
-view3dLabel();
 $('m-back').onclick = () => show('s-title');
 $('m-shop').onclick = () => openShop('s-map');
 $('o-back').onclick = () => { if(shopReturn==='s-map') openMap(); else show(shopReturn); };
