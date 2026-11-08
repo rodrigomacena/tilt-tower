@@ -4371,6 +4371,11 @@ function bonusUpdate(dt){
   B.t += dt;
   for(const k of B.bricks) k.flash = Math.max(0, k.flash - dt*4);
   for(const F of B.flips) F.lit = Math.max(0, F.lit - dt*4);
+  // damaged enemies (1 hit left) leak smoke instead of showing a ring
+  B.smoke = B.smoke || [];
+  for(const e of (B.foes||[])) if(!e.dead && e.hp === 1){ e.smT = (e.smT||0) + dt; while(e.smT > .07){ e.smT -= .07; B.smoke.push({ x:e.x + (Math.random()-.5)*e.r, y:e.y - e.r*.4, vx:(Math.random()-.5)*14 - e.vx*.15, vy:-26 - Math.random()*22, r:3 + Math.random()*3, t:0, life:.9 + Math.random()*.5, g:70 + Math.random()*50 }); } }
+  for(const p of B.smoke){ p.t += dt; p.x += p.vx*dt; p.y += p.vy*dt; p.vy *= 1 - dt*.8; p.r += dt*9; }
+  B.smoke = B.smoke.filter(p => p.t < p.life); if(B.smoke.length > 160) B.smoke.splice(0, B.smoke.length - 160);
   for(const e of (B.foes||[])){ e.flash = Math.max(0, e.flash - dt*3); if(e.dead){ e.dead -= dt; if(e.dead <= 0){ const n = bonusFoe(e.type, e.by); Object.assign(e, n); } } }
   if(B.phase==='intro'){ if(B.t > 1.8){ B.phase = 'play'; B.t = 0; } return; }
   if(B.phase==='end'){ B.endT += dt; if(B.endT > 2.8){ G.bonus = null; G.cfx = []; G.mode = 'play'; G.press.L = G.press.R = false; startTally('win'); } return; }
@@ -4453,8 +4458,8 @@ function drawBonus(){
     if(st){ const im = st.img[name], hh = e.r*3, ww = hh*im.width/im.height; ctx.save(); ctx.translate(e.x, e.y); if(e.type==='roll') ctx.rotate(T*6*e.dir); ctx.drawImage(im, -ww/2, -hh/2, ww, hh); ctx.restore(); }
     else { ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, TAU); ctx.fill(); }
     if(e.flash > 0){ glow(ctx, e.x, e.y, 30, '255,255,255', e.flash*.7); }
-    if(e.hp === 1){ ctx.strokeStyle = 'rgba(255,120,90,.8)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 4, 0, TAU); ctx.stroke(); }
   }
+  for(const p of (B.smoke||[])){ const k = p.t/p.life, a = (k < .15 ? k/.15 : 1 - (k - .15)/.85)*.5; ctx.fillStyle = `rgba(${p.g|0},${p.g|0},${(p.g+6)|0},${a})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill(); }
   drawCosUnder();
   drawPinoBase(B.ball.x, B.ball.y, BR, B.ball.rot, clamp(B.ball.vx/300,-1,1), 0, 1);
   drawCosAura();
