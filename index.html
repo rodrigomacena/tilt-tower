@@ -1683,7 +1683,7 @@ function update(dt){
   G.popups = G.popups.filter(p=>p.t<p.life);
   if(G.banner){ G.banner.t += dt; if(G.banner.t > G.banner.dur && !(G.inPlunger && G.banner.title.startsWith('FASE'))) G.banner = null; }
   if(G.floorMsg){ G.floorMsg.t += dt; if(G.floorMsg.t > 1.8) G.floorMsg = null; }
-  if(G.done){ G.doneT += dt; if(G.doneT > 1.4 && G.mode==='play'){ if(G.golds >= 3 && !G.bonusDone){ G.bonusDone = true; startBonus(); } else startTally('win'); } }
+  if(G.done){ G.doneT += dt; if(G.doneT > 1.4 && G.mode==='play'){ if((G.pi%10===4 || G.pi%10===8) && !G.bonusDone){ G.bonusDone = true; startBonus(); } else startTally('win'); } }
   updateTally(dt);
   if(G.combo && G.combo.n > 1 && G.t - G.combo.last > 5){ G.combo.n = 1; }
   reels(dt); Snd.frame(dt);
@@ -4362,7 +4362,7 @@ function drawBonus(){
   ctx.font = '600 11px "Chakra Petch", sans-serif'; ctx.fillStyle = '#e6d6b6'; ctx.fillText(`+${B.got} fichas`, 14, 44);
   const left = B.phase==='play' ? Math.max(0, Math.ceil(B.dur - B.t)) : B.dur;
   ctx.textAlign = 'right'; ctx.font = '20px Bungee, sans-serif'; ctx.fillStyle = left <= 10 ? '#ff7a6a' : '#ffd9a0'; ctx.fillText(String(left), W-14, 30);
-  if(B.phase==='intro'){ ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, vh*.36, W, 110); ctx.textAlign = 'center'; ctx.fillStyle = '#ffd860'; ctx.font = '22px Bungee, sans-serif'; ctx.fillText('QUEBRA-TIJOLOS', W/2, vh*.36 + 40); ctx.fillStyle = '#f3e6c4'; ctx.font = '600 13px "Chakra Petch", sans-serif'; ctx.fillText('Bônus das 3 fichas douradas!', W/2, vh*.36 + 64); ctx.fillText(`Use os flippers · ${B.dur} segundos!`, W/2, vh*.36 + 86); }
+  if(B.phase==='intro'){ ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(0, vh*.36, W, 110); ctx.textAlign = 'center'; ctx.fillStyle = '#ffd860'; ctx.font = '22px Bungee, sans-serif'; ctx.fillText('QUEBRA-TIJOLOS', W/2, vh*.36 + 40); ctx.fillStyle = '#f3e6c4'; ctx.font = '600 13px "Chakra Petch", sans-serif'; ctx.fillText('Bônus da mesa ' + (G.pi%10 + 1) + '!', W/2, vh*.36 + 64); ctx.fillText(`Use os flippers · ${B.dur} segundos!`, W/2, vh*.36 + 86); }
   if(B.phase==='end'){ ctx.fillStyle = 'rgba(0,0,0,.62)'; ctx.fillRect(0, vh*.34, W, 130); ctx.textAlign = 'center'; ctx.fillStyle = '#ffd860'; ctx.font = '20px Bungee, sans-serif'; ctx.fillText(B.cleared ? 'TUDO LIMPO!' : 'FIM DO BÔNUS', W/2, vh*.34 + 40); ctx.fillStyle = '#f3e6c4'; ctx.font = '600 14px "Chakra Petch", sans-serif'; ctx.fillText(`+${B.got} fichas`, W/2, vh*.34 + 68); if(B.prize){ ctx.font = '600 12px "Chakra Petch", sans-serif'; ctx.fillStyle = '#ffd9a0'; ctx.fillText(B.prize, W/2, vh*.34 + 96); } }
 }
 
