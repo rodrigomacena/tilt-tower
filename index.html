@@ -1024,7 +1024,7 @@ function startPhase(pi, attract=false){
   G.pi = pi; G.mode = attract ? 'attract' : 'play'; Music.set(attract ? 'menu' : 'play');
   G.L = buildLevel(pi); renderStatic(G.L);
   G.balls = attract ? 3 : 3 + S.up.balls; G.score = 0; G.fichasRun = 0; G.golds = 0; G.lost = false;
-  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.bonusDone = false; G.bonus = null; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
+  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.curses = new Set(); G.smoke = []; G.darkK = 0; G.gravMul = 1; G.windX = 0; G.bonusDone = false; G.bonus = null; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
   G.popups = []; G.parts = []; G.done = false; G.doneT = 0; G.shake = 0; G.gi = 1; G.floorMsg = null;
   G.press.L = G.press.R = false;
   newBall(); G.cam = clamp(G.ball.y - view.vh*.58, Y(G.L.n-1,0)-100, FH+20-view.vh); G.startTime = G.t;
@@ -1107,14 +1107,15 @@ function collideFlipper(b, F){
   const rvx = b.vx-svx, rvy = b.vy-svy, vn = rvx*nx+rvy*ny;
   if(vn < 0){
     b.vx -= 1.3*vn*nx; b.vy -= 1.3*vn*ny;
+    if(Math.abs(F.av) < 1 && ny < -.3) curseGlue(b, F);
     if(-vn > 250 && Math.abs(F.av) > 1){ G.lastFlipHit = G.t; impactFX(b.x-nx*b.r, b.y-ny*b.r, nx, ny, -vn*.8, '255,245,225'); }
     if(-vn > 500 && Math.abs(F.av) > 2){ F.lit = 1; sparks(b.x-nx*b.r, b.y-ny*b.r, C.cream, 5); G.shake = Math.max(G.shake, 1.5); }
   }
 }
 function updateFlippers(h){
-  const up = 30*(1+.07*S.up.power);
+  const up = 30*(1+.07*S.up.power)*(cursed('slow') ? .42 : 1), inv = cursed('invert');
   for(const F of G.L.flippers){
-    const pressed = (G.mode==='attract' ? G.autoT[F.side>0?'L':'R']>0 : G.press[F.side>0?'L':'R']) && F.frozen<=0 && !G.tilt;
+    const pressed = (G.mode==='attract' ? G.autoT[F.side>0?'L':'R']>0 : G.press[(F.side>0) !== inv ? 'L' : 'R']) && F.frozen<=0 && !G.tilt;
     const target = pressed ? F.up : F.rest, prev = F.ang;
     if(F.ang > target) F.ang = Math.max(target, F.ang - up*h); else F.ang = Math.min(target, F.ang + 20*h);
     F.av = (F.ang-prev)/h;
@@ -1153,8 +1154,9 @@ function ballStep(h){
   if(G.freeze && !b.held && !b.rail) return;
   if(b.held){ heldStep(h); return; }
   if(b.rail){ railStep(h); return; }
+  if(b.glue){ glueStep(b, h); return; }
   const oy = b.y;
-  b.vy += (G.grav||GRAV)*h; b.x += b.vx*h; b.y += b.vy*h;
+  b.vy += (G.grav||GRAV)*(G.gravMul||1)*h; b.vx += (G.windX||0)*h; b.x += b.vx*h; b.y += b.vy*h;
   if(L.turntables.length) turntableStep(b, L, h);
   if(L.dances.length) danceStep(b, L);
   if(L.belts.length) beltStep(b, L, h);
@@ -1258,7 +1260,7 @@ function enemyHit(e){
   const imp = hitMoving(b, e.x, e.y, e.r, e.vx, e.vy, e.type==='fly' ? 0 : .5);
   if(imp < 0) return;
   if(imp > 520){
-    e.alive = false; SFX.enemy(); comboHit(e.x, e.y); addScore(500, e.x, e.y-20); addFichas(3, e.x, e.y); sparks(e.x, e.y, C.amber, 18); G.shake = Math.max(G.shake,4); buzz(25);
+    e.alive = false; if(e.curse && G.mode==='play') popup(CURSES[e.curse].short + ' DESFEITO!', 180, b.y-90, CURSES[e.curse].col, 1.6); SFX.enemy(); comboHit(e.x, e.y); addScore(500, e.x, e.y-20); addFichas(3, e.x, e.y); sparks(e.x, e.y, C.amber, 18); G.shake = Math.max(G.shake,4); buzz(25);
     return;
   }
   if(imp > 0){
@@ -1365,6 +1367,81 @@ function addScore(v, x, y, quiet){
   while(G.replayIdx < th.length && G.score >= th[G.replayIdx]){
     G.replayIdx++; G.balls++; SFX.bell(); Snd.chime(0,.3); G.gi = .7; buzz(40);
     popup('REPLAY · +1 BOLA', G.ball.x, G.ball.y-36, C.gold, 1.8);
+  }
+}
+
+/* ---- enemy curses: while an enemy lives on the ball's floor it bends the rules, until it is defeated ---- */
+const CURSES = {
+  invert:{ name:'FLIPPERS INVERTIDOS', short:'INVERTE', col:'255,90,200' },
+  smoke: { name:'FUMAÇA NA MESA', short:'FUMAÇA', col:'200,200,210' },
+  grav:  { name:'GRAVIDADE MALUCA', short:'GRAVIDADE', col:'120,200,255' },
+  glue:  { name:'BOLA GRUDENTA', short:'GRUDA', col:'150,255,120' },
+  dark:  { name:'APAGÃO', short:'APAGÃO', col:'255,200,90' },
+  slow:  { name:'FLIPPERS LENTOS', short:'LENTO', col:'255,140,80' },
+};
+const CURSE_BY_TYPE = { roll:['slow','grav'], hop:['invert','glue'], fly:['smoke','dark'] };
+function curseOf(e, i){
+  if(e.curse === undefined){ const pr = CURSE_BY_TYPE[e.type] || CURSE_BY_TYPE.fly; e.curse = pr[(Math.floor(G.pi/2) + (i||0)) % 2]; }
+  return e.curse;
+}
+const cursed = c => !!(G.curses && G.curses.has(c));
+function curseUpdate(dt){
+  const L = G.L, b = G.ball, prev = G.curses || new Set(), now = new Set();
+  if(G.mode === 'play'){
+    const fN = clamp(floorOf(b.y), 0, L.n-1);
+    L.enemies.forEach((e, i) => { if(e.alive && e.f === fN) now.add(curseOf(e, i)); });
+  }
+  for(const c of now) if(!prev.has(c)){ popup(CURSES[c].name + '!', 180, b.y-70, CURSES[c].col, 1.8); Snd.tone(240, .3, 'sawtooth', .04, 90); buzz(20); }
+  G.curses = now;
+  G.gravMul = now.has('grav') ? 1 + .6*Math.sin(G.t*1.7) : 1;
+  G.windX = now.has('grav') ? 300*Math.sin(G.t*.9) : 0;
+  G.smoke = G.smoke || [];
+  if(now.has('smoke')){
+    G.smokeT = (G.smokeT||0) + dt;
+    while(G.smokeT > .1){ G.smokeT -= .1; G.smoke.push({ x:Math.random()*W, y:view.vh*(.12 + Math.random()*.76), vx:(Math.random()-.5)*36, vy:-6 - Math.random()*12, r:36 + Math.random()*46, t:0, life:2.6 + Math.random()*1.8 }); }
+  }
+  for(const q of G.smoke){ q.t += dt; q.x += q.vx*dt; q.y += q.vy*dt; q.r += 7*dt; }
+  G.smoke = G.smoke.filter(q => q.t < q.life);
+  G.darkK = clamp((G.darkK||0) + (now.has('dark') ? dt*1.6 : -dt*3), 0, 1);
+  if(b.glue && !now.has('glue')){ b.glue.F.frozen = 0; b.glue = null; }
+  if(b.glueCool > 0) b.glueCool -= dt;
+}
+function curseGlue(b, F){
+  if(!cursed('glue') || b.glue || b.glueCool > 0 || G.mode !== 'play' || b !== G.ball) return;
+  b.glue = { F, left:.9 }; F.frozen = Math.max(F.frozen, .9); b.vx = b.vy = 0;
+  Snd.tone(160, .18, 'square', .03, 60); sparks(b.x, b.y + b.r, '150,255,120', 8);
+}
+function glueStep(b, h){
+  b.vx = b.vy = 0; b.glue.left -= h;
+  if(b.glue.left <= 0){ b.glue = null; b.glueCool = 1.4; }
+}
+function drawCurseMark(e){
+  if(G.mode !== 'play' || !G.L.enemies.includes(e)) return; const c = curseOf(e, G.L.enemies.indexOf(e));
+  const K = CURSES[c];
+  ctx.save(); ctx.strokeStyle = `rgba(${K.col},.8)`; ctx.lineWidth = 2; ctx.setLineDash([5,4]); ctx.lineDashOffset = -T*24;
+  ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 9, 0, TAU); ctx.stroke(); ctx.restore();
+  ctx.fillStyle = 'rgba(10,6,4,.6)'; ctx.font = '8px Bungee, sans-serif'; const tw = ctx.measureText(K.short).width + 8;
+  ctx.beginPath(); ctx.roundRect(e.x - tw/2, e.y + e.r + 12, tw, 12, 4); ctx.fill();
+  ctx.fillStyle = `rgb(${K.col})`; ctx.textAlign = 'center'; ctx.fillText(K.short, e.x, e.y + e.r + 21);
+}
+function drawCurseFX(vh){
+  if(G.smoke && G.smoke.length) for(const q of G.smoke){
+    const a = Math.min(1, q.t*1.5, (q.life - q.t)*.8)*.62, g = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, q.r);
+    g.addColorStop(0, `rgba(190,190,198,${a})`); g.addColorStop(.6, `rgba(150,150,160,${a*.7})`); g.addColorStop(1, 'rgba(130,130,140,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(q.x, q.y, q.r, 0, TAU); ctx.fill();
+  }
+  if(G.darkK > 0){
+    const b = G.ball, bx = b.x, by = b.y - G.cam, g = ctx.createRadialGradient(bx, by, 36, bx, by, 140);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.92*G.darkK})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, vh);
+  }
+  if(G.curses && G.curses.size && G.mode === 'play'){
+    let y = 60; ctx.textAlign = 'center'; ctx.font = '11px Bungee, sans-serif';
+    for(const c of G.curses){
+      const K = CURSES[c], a = .75 + .25*Math.sin(T*6);
+      ctx.fillStyle = 'rgba(10,6,4,.75)'; ctx.beginPath(); ctx.roundRect(W/2 - 112, y, 224, 20, 6); ctx.fill();
+      ctx.strokeStyle = `rgba(${K.col},.6)`; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = `rgba(${K.col},${a})`; ctx.fillText(K.name, W/2, y + 14.5); y += 24;
+    }
   }
 }
 function enemyShots(dt){
@@ -1697,6 +1774,7 @@ function update(dt){
   }
   bossUpdate(dt);
   enemyShots(dt);
+  curseUpdate(dt);
   danceUpdate(L, dt);
   beltUpdate(L, dt);
   for(const tt of L.turntables) if(tt.on) tt.ang += tt.w*tt.dir*dt;
@@ -1939,6 +2017,7 @@ function eyes(x, y, r){
   ctx.strokeStyle='#111'; ctx.lineWidth=r*.12; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(x-r*.6,y-r*.42); ctx.lineTo(x-r*.15,y-r*.25); ctx.moveTo(x+r*.6,y-r*.42); ctx.lineTo(x+r*.15,y-r*.25); ctx.stroke(); ctx.lineCap='butt';
 }
 function drawEnemy(e){
+  drawCurseMark(e);
   if(e.charge && G.mode==='play'){ const col = QLIGHT[Math.min(4, eraNow())]; glow(ctx, e.x, e.y, e.r*2.8, col, .35 + .35*Math.sin(T*30)); }
   if(artOn()) return drawEnemyArt(e);
   if(e2now()) return drawEnemyE2(e);
@@ -4998,6 +5077,7 @@ function draw(){
   };
   if(G.slowT > 0){ const k = (1 - slowScale())/.7; glow(ctx, b.x, b.y, 90, '255,215,160', .28*k); glow(ctx, b.x, b.y, 34, '255,240,210', .25*k); }
   drawCosUnder();
+  if(b.glue){ const pul = .5+.5*Math.sin(T*10); glow(ctx, b.x, b.y + 4, 26, '150,255,120', .35 + .2*pul); ctx.fillStyle = 'rgba(150,255,120,.55)'; ctx.beginPath(); ctx.ellipse(b.x, b.y + BR - 1, BR*1.2, 4 + pul*1.5, 0, 0, TAU); ctx.fill(); }
   if(!b.rail) drawBall();
   for(const r of L.rails) drawRail(r, y0, y1);
   if(b.rail){ glow(ctx,b.x,b.y,30,C.warm,.25); drawBall(); }
@@ -5013,6 +5093,7 @@ function draw(){
   // screen space
   ctx.setTransform(s,0,0,s,view.ox*d,0);
   drawLight(vh); glassFX(vh); if(ERA(L.pi)===2) scanlines(vh);
+  drawCurseFX(vh);
   if(G.mode==='play' || G.mode==='result' || G.mode==='over' || G.mode==='tally'){ drawHUD(vh); if(G.mode!=='tally') drawBanner(vh); drawTally(vh); }
 }
 
