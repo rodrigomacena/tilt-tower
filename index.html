@@ -1666,9 +1666,9 @@ function update(dt){
   else { G.stillT += dt; if(G.stillT > 2.5){ b.vx = (Math.random()-.5)*500; b.vy = -480; G.stillT = 0; G.anchor = null; SFX.relay(); G.searches = (G.searches||0)+1; } }
   // ball cosmetics
   cosUpdate(dt);
-  for(const eb of (G.extra||[])) eb.rot += Math.hypot(eb.vx, eb.vy)*dt/BR*(eb.vx < 0 ? -1 : 1);
+  for(const eb of (G.extra||[])) rollBall(eb, dt);
   if(G.multi){ G.multi.t += dt; if(!(G.extra && G.extra.length)){ G.multi = null; popup('FIM DO MULTIBALL', 180, b.y-50, C.cream, 1.4); Music.set(L.boss && L.boss.intro && !L.boss.dead ? 'boss' : 'play'); } }
-  b.rot += (b.vx/BR)*dt*.6; spinBall(b, dt);
+  rollBall(b, dt); spinBall(b, dt);
   b.trail.unshift([b.x,b.y]); if(b.trail.length > 7) b.trail.pop();
   // camera
   const mf = G.multi ? G.multi.f : -1;
@@ -2455,6 +2455,11 @@ const SPHERE_PTS = (() => { const pts = [];
   return pts; })();
 function qmul(a,b){ return [a[0]*b[0]-a[1]*b[1]-a[2]*b[2]-a[3]*b[3], a[0]*b[1]+a[1]*b[0]+a[2]*b[3]-a[3]*b[2], a[0]*b[2]-a[1]*b[3]+a[2]*b[0]+a[3]*b[1], a[0]*b[3]+a[1]*b[2]-a[2]*b[1]+a[3]*b[0]]; }
 function qrot(q,v){ const [w,x,y,z] = q, ix = w*v[0]+y*v[2]-z*v[1], iy = w*v[1]+z*v[0]-x*v[2], iz = w*v[2]+x*v[1]-y*v[0], iw = -x*v[0]-y*v[1]-z*v[2]; return [ix*w+iw*-x+iy*-z-iz*-y, iy*w+iw*-y+iz*-x-ix*-z, iz*w+iw*-z+ix*-y-iy*-x]; }
+function rollBall(o, dt){
+  // spin the sprite with the ball's speed; direction follows horizontal motion, smoothed so it never snaps
+  if(Math.abs(o.vx) > 40) o.sdir = (o.sdir||1) + (Math.sign(o.vx) - (o.sdir||1))*Math.min(1, dt*8);
+  o.rot += Math.min(Math.hypot(o.vx, o.vy)/BR, 22)*dt*(o.sdir||1);
+}
 function spinBall(b, dt){
   if(!b.q) b.q = [1,0,0,0];
   const sp = Math.hypot(b.vx, b.vy); if(sp < 1) return;
@@ -4399,7 +4404,7 @@ function drawBallArt(x, y, r, rot, alpha){
   ctx.save(); ctx.globalAlpha = alpha;
   ctx.fillStyle = 'rgba(0,0,0,.42)'; ctx.beginPath(); ctx.ellipse(x+3, y+5, r*.95, r*.8, 0, 0, TAU); ctx.fill();
   const im = AI().bola, w = r*2.16, h = w*im.height/im.width;
-  sprite(im, x, y, w, h, rot*.35);
+  sprite(im, x, y, w, h, rot);
   ctx.restore();
 }
 function drawBumperArt(c){
