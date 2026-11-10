@@ -804,15 +804,15 @@ function addSideFeature(L,f,side,v){
 function floorBase(L,f,o){
   addSeg(L,f,8,0,8,700); addSeg(L,f,352,0,352,700);
   // left inlane: one guide from the wall to the flipper (no sealed outlane the ball could never reach)
-  addSeg(L,f,8,558,84,630);
+  addSeg(L,f,8,568.3,91.5,622.5);  // ends where the flipper's top surface starts, so the ball rolls onto the flipper, never onto its round pivot
   if(o.plunger){
     addSeg(L,f,322,180,322,700); addPost(L,f,322,180,4);
     const arc = []; for(let a=0;a>=-90;a-=15){ const r=a*Math.PI/180; arc.push([262+90*Math.cos(r), 150+90*Math.sin(r)]); }
     addPoly(L,f,arc); addSeg(L,f,arc[arc.length-1][0],arc[arc.length-1][1],270,0);
     addSeg(L,f,352,146,324,172,{oneway:[-.68,-.73],draw:false,kind:'flap'});
     addSeg(L,f,322,690,352,690,{draw:false});
-  } else addSeg(L,f,352,558,322,586);
-  addSeg(L,f,322,585,276,630);
+  } else addSeg(L,f,352,568.3,322,587.8);
+  addSeg(L,f,322,587.8,268.5,622.5);
   addLowSection(L,f,o.low || 'classic');
   addSeg(L,f,92,646,150,700); addSeg(L,f,268,646,210,700);
   addSeg(L,f,8,700,150,700,{draw:false}); addSeg(L,f,210,700,352,700,{draw:false});
@@ -2687,7 +2687,7 @@ function printDecor(x, L, f){
   x.restore();
 }
 const STAR_POS = [[120,410],[240,410],[180,505],[96,300],[264,300]];
-function flasherPos(L, f){ const p = [[74,505,'255,70,50'],[286,505,'255,170,60']]; p.push([22,571,'255,170,60']); if(f!==0) p.push([338,571,'255,70,50']); return p; }
+function flasherPos(L, f){ const p = [[74,505,'255,70,50'],[286,505,'255,170,60']]; p.push([22,562,'255,170,60']); if(f!==0) p.push([338,562,'255,70,50']); return p; }
 function drawDecor(L, vis){
   const b = G.ball; L.stars = L.stars || {};
   const flashK = clamp((1 - G.gi)*3.2, 0, 1);
