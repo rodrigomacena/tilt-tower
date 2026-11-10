@@ -795,7 +795,7 @@ function addLowSection(L,f,v){
 function addSideFeature(L,f,side,v){
   // side: 'L' or 'R' (the wall it hugs); everything lives in x 8..100 (or mirrored) and y 270..370
   const m = x => side==='L' ? x : 360-x, sd = side==='L' ? 1 : -1;
-  if(v==='lane'){ addSeg(L,f,m(40),282,m(40),360,{r:3}); addPost(L,f,m(40),282,4); addPost(L,f,m(40),360,4); addCoin(L,f,m(24),322); }
+  if(v==='lane'){ addSeg(L,f,m(48),282,m(48),360,{r:3}); addPost(L,f,m(48),282,4); addPost(L,f,m(48),360,4); addCoin(L,f,m(27),322); }
   else if(v==='pins'){ [[46,288],[92,300],[64,340]].forEach(([x,y]) => addPost(L,f,m(x),y,5)); }
   else if(v==='deflect'){ addSeg(L,f,m(8),270,m(50),318,{e:.8}); addPost(L,f,m(50),318,6); addBumper(L,f,m(52),366,10); }
   else if(v==='flip'){ const F = mkFlipper(f,m(26),330,46,sd); F.r1 = 9; F.r2 = 5; L.flippers.push(F); addSeg(L,f,m(8),292,m(27),321,{r:3}); }
@@ -803,15 +803,15 @@ function addSideFeature(L,f,side,v){
 }
 function floorBase(L,f,o){
   addSeg(L,f,8,0,8,700); addSeg(L,f,352,0,352,700);
-  // left inlane guide + deflector sealing the outlane
-  addSeg(L,f,38,470,38,700); addSeg(L,f,38,585,84,630); addSeg(L,f,12,430,38,470); addPost(L,f,38,470,5);
+  // left inlane: one guide from the wall to the flipper (no sealed outlane the ball could never reach)
+  addSeg(L,f,8,558,84,630);
   if(o.plunger){
     addSeg(L,f,322,180,322,700); addPost(L,f,322,180,4);
     const arc = []; for(let a=0;a>=-90;a-=15){ const r=a*Math.PI/180; arc.push([262+90*Math.cos(r), 150+90*Math.sin(r)]); }
     addPoly(L,f,arc); addSeg(L,f,arc[arc.length-1][0],arc[arc.length-1][1],270,0);
     addSeg(L,f,352,146,324,172,{oneway:[-.68,-.73],draw:false,kind:'flap'});
     addSeg(L,f,322,690,352,690,{draw:false});
-  } else { addSeg(L,f,322,470,322,700); addSeg(L,f,348,430,322,470); addPost(L,f,322,470,5); }
+  } else addSeg(L,f,352,558,322,586);
   addSeg(L,f,322,585,276,630);
   addLowSection(L,f,o.low || 'classic');
   addSeg(L,f,92,646,150,700); addSeg(L,f,268,646,210,700);
@@ -2685,7 +2685,7 @@ function printDecor(x, L, f){
   x.restore();
 }
 const STAR_POS = [[120,410],[240,410],[180,505],[96,300],[264,300]];
-function flasherPos(L, f){ const p = [[74,505,'255,70,50'],[286,505,'255,170,60']]; p.push([38,470,'255,170,60']); if(f!==0) p.push([322,470,'255,70,50']); return p; }
+function flasherPos(L, f){ const p = [[74,505,'255,70,50'],[286,505,'255,170,60']]; p.push([22,571,'255,170,60']); if(f!==0) p.push([338,571,'255,70,50']); return p; }
 function drawDecor(L, vis){
   const b = G.ball; L.stars = L.stars || {};
   const flashK = clamp((1 - G.gi)*3.2, 0, 1);
