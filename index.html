@@ -759,32 +759,52 @@ let LAYR = Math.random;
 function sideBumpers(L,f,y,r){
   // replaces the classic pair of side bumpers with one of several formations
   const v = pick(LAYR, ['pair','pair','high','posts','mini','asymL','asymR']);
+  const c0 = L.circles.length;
   if(v==='pair'){ addBumper(L,f,84,y,r); addBumper(L,f,276,y,r); }
-  else if(v==='high'){ addBumper(L,f,70,y-28,r-2); addBumper(L,f,290,y-28,r-2); addPost(L,f,112,y+14,6); addPost(L,f,248,y+14,6); }
-  else if(v==='posts'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addPost(L,f,cx,y-20,7); addPost(L,f,cx-20,y+12,7); addPost(L,f,cx+20,y+12,7); } }
-  else if(v==='mini'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addBumper(L,f,cx-16,y-12,r-5); addBumper(L,f,cx+16,y+14,r-5); } }
-  else { const big = v==='asymL' ? 84 : 276, small = v==='asymL' ? 276 : 84; addBumper(L,f,big,y,r+4); addPost(L,f,small,y-16,7); addPost(L,f,small,y+18,7); }
+  else if(v==='high'){ addBumper(L,f,72,y-30,r-2); addBumper(L,f,288,y-30,r-2); addPost(L,f,122,y+18,6); addPost(L,f,238,y+18,6); }
+  else if(v==='posts'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addPost(L,f,cx,y-22,7); addPost(L,f,cx-24,y+14,7); addPost(L,f,cx+24,y+14,7); } }
+  else if(v==='mini'){ for(const sx of [1,-1]){ const cx = sx>0 ? 84 : 276; addBumper(L,f,cx-sx*22,y-16,r-6); addBumper(L,f,cx+sx*22,y+20,r-6); } }
+  else { const big = v==='asymL' ? 84 : 276, small = v==='asymL' ? 276 : 84; addBumper(L,f,big,y,r+4); addPost(L,f,small,y-20,7); addPost(L,f,small,y+22,7); }
+  // the ground floor is narrower on the right (plunger lane wall at x 322): pull that side in so nothing wedges against it
+  if(f===0) for(const c of L.circles.slice(c0)) if(c.x > 180) c.x -= 14;
+}
+const POCKET = 30;
+function segPtD(px,py,s){ const dx=s.bx-s.ax, dy=s.by-s.ay, l2=dx*dx+dy*dy||1; let t=((px-s.ax)*dx+(py-s.ay)*dy)/l2; t=t<0?0:t>1?1:t; return Math.hypot(px-(s.ax+dx*t), py-(s.ay+dy*t)); }
+function pieceGap(a, b){
+  const ca = a.ax === undefined, cb = b.ax === undefined;
+  if(ca && cb) return Math.hypot(a.x-b.x, a.y-b.y) - a.r - b.r;
+  if(ca) return segPtD(a.x, a.y, b) - a.r - b.r;
+  if(cb) return segPtD(b.x, b.y, a) - a.r - b.r;
+  return Math.min(segPtD(a.ax,a.ay,b), segPtD(a.bx,a.by,b), segPtD(b.ax,b.ay,a), segPtD(b.bx,b.by,a)) - a.r - b.r;
+}
+// true when any piece added since (c0, s0) leaves a ball-trapping slot against any piece of the floor (or a reserved spot)
+function makesPocket(L, f, c0, s0, reserved){
+  const solid = s => s.kind !== 'flap' && s.kind !== 'stand';
+  const all = L.circles.filter(c => c.f===f).concat(L.segs.filter(s => s.f===f && solid(s)), reserved || []);
+  const fresh = L.circles.slice(c0).filter(c => c.f===f).concat(L.segs.slice(s0).filter(s => s.f===f && solid(s)));
+  for(const a of fresh) for(const b of all){ if(a === b) continue; const g = pieceGap(a, b); if(g > 1.5 && g < POCKET) return true; }
+  return false;
 }
 function addLowSection(L,f,v){
   if(v==='classic'){ addSling(L,f,[74,505],[74,572],[116,598]); addSling(L,f,[286,505],[286,572],[244,598]); }
   else if(v==='short'){ addSling(L,f,[78,530],[78,575],[112,596]); addSling(L,f,[282,530],[282,575],[248,596]); addPost(L,f,180,500,6); }
-  else if(v==='posts'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addPost(L,f,m(78),512,6); addPost(L,f,m(94),546,6); addPost(L,f,m(110),580,6); addPost(L,f,m(128),520,5); } }
+  else if(v==='posts'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addPost(L,f,m(78),506,6); addPost(L,f,m(98),550,6); addPost(L,f,m(136),516,5); } }
   else if(v==='bumps'){ addBumper(L,f,96,540,14); addBumper(L,f,264,540,14); addPost(L,f,118,590,5); addPost(L,f,242,590,5); }
-  else if(v==='guides'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addSeg(L,f,m(70),500,m(118),596,{e:.7}); addPost(L,f,m(70),500,5); addPost(L,f,m(118),596,5); addPost(L,f,m(104),505,5); } }
+  else if(v==='guides'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addSeg(L,f,m(70),500,m(118),596,{e:.7}); addPost(L,f,m(70),500,5); addPost(L,f,m(118),596,5); addPost(L,f,m(132),512,5); } }
 }
 function addSideFeature(L,f,side,v){
   // side: 'L' or 'R' (the wall it hugs); everything lives in x 8..100 (or mirrored) and y 270..370
   const m = x => side==='L' ? x : 360-x, sd = side==='L' ? 1 : -1;
   if(v==='lane'){ addSeg(L,f,m(40),282,m(40),360,{r:3}); addPost(L,f,m(40),282,4); addPost(L,f,m(40),360,4); addCoin(L,f,m(24),322); }
-  else if(v==='pins'){ [[34,290],[58,290],[82,290],[46,318],[70,318],[58,346]].forEach(([x,y]) => addPost(L,f,m(x),y,4)); }
-  else if(v==='deflect'){ addSeg(L,f,m(8),270,m(56),326,{e:.8}); addPost(L,f,m(56),326,6); addBumper(L,f,m(36),356,11); }
-  else if(v==='flip'){ const F = mkFlipper(f,m(26),330,46,sd); F.r1 = 9; F.r2 = 5; L.flippers.push(F); addSeg(L,f,m(8),300,m(18),322,{r:3}); }
+  else if(v==='pins'){ [[46,288],[92,300],[64,340]].forEach(([x,y]) => addPost(L,f,m(x),y,5)); }
+  else if(v==='deflect'){ addSeg(L,f,m(8),270,m(50),318,{e:.8}); addPost(L,f,m(50),318,6); addBumper(L,f,m(52),366,10); }
+  else if(v==='flip'){ const F = mkFlipper(f,m(26),330,46,sd); F.r1 = 9; F.r2 = 5; L.flippers.push(F); addSeg(L,f,m(8),292,m(27),321,{r:3}); }
   else if(v==='spin'){ L.spinners.push({ f, x1:m(sd>0 ? 10 : 56), x2:m(sd>0 ? 56 : 10), y:Y(f,320), ang:0, vel:0, acc:0, revs:0 }); addPost(L,f,m(60),300,5); addPost(L,f,m(60),344,5); }
 }
 function floorBase(L,f,o){
   addSeg(L,f,8,0,8,700); addSeg(L,f,352,0,352,700);
   // left inlane guide + deflector sealing the outlane
-  addSeg(L,f,38,470,38,700); addSeg(L,f,38,585,76,622); addSeg(L,f,12,430,38,470); addPost(L,f,38,470,5);
+  addSeg(L,f,38,470,38,700); addSeg(L,f,38,585,84,630); addSeg(L,f,12,430,38,470); addPost(L,f,38,470,5);
   if(o.plunger){
     addSeg(L,f,322,180,322,700); addPost(L,f,322,180,4);
     const arc = []; for(let a=0;a>=-90;a-=15){ const r=a*Math.PI/180; arc.push([262+90*Math.cos(r), 150+90*Math.sin(r)]); }
@@ -792,7 +812,7 @@ function floorBase(L,f,o){
     addSeg(L,f,352,146,324,172,{oneway:[-.68,-.73],draw:false,kind:'flap'});
     addSeg(L,f,322,690,352,690,{draw:false});
   } else { addSeg(L,f,322,470,322,700); addSeg(L,f,348,430,322,470); addPost(L,f,322,470,5); }
-  addSeg(L,f,322,585,284,622);
+  addSeg(L,f,322,585,276,630);
   addLowSection(L,f,o.low || 'classic');
   addSeg(L,f,92,646,150,700); addSeg(L,f,268,646,210,700);
   addSeg(L,f,8,700,150,700,{draw:false}); addSeg(L,f,210,700,352,700,{draw:false});
@@ -818,6 +838,7 @@ function modBumpers(L,f){
 }
 function modRoll(L,f){
   [56,104,152,200,248].forEach(x=>{ addSeg(L,f,x,70,x,112,{r:3}); addPost(L,f,x,70,4); addPost(L,f,x,112,4); });
+  if(f===0) addSeg(L,f,248,70,262,58,{r:3});
   const lane = { f, xs:[80,128,176,224], y:Y(f,92), lit:[0,0,0,0], letters:['TILT','FUNK','NEON','RAVE','NOVA'][ERA(L.pi)], flash:0, ever:false, reset:0 };
   L.lanes.push(lane);
   addBumper(L,f,92,250,19); addBumper(L,f,268,250,19); addPost(L,f,180,330,6);
@@ -865,7 +886,7 @@ function modGoal(L,f,cond){
   addBumper(L,f,95,290,18); addBumper(L,f,265,290,18);
   [[60,200],[300,200],[180,420]].forEach(p=>addCoin(L,f,...p));
   if(cond==='targets'){
-    L.goalStands = [120,180,240].map(x=>{ const t = { f, x, y:Y(f,350), lit:false, flash:0 }; addSeg(L,f,x-13,350,x+13,350,{kind:'stand',ref:t,draw:false,r:4}); L.stands.push(t); return t; });
+    L.goalStands = [120,180,240].map((x,i)=>{ const t = { f, x, y:Y(f,350), lit:false, flash:0 }, dy = [5,-4,-5][i]; addSeg(L,f,x-13,350-dy,x+13,350+dy,{kind:'stand',ref:t,draw:false,r:4}); L.stands.push(t); return t; });
   }
   if(cond==='bank') L.goalBank = modDrop(L,f,3,258,141,26);
 }
@@ -974,7 +995,16 @@ function buildLevel(pi){
     // side obstacle on the wall away from the side ramp (never on boss / orbit floors, never over the plunger lane)
     if(F.m!=='boss' && F.m!=='orbit' && !(pi===0 && f===0) && R() < .8){
       const side = F.up==='L' ? 'R' : F.up==='R' ? 'L' : (R() < .5 ? 'L' : 'R');
-      if(!(f===0 && side==='R')) addSideFeature(L,f,side,pick(R, ['lane','pins','deflect','flip','spin']));
+      if(!(f===0 && side==='R')){
+        const opts = ['lane','pins','deflect','flip','spin'], k0 = Math.floor(R()*opts.length);
+        const reserved = (pi >= 5 && n >= 3 && f === (n >= 4 ? 1 : 0)) ? [{ x:(P.floors[f].up === 'R') ? 60 : f===0 ? 272 : 300, y:Y(f,400), r:19 }] : null;
+        for(let k=0;k<opts.length;k++){
+          const sz = [L.circles.length, L.segs.length, L.bumpers.length, L.flippers.length, L.spinners.length, L.coins.length];
+          addSideFeature(L,f,side,opts[(k0+k) % opts.length]);
+          if(!makesPocket(L, f, sz[0], sz[1], reserved)) break;
+          L.circles.length = sz[0]; L.segs.length = sz[1]; L.bumpers.length = sz[2]; L.flippers.length = sz[3]; L.spinners.length = sz[4]; L.coins.length = sz[5];
+        }
+      }
     }
     let rail = null;
     if(!top){
@@ -991,7 +1021,7 @@ function buildLevel(pi){
   }
   P.golds.forEach(([f,x,y]) => addCoin(L,f,x,y,true));
   if(pi >= 5 && n >= 3){
-    const df = n >= 4 ? 1 : 0, kf = n - 2, side = (P.floors[df].up === 'R') ? 60 : 300;
+    const df = n >= 4 ? 1 : 0, kf = n - 2, side = (P.floors[df].up === 'R') ? 60 : df===0 ? 272 : 300;
     const door = { f:df, x:side, y:Y(df,400), r:19, e:.5, kind:'vault' }; L.circles.push(door);
     L.quest = { multi:(pi+1) % 3 === 0, df, kf, door, key:{ f:kf, x:180, y:Y(kf,445), taken:false, ph:0 }, open:false, msgT:0, openT:0 };
   }
@@ -1171,7 +1201,7 @@ function ballStep(h){
   // rails entry
   for(const r of L.rails){
     if(r.type==='elev' || r.locked || r.cool > 0 || G.multi) continue;
-    if(b.x > r.mx0 && b.x < r.mx1 && Math.abs(b.y-r.y0) < (r.my||18) && b.vy < -380 && Math.abs(b.vx) < -b.vy*.75 && (G.t - (G.lastFlipHit||-9) < 1.6 || b.vy < -850)){ attachRail(r, Math.max(-b.vy, b.vx*r.tx + b.vy*r.ty)); return; }
+    if(b.x > r.mx0 && b.x < r.mx1 && Math.abs(b.y-r.y0) < (r.my||24) && b.vy < -330 && Math.abs(b.vx) < -b.vy*.9 && (G.t - (G.lastFlipHit||-9) < 2.2 || b.vy < -800)){ attachRail(r, Math.max(-b.vy, b.vx*r.tx + b.vy*r.ty)); return; }
   }
   // saucers
   for(const sc of L.saucers){
@@ -1435,7 +1465,7 @@ function drawCurseFX(vh){
     g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.92*G.darkK})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, vh);
   }
   if(G.curses && G.curses.size && G.mode === 'play'){
-    let y = 60; ctx.textAlign = 'center'; ctx.font = '11px Bungee, sans-serif';
+    let y = 86; ctx.textAlign = 'center'; ctx.font = '11px Bungee, sans-serif';
     for(const c of G.curses){
       const K = CURSES[c], a = .75 + .25*Math.sin(T*6);
       ctx.fillStyle = 'rgba(10,6,4,.75)'; ctx.beginPath(); ctx.roundRect(W/2 - 112, y, 224, 20, 6); ctx.fill();
@@ -3641,7 +3671,7 @@ function portalStep(b, L, h){
 }
 function modCode(L,f){
   const cd = { f, btns:[], seq:[], step:0, cleared:false, flash:0, err:0, y:Y(f,300) };
-  [[120,'255,70,70'],[180,'80,230,120'],[240,'90,150,255']].forEach(([x,col],i) => { const t = { x, y:Y(f,300), col, i, flash:0 }; addSeg(L,f,x-13,300,x+13,300,{kind:'code',ref:t,draw:false,r:4}); cd.btns.push(t); });
+  [[120,'255,70,70'],[180,'80,230,120'],[240,'90,150,255']].forEach(([x,col],i) => { const t = { x, y:Y(f,300), col, i, flash:0 }; addSeg(L,f,x-13,300-[5,-4,-5][i],x+13,300+[5,-4,-5][i],{kind:'code',ref:t,draw:false,r:4}); cd.btns.push(t); });
   codeShuffle(cd); L.codes.push(cd);
   sideBumpers(L,f,170,17);
   [[150,232],[210,232],[180,380]].forEach(p=>addCoin(L,f,...p));
