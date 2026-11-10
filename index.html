@@ -788,7 +788,7 @@ function makesPocket(L, f, c0, s0, reserved){
 function addLowSection(L,f,v){
   if(v==='classic'){ addSling(L,f,[74,505],[74,572],[116,598]); addSling(L,f,[286,505],[286,572],[244,598]); }
   else if(v==='short'){ addSling(L,f,[78,530],[78,575],[112,596]); addSling(L,f,[282,530],[282,575],[248,596]); addPost(L,f,180,500,6); }
-  else if(v==='posts'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addPost(L,f,m(78),506,6); addPost(L,f,m(98),550,6); addPost(L,f,m(136),516,5); } }
+  else if(v==='posts'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addPost(L,f,m(74),505,6); addPost(L,f,m(88),548,6); addPost(L,f,m(108),586,6); } }  // pins along the slingshot line, out of the flippers' shooting lanes
   else if(v==='bumps'){ addBumper(L,f,96,540,14); addBumper(L,f,264,540,14); addPost(L,f,118,590,5); addPost(L,f,242,590,5); }
   else if(v==='guides'){ for(const sx of [1,-1]){ const m = x => sx>0 ? x : 360-x; addSeg(L,f,m(70),500,m(118),596,{e:.7}); addPost(L,f,m(70),500,5); addPost(L,f,m(118),596,5); addPost(L,f,m(132),512,5); } }
 }
@@ -957,8 +957,8 @@ function rampSide(L,f,side,lockObj,lockBy){
   const pts = [[60,366],[44,250],[28,60]].map(p=>[m(p[0]),Y(f,p[1])])
     .concat(RAMP_ROUTES[L.pi===0 ? 'loop' : pick(LAYR, Object.keys(RAMP_ROUTES))].map(p=>[m(p[0]),Y(f+1,p[1])]));
   const r = mkRail(L,f,'ramp',pts);
-  r.mx0 = Math.min(m(8),m(94)); r.mx1 = Math.max(m(8),m(94));
-  addSeg(L,f,m(94),395,m(94),350); addPost(L,f,m(94),350,5);
+  // open mouth: nothing in front of the ramp, so a flipper shot can always reach it
+  r.mx0 = Math.min(m(8),m(104)); r.mx1 = Math.max(m(8),m(104));
   if(lockObj){ r.lockObj = lockObj; r.lockBy = lockBy; r.gate = addSeg(L,f,m(10),346,m(90),346,{kind:'gate',draw:false,r:4,oneway:[0,1]}); }
   L.inserts.push({f,type:'arrows',x:m(60),y:Y(f,420),n:2,rail:r});
   return r;
@@ -1018,6 +1018,8 @@ function buildLevel(pi){
   if(n > 1 && L.floors[0].rail && L.floors[0].rail.type==='ramp'){
     const side = L.floors[0].rail; side.mx0 = side.x0 < 180 ? 8 : 238; side.mx1 = side.x0 < 180 ? 122 : 352; side.my = 26;
     const c = rampCenter(L,0); c.my = 22; c.mx0 = 138; c.mx1 = 222; c.lockObj = side.lockObj; c.lockBy = side.lockBy; L.floors[0].extra = c;
+    // keep the shot to the centre ramp clear: no plain posts in the middle column
+    L.circles = L.circles.filter(c => !(c.f===0 && c.kind==='post' && Math.abs(c.x-180) < 34 && c.y > Y(0,160) && c.y < Y(0,540)));
   }
   P.golds.forEach(([f,x,y]) => addCoin(L,f,x,y,true));
   if(pi >= 5 && n >= 3){
@@ -3671,7 +3673,7 @@ function portalStep(b, L, h){
 }
 function modCode(L,f){
   const cd = { f, btns:[], seq:[], step:0, cleared:false, flash:0, err:0, y:Y(f,300) };
-  [[120,'255,70,70'],[180,'80,230,120'],[240,'90,150,255']].forEach(([x,col],i) => { const t = { x, y:Y(f,300), col, i, flash:0 }; addSeg(L,f,x-13,300-[5,-4,-5][i],x+13,300+[5,-4,-5][i],{kind:'code',ref:t,draw:false,r:4}); cd.btns.push(t); });
+  [[f===0?76:120,'255,70,70'],[f===0?140:180,'80,230,120'],[f===0?276:240,'90,150,255']].forEach(([x,col],i) => { const t = { x, y:Y(f,300), col, i, flash:0 }; addSeg(L,f,x-13,300-[5,-4,-5][i],x+13,300+[5,-4,-5][i],{kind:'code',ref:t,draw:false,r:4}); cd.btns.push(t); });
   codeShuffle(cd); L.codes.push(cd);
   sideBumpers(L,f,170,17);
   [[150,232],[210,232],[180,380]].forEach(p=>addCoin(L,f,...p));
