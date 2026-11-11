@@ -43,6 +43,8 @@ function targets(L, f){
     if(out.length) return out;
   }
   if(fl.m === 'elev'){ const sc = L.saucers.find(s => s.f === f && s.kind === 'elev'); if(sc) return [[sc.x, sc.y, 's']]; }
+  const sg = (L.sigs||[]).find(q => q.f === f);
+  if(sg && sg.seq && sg.seq.n < 1){ if(sg.seq.step === 0 && sg.vari) return [[sg.vari.x - sg.vari.dx*14, sg.vari.y - sg.vari.dy*14]]; if(sg.seq.step === 1 && sg.cap) return [[sg.cap.x, sg.cap.y0 + 14]]; }
   for(const q of [fl.rail, fl.extra]) if(q && !q.locked && q.type !== 'elev') out.push([(q.mx0+q.mx1)/2, q.y0 + 6]);
   return out;
 }
@@ -111,7 +113,7 @@ function playOnce(pi, o){
     const f = Math.max(0, Math.min(L.n-1, T.floorOf(G.ball.y))); floorT[f] += dt; if(f > maxF) maxF = f;
   }
   G.press.L = G.press.R = false;
-  return { win:!!G.done, fichas:G.fichasRun + Math.floor(G.score/T.SCORE_PER_FICHA), t, drains, maxF, floorT, score:G.score, flips:st.flips, aimed:st.aimed, searches:G.searches||0, bossHp: L.boss ? L.boss.hp : null };
+  return { win:!!G.done, fichas:G.fichasRun + Math.floor(G.score/T.SCORE_PER_FICHA), t, drains, maxF, floorT, score:G.score, discos:G.discos||0, flips:st.flips, aimed:st.aimed, searches:G.searches||0, bossHp: L.boss ? L.boss.hp : null };
 }
 const TTBot = {
   targets, ghost, playOnce, makeBot, state:null,
@@ -137,7 +139,7 @@ const TTBot = {
     const avg = xs => xs.length ? xs.reduce((p,c)=>p+c,0)/xs.length : 0;
     return Object.keys(by).map(pi => { const a = by[pi], w = a.filter(r => r.win);
       const ft = a[0].floorT.map((_, i) => Math.round(avg(a.map(r => r.floorT[i]))));
-      return { fase:+pi+1, win:w.length+'/'+a.length, tWin:Math.round(avg(w.map(r => r.t))), drains:+avg(a.map(r => r.drains)).toFixed(1), maxF:+avg(a.map(r => r.maxF)).toFixed(1), floorT:ft.join(','), aimed:Math.round(100*avg(a.map(r => r.aimed/Math.max(1,r.flips)))), searches:+avg(a.map(r => r.searches)).toFixed(1), fichas:Math.round(avg(w.map(r => r.fichas))), score:Math.round(avg(w.map(r => r.score))), bossHp:a[0].bossHp === null ? '' : avg(a.map(r => r.bossHp)).toFixed(1) };
+      return { fase:+pi+1, win:w.length+'/'+a.length, tWin:Math.round(avg(w.map(r => r.t))), drains:+avg(a.map(r => r.drains)).toFixed(1), maxF:+avg(a.map(r => r.maxF)).toFixed(1), floorT:ft.join(','), aimed:Math.round(100*avg(a.map(r => r.aimed/Math.max(1,r.flips)))), searches:+avg(a.map(r => r.searches)).toFixed(1), fichas:Math.round(avg(w.map(r => r.fichas))), score:Math.round(avg(w.map(r => r.score))), discos:+avg(a.map(r => r.discos)).toFixed(1), bossHp:a[0].bossHp === null ? '' : avg(a.map(r => r.bossHp)).toFixed(1) };
     });
   }
 };

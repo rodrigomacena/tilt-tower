@@ -244,33 +244,33 @@ const PHASES = [
   { name:'Salão de Bar', easy:true, floors:[{m:'bumpers',up:'L'},{m:'goal',cond:'always'}],
     golds:[[0,44,250],[1,180,110],[0,180,180]], enemies:[],
     tip:'Mande a bola numa das duas rampas: a da esquerda ou a do centro.' },
-  { name:'Fichas e Spinners', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'always'}],
+  { name:'Fichas e Spinners', floors:[{m:'sig',up:'L',sig:'vari'},{m:'orbit',up:'C'},{m:'goal',cond:'always'}],
     golds:[[0,40,200],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'No andar da órbita, a rampa fica no centro. O spinner dá fichas.' },
-  { name:'Alvos que Caem', floors:[{m:'drop',up:'L',lock:'bank'},{m:'bumpers',up:'R'},{m:'goal',cond:'targets'}],
+    tip:'Novo: o VARI-ALVO. Quanto mais forte a tacada, mais fundo ele vai e mais pontos dá.' },
+  { name:'Alvos que Caem', floors:[{m:'drop',up:'L',lock:'bank'},{m:'sig',up:'R',sig:'cap'},{m:'goal',cond:'targets'}],
     golds:[[0,180,240],[1,316,250],[2,180,110]], enemies:[{t:'roll',f:1,y:410,x1:90,x2:270}],
-    tip:'Derrube os 4 alvos para abrir a rampa.' },
+    tip:'Derrube os 4 alvos para abrir a rampa. No 2º andar, bata na BOLA CATIVA para tocar o sino.' },
   { name:'Relé Tagarela', boss:'relay', floors:[{m:'bumpers',up:'L'},{m:'elev'},{m:'boss'}],
     golds:[[0,44,250],[1,180,100],[2,60,330]], enemies:[],
     tip:'Sub-chefe! Acerte o botão de reset quando a proteção abrir.' },
-  { name:'Corredor de Arame', floors:[{m:'roll',up:'L'},{m:'elev'},{m:'drop',up:'R',lock:'bank'},{m:'goal',cond:'bank'}],
-    golds:[[0,176,92],[2,180,240],[3,180,120]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:1,x:270,y:340}],
-    tip:'O elevador no centro leva a bola direto para o andar de cima.' },
-  { name:'Mariposas', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'roll',up:'L'},{m:'goal',cond:'targets'}],
+  { name:'Corredor de Arame', floors:[{m:'sig',up:'L'},{m:'elev'},{m:'drop',up:'R',lock:'bank'},{m:'goal',cond:'bank'}],
+    golds:[[0,100,150],[2,180,240],[3,180,120]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:1,x:270,y:340}],
+    tip:'SEQUÊNCIA DA JUKEBOX: vari-alvo, bola cativa e rampa, nessa ordem, valem o DISCO DE OURO.' },
+  { name:'Mariposas', floors:[{m:'sig',up:'L'},{m:'orbit',up:'C'},{m:'roll',up:'L'},{m:'goal',cond:'targets'}],
     golds:[[1,180,45],[2,128,92],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:410,rx:100,ry:40}],
     tip:'Mariposas freiam a bola. Acerte-as com força para derrubá-las.' },
   { name:'Pêndulo do Tilt', boss:'pendulum', floors:[{m:'drop',up:'L',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
     golds:[[0,180,240],[1,180,45],[2,300,430]], enemies:[{t:'roll',f:1,y:400,x1:90,x2:270}],
     tip:'Sub-chefe! Acerte o prumo do pêndulo com força.' },
-  { name:'Rollover T-I-L-T', floors:[{m:'roll',up:'L',lock:'roll'},{m:'bumpers',up:'R'},{m:'roll',up:'L',lock:'roll'},{m:'elev'},{m:'goal',cond:'targets'}],
+  { name:'Rollover T-I-L-T', floors:[{m:'roll',up:'L',lock:'roll'},{m:'sig',up:'R'},{m:'roll',up:'L',lock:'roll'},{m:'elev'},{m:'goal',cond:'targets'}],
     golds:[[0,224,92],[2,128,92],[4,180,110]], enemies:[{t:'hop',f:1,x:80,y:420},{t:'hop',f:1,x:280,y:420}],
     tip:'Acenda as 4 letras T-I-L-T para abrir a rampa. Os flippers trocam as luzes de lugar.' },
-  { name:'Torre de Relés', floors:[{m:'bumpers',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'elev'},{m:'goal',cond:'bank'}],
+  { name:'Torre de Relés', floors:[{m:'sig',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'elev'},{m:'goal',cond:'bank'}],
     golds:[[1,180,240],[2,180,45],[4,180,120]], enemies:[{t:'roll',f:1,y:410,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:3,x:90,y:340}],
     tip:'A torre mais alta da era. Cuidado com tudo.' },
-  { name:'Jukebox Rex', boss:'jukebox', floors:[{m:'roll',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
-    golds:[[0,176,92],[1,180,240],[2,180,45]], enemies:[{t:'roll',f:0,y:400,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
-    tip:'Chefe! Lance a bola no slot de moedas quando a grade abrir.' },
+  { name:'Jukebox Rex', boss:'jukebox', floors:[{m:'sig',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
+    golds:[[0,100,150],[1,180,240],[2,180,45]], enemies:[{t:'roll',f:0,y:400,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
+    tip:'Chefe! Lance a bola no slot de moedas quando a grade abrir. Cada DISCO DE OURO deixa a grade aberta por mais tempo.' },
   /* ---- ERA 2 · ANOS 70 ---- */
   { name:'Pista de Dança', floors:[{m:'dance',up:'L'},{m:'bumpers',up:'R'},{m:'goal',cond:'always'}],
     golds:[[0,180,372],[1,316,250],[2,180,110]], enemies:[],
@@ -734,7 +734,7 @@ const lin = (ctx,x0,y0,x1,y1,st) => { const g = ctx.createLinearGradient(x0,y0,x
    LEVEL BUILDING
    ========================================================= */
 function newLevel(pi, n){
-  return { pi, n, segs:[], circles:[], bumpers:[], slings:[], flippers:[], rails:[], saucers:[], spinners:[], lanes:[], banks:[], stands:[], coins:[], enemies:[], inserts:[], floors:[], kickers:[], dances:[], turntables:[], belts:[], portals:[], codes:[], wells:[], boss:null, static:[] };
+  return { pi, n, segs:[], circles:[], bumpers:[], slings:[], flippers:[], rails:[], saucers:[], spinners:[], lanes:[], banks:[], stands:[], coins:[], enemies:[], inserts:[], floors:[], kickers:[], dances:[], turntables:[], belts:[], portals:[], codes:[], wells:[], sigs:[], boss:null, static:[] };
 }
 function addSeg(L,f,ax,ay,bx,by,o={}){
   const s = { f, ax, ay:Y(f,ay), bx, by:Y(f,by), r:o.r??2.5, e:o.e??.35, kind:o.kind||'wall', on:true, ref:o.ref||null, oneway:o.oneway||null, draw:o.draw??true };
@@ -906,12 +906,126 @@ function modBoss(L,f,type){
   } else if(type==='needle' || type==='lava' || type==='globe'){ modBossE2(L,f,type,B);
   } else {
     addSeg(L,f,105,6,105,196); addSeg(L,f,255,6,255,196);
-    addSeg(L,f,105,196,160,196); addSeg(L,f,200,196,255,196);
+    addSeg(L,f,105,186,160,196); addSeg(L,f,200,196,255,186);
     B.weak = addSeg(L,f,160,196,200,196,{kind:'bossweak',draw:false,r:5,e:.4});
     B.state = 'open'; addBumper(L,f,60,300,16); addBumper(L,f,300,300,16);
   }
   B.spd = 1 + .45*DIFF(L.pi); B.hp = B.maxhp = B.hp + (L.pi >= 25 ? 1 : 0) + (L.pi >= 45 ? 1 : 0);
   L.boss = B;
+}
+
+/* ---------- ERA 1 signature: vari-target, captive ball and the Jukebox sequence ---------- */
+function modSig(L,f,side,kind){
+  // side = the wall the ramp hugs; the vari-target stands on the other side, the captive ball lane hangs top centre
+  const vsd = side==='L' ? 1 : -1, sg = { f, kind, vari:null, cap:null, seq:kind==='full' ? { step:0, t:0, lim:20, n:0 } : null, bells:0, rail:null, y:Y(f,300) };
+  const o = { draw:false, r:3, e:.3 };
+  if(kind!=='cap'){
+    const wall = vsd > 0 ? (f===0 ? 322 : 352) : 8, mx = wall - vsd*74, my = 340, dx = vsd*.342, dy = -.94, px = .94, py = vsd*.342, hw = 17, len = 64;
+    const A = [mx-px*hw, my-py*hw], B = [mx+px*hw, my+py*hw], Cc = [B[0]+dx*len, B[1]+dy*len], D = [A[0]+dx*len, A[1]+dy*len];
+    addSeg(L,f,A[0],A[1],B[0],B[1],{ draw:false, r:4, e:.25, kind:'vari', ref:sg });
+    addSeg(L,f,B[0],B[1],Cc[0],Cc[1],o); addSeg(L,f,Cc[0],Cc[1],D[0],D[1],o); addSeg(L,f,D[0],D[1],A[0],A[1],o);
+    sg.vari = { x:mx, y:Y(f,my), dx, dy, hw, len, s:0, peak:0, t:9, zone:-1, flash:0, cool:0 };
+  }
+  if(kind!=='vari'){
+    const cx = 180, top = 62, rest = 150;
+    addSeg(L,f,cx-16,top,cx-16,rest-4,o); addSeg(L,f,cx+16,top,cx+16,rest-4,o); addSeg(L,f,cx-16,top,cx,top-14,o); addSeg(L,f,cx,top-14,cx+16,top,o);
+    sg.cap = { x:cx, y0:Y(f,rest), len:rest-top-16, s:0, v:0, ring:0 };
+  }
+  addBumper(L,f,180 - vsd*58,238,20); addBumper(L,f,180 + vsd*12,304,16);
+  [[180 - vsd*100,150],[180 + vsd*84,170],[180 - vsd*20,190],[180,420]].forEach(p => addCoin(L,f,...p));
+  L.sigs.push(sg); return sg;
+}
+const VARI_X = [1,2,3,5];
+function variHit(sg, imp, nx, ny){
+  const v = sg.vari; if(!v || v.cool > 0 || imp < 150 || nx*v.dx + ny*v.dy > -.5) return;
+  const z = imp < 800 ? 0 : imp < 1200 ? 1 : imp < 1550 ? 2 : 3;
+  v.zone = z; v.peak = [.2,.45,.72,1][z]*(v.len-12); v.t = 0; v.flash = 1; v.cool = .5;
+  comboHit(v.x, v.y); addScore(300*VARI_X[z], v.x, v.y-40); Snd.tone(520 + z*180, .12, 'triangle', .06); SFX.target();
+  if(z === 3){ addFichas(2, v.x, v.y-20); G.bumpT = 10; popup('5x! BUMPERS EM DOBRO', 180, v.y-70, C.gold, 1.8); Snd.chime(2); G.gi = .8; }
+  seqAdvance(sg, 0);
+}
+function capBell(sg){
+  const c = sg.cap; c.ring = 1; sg.bells++;
+  comboHit(c.x, c.y0-c.len); addScore(1500, c.x, c.y0-c.len-20); SFX.bell(); sparks(c.x, c.y0-c.len-10, C.gold, 12); G.gi = .82;
+  if(sg.bells % 3 === 0 && G.mode==='play'){ G.kickCharges++; popup('3 SINOS! +1 KICKBACK', 180, c.y0+40, C.teal, 1.8); }
+  seqAdvance(sg, 1);
+}
+function seqAdvance(sg, i){
+  const q = sg.seq; if(!q || q.step !== i || G.mode!=='play') return;
+  q.step++; q.t = q.lim; addScore([500,1000,2000][i], 180, sg.y+70);
+  if(q.step < 3){ popup(`SEQUÊNCIA ${q.step}/3`, 180, sg.y+96, C.gold, 1.4); Snd.chime(q.step-1); return; }
+  q.step = 0; q.n++; q.lim = [20,15,12][Math.min(2, q.n)]; G.discos = (G.discos||0) + 1; G.dblT = 15;
+  addScore(2500, 180, sg.y+40); addFichas(5, 180, sg.y+60); popup('DISCO DE OURO! PONTOS EM DOBRO', 180, sg.y+20, C.gold, 2.6);
+  Snd.chime(0); Snd.chime(1,.12); Snd.chime(2,.24); SFX.rampDone(); G.shake = Math.max(G.shake, 8); G.gi = .6; buzz(40);
+}
+function sigStep(L, h){
+  for(const sg of L.sigs){ const c = sg.cap; if(!c || (c.s <= 0 && c.v <= 0)) continue;
+    c.v -= 900*h; c.s += c.v*h;
+    if(c.s >= c.len){ c.s = c.len; if(c.v > 120) capBell(sg); c.v = -Math.abs(c.v)*.3; }
+    if(c.s <= 0){ c.s = 0; c.v = c.v < -80 ? -c.v*.25 : 0; }
+  }
+}
+function sigCollide(b, L){
+  for(const sg of L.sigs){ const c = sg.cap; if(!c) continue; const cy = c.y0 - c.s; if(Math.abs(b.y-cy) > 60) continue;
+    const imp = hitMoving(b, c.x, cy, BR, 0, -c.v, .15);
+    if(imp > 0 && b.y > cy){ c.v = Math.max(c.v, imp*.85); if(imp > 200){ SFX.relay(); impactFX(b.x, b.y-b.r, 0, 1, imp); } }
+  }
+}
+function sigUpdate(L, dt){
+  if(G.dblT > 0) G.dblT -= dt; if(G.bumpT > 0) G.bumpT -= dt;
+  for(const sg of L.sigs){
+    const v = sg.vari; if(v){ v.t += dt; v.cool -= dt; v.flash = Math.max(0, v.flash-dt*1.6); v.s = v.t < .12 ? v.peak*(v.t/.12) : v.t < .55 ? v.peak : v.peak*Math.max(0, 1-(v.t-.55)/.5); }
+    if(sg.cap) sg.cap.ring = Math.max(0, sg.cap.ring-dt*1.8);
+    const q = sg.seq; if(q && q.step > 0 && !G.ball.rail && G.mode==='play'){ q.t -= dt; if(q.t <= 0){ q.step = 0; popup('SEQUÊNCIA PERDIDA', 180, sg.y+96, C.red, 1.4); Snd.tone(180, .2, 'square', .04, 120); } }
+  }
+}
+function sigArrow(x, y, ang, state){
+  const on = state==='lit' ? Math.sin(T*7) > -.2 : state==='done';
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  if(on) glow(ctx, 0, 0, 24, C.gold, state==='lit' ? .55 : .3);
+  ctx.fillStyle = on ? (state==='done' ? '#c9a23a' : '#ffe08a') : 'rgba(255,216,96,.2)';
+  ctx.beginPath(); ctx.moveTo(0,-12); ctx.lineTo(12,6); ctx.lineTo(5,3); ctx.lineTo(0,10); ctx.lineTo(-5,3); ctx.lineTo(-12,6); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function drawSig(sg){
+  const q = sg.seq, st = i => !q ? 'lit' : q.step > i ? 'done' : q.step === i ? 'lit' : 'off';
+  const v = sg.vari;
+  if(v){
+    const ang = Math.atan2(v.dx, -v.dy);
+    sigArrow(v.x - v.dx*40, v.y - v.dy*40, ang, st(0));
+    ctx.save(); ctx.translate(v.x, v.y); ctx.rotate(ang);
+    shadowBlob(4, -v.len/2+6, v.hw+8, v.len/2+8, 0, .4);
+    ctx.fillStyle = '#1f3f38'; ctx.strokeStyle = '#d8c9a0'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.roundRect(-v.hw-2, -v.len-2, v.hw*2+4, v.len+4, 6); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = '#0f2823'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-5, -8); ctx.lineTo(-5, -v.len+10); ctx.stroke();
+    ctx.font = '700 8px "Chakra Petch", sans-serif'; ctx.textAlign = 'center';
+    for(let z=0;z<4;z++){ const yy = -[.2,.45,.72,1][z]*(v.len-12) - 2, hot = v.zone === z && v.flash > 0; if(hot) glow(ctx, 9, yy-3, 14, C.gold, v.flash*.7); ctx.fillStyle = hot ? '#ffe08a' : 'rgba(243,230,196,.75)'; ctx.fillText(VARI_X[z]+'x', 9, yy); }
+    if(v.flash > 0) glow(ctx, 0, -v.s, 26, C.amber, v.flash*.6);
+    ctx.fillStyle = '#ffb347'; ctx.strokeStyle = '#7a4a10'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.roundRect(-v.hw+1, -v.s-6, v.hw*2-2, 10, 3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.fillRect(-v.hw+4, -v.s-5, v.hw*2-8, 2.5);
+    ctx.restore();
+  }
+  const c = sg.cap;
+  if(c){
+    sigArrow(c.x, c.y0+46, 0, st(1));
+    const top = c.y0 - c.len - 16;
+    shadowBlob(c.x+4, c.y0-c.len/2, 20, c.len/2+18, 0, .35);
+    ctx.fillStyle = '#1f3f38'; ctx.strokeStyle = '#d8c9a0'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.roundRect(c.x-17, top-2, 34, c.len+14, 8); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(c.x-17, top+4); ctx.lineTo(c.x, top-16); ctx.lineTo(c.x+17, top+4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    const by = top + 10 - c.ring*2*Math.sin(T*40);
+    if(c.ring > 0) glow(ctx, c.x, by, 30, C.gold, c.ring*.7);
+    ctx.fillStyle = '#e8c35a'; ctx.strokeStyle = '#8a5a10'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(c.x, by, 9, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#8a5a10'; ctx.beginPath(); ctx.arc(c.x, by, 2.5, 0, TAU); ctx.fill();
+    const cy = c.y0 - c.s, g = ctx.createRadialGradient(c.x-4, cy-4, 1, c.x, cy, BR);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(.35, '#cfd3d8'); g.addColorStop(1, '#5c626b');
+    shadowBlob(c.x+3, cy+5, BR, BR*.8, 0, .4);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c.x, cy, BR-.5, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(30,34,40,.6)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  if(q){
+    const r = sg.rail; if(r && q.step === 2){ const pul = .5+.5*Math.sin(T*7); glow(ctx, r.x0, r.y0+44, 40, C.gold, .3+.3*pul); }
+    const px = 180, py = Y(sg.f, 396);
+    ctx.fillStyle = 'rgba(16,10,6,.6)'; ctx.beginPath(); ctx.roundRect(px-44, py-11, 88, 22, 8); ctx.fill();
+    for(let i=0;i<3;i++){ const s2 = st(i), x = px-24+i*24, on = s2==='done' || (s2==='lit' && Math.sin(T*7) > -.2); if(on) glow(ctx, x, py-1, 14, C.gold, .5); ctx.fillStyle = on ? '#ffd860' : 'rgba(255,216,96,.22)'; ctx.beginPath(); ctx.arc(x, py-1, 5, 0, TAU); ctx.fill(); }
+    if(q.step > 0){ ctx.fillStyle = 'rgba(255,216,96,.85)'; ctx.fillRect(px-36, py+7, 72*clamp(q.t/q.lim, 0, 1), 2); }
+  }
 }
 
 /* rails: ramps, wire ramps and the elevator tube */
@@ -991,8 +1105,9 @@ function buildLevel(pi){
     else if(F.m==='code') lockObj = modCode(L,f);
     else if(F.m==='holo') lockObj = modHolo(L,f);
     else if(F.m==='well') modWell(L,f);
+    else if(F.m==='sig') modSig(L,f,F.up||'L',F.sig||'full');
     // side obstacle on the wall away from the side ramp (never on boss / orbit floors, never over the plunger lane)
-    if(F.m!=='boss' && F.m!=='orbit' && !(pi===0 && f===0) && R() < .8){
+    if(F.m!=='boss' && F.m!=='orbit' && F.m!=='sig' && !(pi===0 && f===0) && R() < .8){
       const side = F.up==='L' ? 'R' : F.up==='R' ? 'L' : (R() < .5 ? 'L' : 'R');
       if(!(f===0 && side==='R')){
         const opts = ['lane','pins','deflect','flip','spin'], k0 = Math.floor(R()*opts.length);
@@ -1014,7 +1129,8 @@ function buildLevel(pi){
     LAYR = Math.random;
     L.floors.push({ m:F.m, rail, lockBy:F.lock||null, lockObj, cond:F.cond, reached:f===0 });
   });
-  if(n > 1 && L.floors[0].rail && L.floors[0].rail.type==='ramp'){
+  for(const sg of L.sigs) sg.rail = L.floors[sg.f].rail;
+  if(n > 1 && L.floors[0].rail && L.floors[0].rail.type==='ramp' && L.floors[0].m!=='sig'){
     const side = L.floors[0].rail; side.mx0 = side.x0 < 180 ? 8 : 238; side.mx1 = side.x0 < 180 ? 122 : 352; side.my = 26;
     const c = rampCenter(L,0); c.my = 22; c.mx0 = 138; c.mx1 = 222; c.lockObj = side.lockObj; c.lockBy = side.lockBy; L.floors[0].extra = c;
     // keep the shot to the centre ramp clear: no plain posts in the middle column
@@ -1024,7 +1140,8 @@ function buildLevel(pi){
   if(pi >= 5 && n >= 3){
     const df = n >= 4 ? 1 : 0, kf = n - 2, side = (P.floors[df].up === 'R') ? 60 : df===0 ? 272 : 300;
     const door = { f:df, x:side, y:Y(df,400), r:19, e:.5, kind:'vault' }; L.circles.push(door);
-    L.quest = { multi:(pi+1) % 3 === 0, df, kf, door, key:{ f:kf, x:180, y:Y(kf,445), taken:false, ph:0 }, open:false, msgT:0, openT:0 };
+    if(P.floors[df].m==='sig'){ door.x = P.floors[df].up==='R' ? 84 : 276; door.y = Y(df,200); }   // keep the vault out of the vari-target's mouth
+    L.quest = { multi:(pi+1) % 3 === 0, df, kf, door, dy:door.y, key:{ f:kf, x:180, y:Y(kf,445), taken:false, ph:0 }, open:false, msgT:0, openT:0 };
   }
   P.enemies.forEach(e => {
     const o = { k:1 + .6*DIFF(pi), type:e.t, f:e.f, alive:true, flash:0, ph:Math.random()*6, r:13, x:0, y:0, vx:0, vy:0 };
@@ -1055,7 +1172,7 @@ function startPhase(pi, attract=false){
   G.pi = pi; G.mode = attract ? 'attract' : 'play'; Music.set(attract ? 'menu' : 'play');
   G.L = buildLevel(pi); renderStatic(G.L);
   G.balls = attract ? 3 : 3 + S.up.balls; G.score = 0; G.fichasRun = 0; G.golds = 0; G.lost = false;
-  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.bossCurse = null; G.curses = new Set(); G.smoke = []; G.darkK = 0; G.gravMul = 1; G.windX = 0; G.bonusDone = false; G.bonus = null; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
+  G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.dblT = 0; G.bumpT = 0; G.discos = 0; G.bossCurse = null; G.curses = new Set(); G.smoke = []; G.darkK = 0; G.gravMul = 1; G.windX = 0; G.bonusDone = false; G.bonus = null; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
   G.popups = []; G.parts = []; G.done = false; G.doneT = 0; G.shake = 0; G.gi = 1; G.floorMsg = null;
   G.press.L = G.press.R = false;
   newBall(); G.cam = clamp(G.ball.y - view.vh*.58, Y(G.L.n-1,0)-100, FH+20-view.vh); G.startTime = G.t;
@@ -1101,6 +1218,7 @@ function onSegHit(s, imp, nx, ny){
     if(bank.targets.every(t=>t.down) && !bank.cleared){ bank.cleared = true; bank.flash = 1; addScore(1000, s.ref.x, s.ref.y-30); SFX.rampDone(); popup('ALVOS LIMPOS!', 180, s.ref.y-50, C.gold); G.gi = .8; }
   } else if(s.kind==='stand' && imp > 100){
     if(!s.ref.lit){ s.ref.lit = true; comboHit(s.ref.x, s.ref.y); addScore(150, s.ref.x, s.ref.y-16); SFX.target(); } s.ref.flash = 1;
+  } else if(s.kind==='vari'){ variHit(s.ref, imp, nx, ny);
   } else if(s.kind==='code' && imp > 100){ codeHit(s.ref);
   } else if(s.kind==='bossweak'){
     bossWeakHit(imp);
@@ -1117,7 +1235,7 @@ function collideCircle(b, c){
   if(c.kind==='vault') vaultHit(c, vn);
   if(c.kind==='bumper'){
     const out = b.vx*nx + b.vy*ny;
-    if(out < 640 && (vn < -20 || c.flash < .2)){ b.vx += nx*(640-out); b.vy += ny*(640-out); c.flash = 1; SFX.pop(); addScore(100, c.x, c.y-c.r-8, true); sparks(c.x+nx*c.r, c.y+ny*c.r, C.warm, 7); G.gi = Math.min(G.gi,.86); G.shake = Math.max(G.shake,2); buzz(8); }
+    if(out < 640 && (vn < -20 || c.flash < .2)){ b.vx += nx*(640-out); b.vy += ny*(640-out); c.flash = 1; SFX.pop(); addScore(G.bumpT > 0 ? 200 : 100, c.x, c.y-c.r-8, true); sparks(c.x+nx*c.r, c.y+ny*c.r, C.warm, 7); G.gi = Math.min(G.gi,.86); G.shake = Math.max(G.shake,2); buzz(8); }
   }
 }
 function hitMoving(b, cx, cy, cr, vx, vy, e){
@@ -1185,6 +1303,7 @@ function physStep(h){
   for(const bk of L.banks){ if(bk.move) moveBank(bk, h); if(bk.holo) holoStep(bk); }
   for(const r of L.rails) if(r.cool > 0) r.cool -= h;
   for(const sc of L.saucers) if(sc.cool > 0) sc.cool -= h;
+  if(L.sigs.length) sigStep(L, h);
   ballStep(h);
   if(G.extra && G.extra.length){ const main = G.ball; for(const eb of G.extra){ if(eb.dead) continue; G.ball = eb; ballStep(h); } G.ball = main; G.extra = G.extra.filter(e => !e.dead); }
 }
@@ -1201,6 +1320,7 @@ function ballStep(h){
   if(L.belts.length) beltStep(b, L, h);
   if(L.portals.length) portalStep(b, L, h);
   if(L.wells.length) wellStep(b, L, h);
+  if(L.sigs.length) sigCollide(b, L);
   for(const s of L.segs){ if(s.on && b.y > s.y0 && b.y < s.y1) collideSeg(b,s); }
   for(const c of L.circles){ if(Math.abs(b.y-c.y) < 60) collideCircle(b,c); }
   for(const F of L.flippers){ if(Math.abs(b.y-F.py) < 100) collideFlipper(b,F); }
@@ -1278,6 +1398,7 @@ function railStep(h){
   const q = pathAt(P, R.s, pa.i); R.hint = q.i; b.x = q.x; b.y = q.y; b.vx = (b.x-ox)/h; b.vy = (b.y-oy)/h;
 }
 function onRailDone(r){
+  { const sg = G.L.sigs.find(q => q.f === r.f); if(sg) seqAdvance(sg, 2); }
   const nf = r.f+1, fl = G.L.floors[nf];
   comboHit(G.ball.x, G.ball.y); addScore(r.type==='elev' ? 750 : 1000, G.ball.x, G.ball.y-20); SFX.rampDone(); G.gi = .82;
   if(fl && !fl.reached){ fl.reached = true; addScore(2000, 180, G.ball.y-60); G.floorMsg = { text:`ANDAR ${nf+1}`, t:0 }; }
@@ -1368,7 +1489,7 @@ function bossUpdate(dt){
     }
     B.sparks = B.sparks.filter(s=>s.life>0);
   } else if(B.type==='jukebox'){
-    const openT = 2.8 - (3-B.hp)*.55;
+    const openT = 2.8 - (3-B.hp)*.55 + .6*Math.min(3, G.discos||0);
     if(B.state==='open' && B.st > openT){ B.state = 'closed'; B.st = 0; B.shield = true; spitDiscs(B); }
     else if(B.state==='closed' && B.st > 3){ B.state = 'open'; B.st = 0; B.shield = false; }
     const top = Y(B.f,215), bot = Y(B.f,600);
@@ -1409,7 +1530,7 @@ function bossCollide(h){
    ========================================================= */
 function addScore(v, x, y, quiet){
   if(G.mode!=='play') return;
-  const pts = v*G.bonusX*G.combo.n*(S.parts.includes('crown') ? 2 : 1)*(G.multi ? 2 : 1); G.score += pts;
+  const pts = v*G.bonusX*G.combo.n*(S.parts.includes('crown') ? 2 : 1)*(G.multi ? 2 : 1)*(G.dblT > 0 ? 2 : 1); G.score += pts;
   if(!quiet || v>=100) popup('+'+pts.toLocaleString('pt-BR'), x, y, C.cream, .8);
   const th = TH(G.pi).replay;
   while(G.replayIdx < th.length && G.score >= th[G.replayIdx]){
@@ -1593,10 +1714,10 @@ function vaultHit(c, vn){
   const Q = G.L.quest; if(!Q || Q.open || G.mode!=='play') return;
   if(Q.key.taken){
     Q.open = true; c.r = 0; c.y = -1e6; SFX.rampDone(); SFX.gold(); G.gi = .7; G.shake = Math.max(G.shake, 5); buzz(40);
-    sparks(Q.door.x, Y(Q.df,400), C.gold, 30); addScore(5000, Q.door.x, Y(Q.df,400)-30); addFichas(20, Q.door.x, Y(Q.df,400)-10);
-    if(Q.multi){ popup('COFRE ABERTO!', 180, Y(Q.df,400)-60, C.gold, 2.2); G.multiDone = true; startMultiball(Q.door.x, Y(Q.df,400)-40); }
-    else { G.balls++; popup('COFRE ABERTO! +1 BOLA', 180, Y(Q.df,400)-60, C.gold, 2.2); comboHit(Q.door.x, Y(Q.df,400)); }
-  } else if(Q.msgT <= 0 && vn < -60){ Q.msgT = 2.5; SFX.relay(); popup('TRANCADO', Q.door.x < 180 ? 110 : 250, Y(Q.df,400)-34, C.red, 1.4); }
+    sparks(Q.door.x, Q.dy, C.gold, 30); addScore(5000, Q.door.x, Q.dy-30); addFichas(20, Q.door.x, Q.dy-10);
+    if(Q.multi){ popup('COFRE ABERTO!', 180, Q.dy-60, C.gold, 2.2); G.multiDone = true; startMultiball(Q.door.x, Q.dy-40); }
+    else { G.balls++; popup('COFRE ABERTO! +1 BOLA', 180, Q.dy-60, C.gold, 2.2); comboHit(Q.door.x, Q.dy); }
+  } else if(Q.msgT <= 0 && vn < -60){ Q.msgT = 2.5; SFX.relay(); popup('TRANCADO', Q.door.x < 180 ? 110 : 250, Q.dy-34, C.red, 1.4); }
 }
 // key and vault: metal and light follow the era
 const QMETAL = [['#fff0c0','#c9963e','#4a2e0a'],['#ffffff','#b8bccb','#3a3c48'],['#e8f0ff','#8a98bc','#1a2038'],['#f0d8ff','#9a6ad0','#2a1040'],['#ffffff','#d8e2ec','#5a6878']];
@@ -1630,7 +1751,7 @@ function drawQuest(Q, vis){
     if(Math.sin(k.ph*3.1) > .85) glint(x + 6, y - 15 + bob, 4, .8);
   }
   // the vault: a riveted safe plate set into the playfield
-  const dx = Q.door.x, dy = Y(Q.df,400);
+  const dx = Q.door.x, dy = Q.dy;
   if(!vis(dy)) return;
   const has = Q.key.taken, u = Q.open ? Math.min(1, Q.openT*1.6) : 0;
   ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.beginPath(); ctx.roundRect(dx-23, dy-23, 46, 52, 9); ctx.fill();
@@ -1831,6 +1952,7 @@ function update(dt){
   bossUpdate(dt);
   enemyShots(dt);
   curseUpdate(dt);
+  sigUpdate(L, dt);
   danceUpdate(L, dt);
   beltUpdate(L, dt);
   for(const tt of L.turntables) if(tt.on) tt.ang += tt.w*tt.dir*dt;
@@ -4998,6 +5120,8 @@ function drawHUD(vh){
   if(G.saveT > 0 && G.mode==='play') chip(`SALVA-BOLA ${Math.ceil(G.saveT)}s`, C.teal);
   if(G.floorKick && G.floorKick[f] > 0) chip('EMPURRÃO NESTE ANDAR', C.gold); else if(f===0 && G.helperCharges > 0) chip(`EMPURRÃO DO ANDAR 1 x${G.helperCharges}`, C.gold);
   if(G.kickCharges > 0) chip(`KICKBACK x${G.kickCharges}`, C.red);
+  if(G.dblT > 0 && G.mode==='play') chip(`DISCO DE OURO · PONTOS x2 · ${Math.ceil(G.dblT)}s`, C.gold);
+  if(G.bumpT > 0 && G.mode==='play') chip(`BUMPERS EM DOBRO · ${Math.ceil(G.bumpT)}s`, C.amber);
   if(G.combo && G.combo.n > 1) chip('COMBO x'+G.combo.n+' · '+Math.max(0,Math.ceil(5-(G.t-G.combo.last)))+'s', C.gold);
   if(G.tilt) chip('TILT', C.red);
 }
@@ -5107,6 +5231,7 @@ function draw(){
   for(const pt of L.portals) if(vis(pt.a.y)) drawPortals(pt);
   for(const cd of L.codes) if(vis(cd.y)) drawCode(cd);
   for(const w of L.wells) if(vis(w.y)) drawWell(w);
+  for(const sg of L.sigs) if(vis(sg.y)) drawSig(sg);
   for(const bt of L.belts) if(vis(bt.y)) drawBelt(bt);
   drawDecor(L, vis);
   for(const tt of L.turntables) if(!tt.boss && vis(tt.y)) drawTurntable(tt);

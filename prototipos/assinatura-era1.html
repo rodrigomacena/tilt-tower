@@ -1,0 +1,181 @@
+<title>Mesas com Assinatura</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@500;700&display=swap">
+<style>
+/* layout: one column of text beside (or under, on a phone) a tall drawing of the proposed floor; the drawing is the page */
+:root{
+  color-scheme: dark;
+  --wood:#17100b; --wood-2:#23170e; --line:#4a3320;
+  --felt:#3f7468; --felt-2:#2f5a50;
+  --cream:#f3e6c4; --dim:#b9a47f;
+  --amber:#ffb347; --red:#e2503a; --gold:#ffd860; --teal:#6fc7b8;
+  --display:"Bungee","Impact",sans-serif; --body:"Barlow","Segoe UI",system-ui,sans-serif; --data:"Chakra Petch","Consolas",monospace;
+}
+body{ background:var(--wood); color:var(--cream); font:16px/1.55 var(--body); padding-block:28px 56px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+.wrap{ max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:36px; }
+h1{ font:400 clamp(26px,5vw,40px)/1.1 var(--display); color:var(--amber); margin:0; text-wrap:balance; }
+h2{ font:400 19px/1.2 var(--display); color:var(--gold); margin:0; text-wrap:balance; }
+h3{ font:700 15px/1.2 var(--data); letter-spacing:.06em; text-transform:uppercase; color:var(--cream); margin:0; }
+p{ margin:0; max-width:64ch; }
+.eyebrow{ font:700 12px var(--data); letter-spacing:.14em; text-transform:uppercase; color:var(--teal); }
+.lede{ font-size:18px; color:var(--cream); }
+.dim{ color:var(--dim); }
+header{ display:flex; flex-direction:column; gap:10px; }
+.stage{ display:grid; grid-template-columns:minmax(0,380px) minmax(0,1fr); gap:32px; align-items:start; }
+.table{ background:var(--wood-2); border:1px solid var(--line); border-radius:14px; padding:10px; }
+.table svg{ display:block; width:100%; height:auto; }
+.notes{ display:flex; flex-direction:column; gap:22px; min-width:0; }
+.piece{ display:grid; grid-template-columns:34px minmax(0,1fr); gap:12px; }
+.tag{ width:30px; height:30px; border-radius:50%; display:grid; place-items:center; font:400 14px var(--display); color:var(--wood); background:var(--amber); }
+.tag.b{ background:var(--teal); } .tag.c{ background:var(--gold); }
+.piece div{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+.scroll{ overflow-x:auto; }
+table{ border-collapse:collapse; width:100%; min-width:520px; font-size:15px; }
+th{ text-align:left; font:700 12px var(--data); letter-spacing:.1em; text-transform:uppercase; color:var(--dim); padding:8px 12px 8px 0; border-bottom:1px solid var(--line); }
+td{ padding:10px 12px 10px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+td b{ color:var(--gold); font-weight:600; } td.n{ font:500 15px var(--data); font-variant-numeric:tabular-nums; white-space:nowrap; }
+section{ display:flex; flex-direction:column; gap:14px; }
+ul{ margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px; max-width:64ch; }
+.ask{ border:1px solid var(--amber); border-radius:12px; padding:18px 20px; display:flex; flex-direction:column; gap:10px; }
+.arrow{ animation:lit 2.4s infinite; } .arrow.s2{ animation-delay:.8s; } .arrow.s3{ animation-delay:1.6s; }
+@keyframes lit{ 0%,30%{ opacity:1 } 40%,100%{ opacity:.35 } }
+@media (prefers-reduced-motion: reduce){ .arrow{ animation:none; opacity:1; } }
+@media (max-width:760px){ .stage{ grid-template-columns:minmax(0,1fr); } .table{ max-width:380px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Tilt Tower · conceito para aprovar · Era 1, Anos 60</span>
+    <h1>Mesas com Assinatura</h1>
+    <p class="lede">Hoje todas as eras usam as mesmas peças com roupa diferente. A proposta é dar a cada era duas peças que só existem nela e uma sequência de tiros que amarra o andar inteiro.</p>
+    <p class="dim">Abaixo está a Era 1. Se você aprovar, eu desenvolvo esta e uso o mesmo molde para propor as outras quatro.</p>
+  </header>
+
+  <div class="stage">
+    <div class="table" role="img" aria-label="Desenho de um andar da Era 1 com as três novidades: vari-alvo à direita, bola cativa no alto à esquerda e três setas de sequência no centro">
+      <svg viewBox="0 0 360 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="felt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#47806f"/><stop offset="1" stop-color="#2f5a50"/></linearGradient>
+          <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".6" fill="#ffffff" opacity=".06"/><circle cx="4" cy="4" r=".5" fill="#000000" opacity=".1"/></pattern>
+        </defs>
+        <rect x="0" y="0" width="360" height="560" rx="10" fill="#3a2414"/>
+        <rect x="10" y="10" width="340" height="540" rx="6" fill="url(#felt)"/>
+        <rect x="10" y="10" width="340" height="540" rx="6" fill="url(#grain)"/>
+
+        <!-- side ramp mouth (existing piece) -->
+        <path d="M22 250 C22 150 60 110 110 96" fill="none" stroke="#d8c9a0" stroke-width="5" stroke-linecap="round"/>
+        <path d="M58 262 C58 180 84 142 124 128" fill="none" stroke="#d8c9a0" stroke-width="5" stroke-linecap="round"/>
+        <text x="30" y="286" font-family="Chakra Petch, monospace" font-size="10" font-weight="700" fill="#f3e6c4">RAMPA</text>
+
+        <!-- bumpers (existing) -->
+        <g fill="#c8402e" stroke="#f3e6c4" stroke-width="3"><circle cx="150" cy="190" r="19"/><circle cx="226" cy="150" r="19"/></g>
+        <g fill="#f3e6c4"><circle cx="150" cy="190" r="7"/><circle cx="226" cy="150" r="7"/></g>
+
+        <!-- B: captive ball lane with bell -->
+        <rect x="130" y="34" width="150" height="34" rx="17" fill="#22463e" stroke="#d8c9a0" stroke-width="3"/>
+        <circle cx="262" cy="51" r="11" fill="#e8c35a" stroke="#8a5a10" stroke-width="2"/>
+        <path d="M256 51 h12 M262 45 v12" stroke="#8a5a10" stroke-width="2"/>
+        <circle cx="150" cy="51" r="12" fill="#d9d4c8" stroke="#6b665c" stroke-width="2"/>
+        <circle cx="146" cy="47" r="3.5" fill="#ffffff"/>
+        <path d="M130 44 v14" stroke="#22463e" stroke-width="6"/>
+        <circle cx="300" cy="30" r="13" fill="#6fc7b8"/><text x="300" y="35" text-anchor="middle" font-family="Bungee, sans-serif" font-size="13" fill="#17100b">B</text>
+
+        <!-- A: vari-target on a track -->
+        <rect x="268" y="232" width="62" height="96" rx="8" fill="#22463e" stroke="#d8c9a0" stroke-width="3" transform="rotate(-22 299 280)"/>
+        <g transform="rotate(-22 299 280)">
+          <path d="M299 244 v72" stroke="#0f2823" stroke-width="8" stroke-linecap="round"/>
+          <g font-family="Chakra Petch, monospace" font-size="9" font-weight="700" fill="#f3e6c4"><text x="312" y="254">5x</text><text x="312" y="272">3x</text><text x="312" y="290">2x</text><text x="312" y="308">1x</text></g>
+          <rect x="283" y="302" width="32" height="12" rx="4" fill="#ffb347" stroke="#7a4a10" stroke-width="2"/>
+        </g>
+        <circle cx="336" cy="214" r="13" fill="#ffb347"/><text x="336" y="219" text-anchor="middle" font-family="Bungee, sans-serif" font-size="13" fill="#17100b">A</text>
+
+        <!-- C: the three sequence arrows painted on the felt, with the shot lines -->
+        <g fill="none" stroke="#ffd860" stroke-width="1.5" stroke-dasharray="5 6" opacity=".55">
+          <path d="M120 470 C70 400 40 330 40 268"/>
+          <path d="M150 462 C210 400 262 350 288 318"/>
+          <path d="M220 462 C200 300 170 140 152 70"/>
+        </g>
+        <g font-family="Bungee, sans-serif" font-size="12" text-anchor="middle">
+          <g class="arrow"><path d="M40 300 l-12 20 h24 z" fill="#ffd860"/><text x="40" y="340" fill="#ffd860">1</text></g>
+          <g class="arrow s2"><path d="M270 344 l-18 12 l22 8 z" fill="#ffd860"/><text x="250" y="382" fill="#ffd860">2</text></g>
+          <g class="arrow s3"><path d="M158 96 l-12 20 h24 z" fill="#ffd860"/><text x="184" y="114" fill="#ffd860">3</text></g>
+        </g>
+        <circle cx="180" cy="300" r="13" fill="#ffd860"/><text x="180" y="305" text-anchor="middle" font-family="Bungee, sans-serif" font-size="13" fill="#17100b">C</text>
+        <text x="180" y="328" text-anchor="middle" font-family="Chakra Petch, monospace" font-size="9" font-weight="700" fill="#f3e6c4">SEQUÊNCIA 1 · 2 · 3</text>
+
+        <!-- lower section (existing): slings, guides, flippers -->
+        <g fill="#e9dfc6" stroke="#b9a47f" stroke-width="2"><path d="M70 400 L70 462 L112 484 Z"/><path d="M290 400 L290 462 L248 484 Z"/></g>
+        <g stroke="#d8c9a0" stroke-width="5" stroke-linecap="round"><path d="M12 452 L92 502"/><path d="M348 452 L268 502"/></g>
+        <g stroke="#c8402e" stroke-width="15" stroke-linecap="round"><path d="M92 510 L146 540"/><path d="M268 510 L214 540"/></g>
+        <g stroke="#f3e6c4" stroke-width="9" stroke-linecap="round"><path d="M92 510 L146 540"/><path d="M268 510 L214 540"/></g>
+        <circle cx="132" cy="486" r="12" fill="#d9d4c8" stroke="#6b665c" stroke-width="2"/><circle cx="128" cy="482" r="3.5" fill="#ffffff"/>
+      </svg>
+    </div>
+
+    <div class="notes">
+      <div class="piece"><span class="tag">A</span><div>
+        <h3>Vari-alvo</h3>
+        <p>Um alvo sobre um trilho com mola. Quanto mais forte a tacada, mais fundo ele vai, e o trilho marca 1x, 2x, 3x ou 5x. Depois ele volta sozinho.</p>
+        <p class="dim">É a peça que dá uso à força variável dos flippers: tacada na ponta chega no 5x, tacada perto do eixo fica no 1x.</p>
+      </div></div>
+      <div class="piece"><span class="tag b">B</span><div>
+        <h3>Bola cativa</h3>
+        <p>Uma segunda bola presa num corredor curto no alto da mesa. Você bate nela com a sua bola e ela corre até o sino no fundo.</p>
+        <p class="dim">A sua bola volta devagar depois da batida, então é um tiro seguro. O risco está em errar e bater na borda do corredor.</p>
+      </div></div>
+      <div class="piece"><span class="tag c">C</span><div>
+        <h3>Sequência da Jukebox</h3>
+        <p>Três setas pintadas na mesa acendem em ordem: rampa, vari-alvo, bola cativa. Acertar a seta acesa acende a próxima. Fechar as três em até 20 segundos toca o Disco de Ouro.</p>
+        <p class="dim">A sequência é opcional. Quem só quer subir a torre ignora; quem quer medalha de ouro vai atrás dela.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>O que cada tiro paga</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Tiro</th><th>Pontos</th><th>Extra</th></tr></thead>
+      <tbody>
+        <tr><td>Vari-alvo</td><td class="n">300 × faixa</td><td>Na faixa 5x: +2 fichas e o bumper mais próximo vale dobro por 10 s</td></tr>
+        <tr><td>Bola cativa no sino</td><td class="n">1.500</td><td>Cada 3 sinos na mesma fase: +1 carga de kickback</td></tr>
+        <tr><td>Seta da sequência</td><td class="n">500 / 1.000 / 2.000</td><td>O relógio de 20 s reinicia a cada seta</td></tr>
+        <tr><td><b>Disco de Ouro</b></td><td class="n">10.000</td><td>+5 fichas e todos os pontos em dobro por 15 s. A sequência recomeça com 15 s, depois 12 s</td></tr>
+      </tbody>
+    </table></div>
+    <p class="dim">Os valores são ponto de partida. Antes de publicar eu rodo o robô de teste para conferir que o Disco de Ouro não quebra as medalhas nem a economia da loja.</p>
+  </section>
+
+  <section>
+    <h2>Onde entra na Era 1</h2>
+    <ul>
+      <li>Fase 2: primeiro vari-alvo, sozinho, com uma dica na tela.</li>
+      <li>Fase 3: primeira bola cativa.</li>
+      <li>Da fase 5 em diante: um andar por fase tem as duas peças e a sequência.</li>
+      <li>Fase 10, Jukebox Rex: cada Disco de Ouro abre a grade do chefe por mais tempo.</li>
+    </ul>
+    <p class="dim">Nenhuma das peças fica acima dos flippers nem na boca de rampa, e todas passam pelo verificador de vãos que já existe.</p>
+  </section>
+
+  <section>
+    <h2>Ideias para as outras eras</h2>
+    <p class="dim">Só o tema de cada uma. Detalho depois que a Era 1 estiver aprovada e jogável.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Era</th><th>Peças próprias</th><th>Sequência</th></tr></thead>
+      <tbody>
+        <tr><td>2 · Anos 70</td><td>Ímã sob o globo que segura a bola e solta na batida da música; alvos que sobem e descem no ritmo</td><td>Passo de Dança</td></tr>
+        <tr><td>3 · Anos 80</td><td>Mini-mesa dentro de um gabinete de fliperama, com flipper próprio; trilho de néon que troca de saída</td><td>Código de Trapaça</td></tr>
+        <tr><td>4 · Anos 90</td><td>Barra de download que enche a cada tiro; janela pop-up que cobre um alvo até ser fechada com a bola</td><td>Conexão Completa</td></tr>
+        <tr><td>5 · Futuro</td><td>Painel que inverte a gravidade de meio andar; bola fantasma que repete o seu último tiro</td><td>Salto no Tempo</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="ask">
+    <h2>O que preciso de você</h2>
+    <ul>
+      <li>As três peças da Era 1 valem como estão, ou alguma sai ou muda?</li>
+      <li>O Disco de Ouro deve dar fichas, ou só pontos?</li>
+      <li>O visual das peças: desenho no próprio jogo, como aqui, ou arte nova gerada no SpriteCook?</li>
+    </ul>
+  </div>
+</div>
