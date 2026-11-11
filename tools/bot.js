@@ -44,7 +44,7 @@ function targets(L, f){
   }
   if(fl.m === 'elev'){ const sc = L.saucers.find(s => s.f === f && s.kind === 'elev'); if(sc) return [[sc.x, sc.y, 's']]; }
   const sg = (L.sigs||[]).find(q => q.f === f);
-  if(sg && sg.seq && sg.seq.n < 1){ if(sg.seq.step === 0 && sg.vari) return [[sg.vari.x - sg.vari.dx*14, sg.vari.y - sg.vari.dy*14]]; if(sg.seq.step === 1 && sg.cap) return [[sg.cap.x, sg.cap.y0 + 14]]; }
+  if(sg && sg.seq && sg.seq.n < 1){ if(sg.seq.step === 0 && sg.vari) return [[sg.vari.x - sg.vari.dx*14, sg.vari.y - sg.vari.dy*14]]; if(sg.seq.step === 1 && sg.cap) return [[sg.cap.x, sg.cap.y0 + 14]]; if(sg.seq.step === 1 && sg.bp) return [[sg.bp.x, sg.bp.y + (sg.era === 4 ? -6 : 12), sg.era === 1 ? 's' : '']]; }
   for(const q of [fl.rail, fl.extra]) if(q && !q.locked && q.type !== 'elev') out.push([(q.mx0+q.mx1)/2, q.y0 + 6]);
   return out;
 }
