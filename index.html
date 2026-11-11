@@ -1126,6 +1126,7 @@ function hitMoving(b, cx, cy, cr, vx, vy, e){
   return 0;
 }
 function flipperTip(F){ const c = Math.cos(F.ang), s = Math.sin(F.ang); return [F.px+F.side*c*F.len, F.py+s*F.len]; }
+const FLIP_E = .4, FLIP_MU = .12, MAX_SPEED = 2000, FLIP_W = 26;
 function collideFlipper(b, F){
   const c = Math.cos(F.ang), s = Math.sin(F.ang), dx = F.side*c, dy = s;
   let t = ((b.x-F.px)*dx + (b.y-F.py)*dy)/F.len; t = t<0?0:t>1?1:t;
@@ -1134,17 +1135,20 @@ function collideFlipper(b, F){
   if(d2 >= R*R) return;
   let d = Math.sqrt(d2); if(d < 1e-4){ nx = 0; ny = -1; d = 1; } nx /= d; ny /= d;
   b.x = qx+nx*R; b.y = qy+ny*R;
-  const dist = F.len*t, svx = dist*F.av*(-F.side*s), svy = dist*F.av*c;
+  // velocity of the flipper surface at the real contact point (rigid rotation about the pivot)
+  const w = F.side*F.av, cxp = b.x-nx*b.r - F.px, cyp = b.y-ny*b.r - F.py, svx = -w*cyp, svy = w*cxp;
   const rvx = b.vx-svx, rvy = b.vy-svy, vn = rvx*nx+rvy*ny;
   if(vn < 0){
-    b.vx -= 1.3*vn*nx; b.vy -= 1.3*vn*ny;
+    // rubber: bounce (e) plus a little grip (Coulomb friction) so the ball rolls instead of skating
+    const jn = -(1 + FLIP_E)*vn, tx = -ny, ty = nx, vt = rvx*tx + rvy*ty, jt = Math.max(-FLIP_MU*jn, Math.min(FLIP_MU*jn, -vt));
+    b.vx += jn*nx + jt*tx; b.vy += jn*ny + jt*ty;
     if(Math.abs(F.av) < 1 && ny < -.3) curseGlue(b, F);
     if(-vn > 250 && Math.abs(F.av) > 1){ G.lastFlipHit = G.t; impactFX(b.x-nx*b.r, b.y-ny*b.r, nx, ny, -vn*.8, '255,245,225'); }
     if(-vn > 500 && Math.abs(F.av) > 2){ F.lit = 1; sparks(b.x-nx*b.r, b.y-ny*b.r, C.cream, 5); G.shake = Math.max(G.shake, 1.5); }
   }
 }
 function updateFlippers(h){
-  const up = 30*(1+.07*S.up.power)*(cursed('slow') ? .42 : 1), inv = cursed('invert');
+  const up = FLIP_W*(1+.07*S.up.power)*(cursed('slow') ? .42 : 1), inv = cursed('invert');
   for(const F of G.L.flippers){
     const pressed = (G.mode==='attract' ? G.autoT[F.side>0?'L':'R']>0 : G.press[(F.side>0) !== inv ? 'L' : 'R']) && F.frozen<=0 && !G.tilt;
     const target = pressed ? F.up : F.rest, prev = F.ang;
@@ -1198,7 +1202,7 @@ function ballStep(h){
   for(const F of L.flippers){ if(Math.abs(b.y-F.py) < 100) collideFlipper(b,F); }
   for(const e of L.enemies){ if(e.alive && Math.abs(b.y-e.y) < 60) enemyHit(e); }
   if(L.boss) bossCollide(h);
-  const sp = Math.hypot(b.vx,b.vy); if(sp > 1700){ b.vx *= 1700/sp; b.vy *= 1700/sp; }
+  const sp = Math.hypot(b.vx,b.vy); if(sp > MAX_SPEED){ b.vx *= MAX_SPEED/sp; b.vy *= MAX_SPEED/sp; }
   // rails entry
   for(const r of L.rails){
     if(r.type==='elev' || r.locked || r.cool > 0 || G.multi) continue;
