@@ -85,3 +85,13 @@ O app de iOS só pode ser compilado com **Xcode no macOS**. Se você não tiver 
 - ID do pacote: `com.rodrigomacena.tilttower`. **Não dá para mudar depois de publicar.**
 - Nome: Tilt Tower
 - Orientação: somente vertical
+
+## Material da loja
+
+A pasta `mobile/store/` tem o que as duas lojas pedem além do app:
+
+- `LOJA.md`: nome, subtítulo, descrições, palavras-chave e texto de novidades, prontos para colar.
+- `iphone67-*.jpg`: capturas de 1290 x 2796 para o App Store Connect.
+- `play-*.jpg`: capturas de 1080 x 1920 para a Google Play.
+
+O ícone e a tela de abertura já estão em `mobile/assets/` e nos projetos nativos.

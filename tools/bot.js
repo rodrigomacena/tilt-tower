@@ -1,6 +1,7 @@
 /* Tilt Tower test bot: plays a phase aiming at the current objective.
    Before pressing a flipper it simulates the shot (ball + flipper only) and checks where the ball would go.
-   Usage (browser console, with the game loaded): TTBot.run({ phases:[0,1,2], trials:4, jitter:.02 }).then(console.table) */
+   Usage (browser console, with the game loaded): TTBot.run({ phases:[0,1,2], trials:4, jitter:.02 }).then(console.table)
+   Human-like play: TTBot.run({ human:'medio', loadout:'era' })  (presets: bom, medio, novato) */
 (function(){
 const T = window.__tiltTower, G = T.G, Y = T.Y, S = T.S, H = 1/600;
 function targets(L, f){
@@ -44,7 +45,7 @@ function targets(L, f){
   }
   if(fl.m === 'elev'){ const sc = L.saucers.find(s => s.f === f && s.kind === 'elev'); if(sc) return [[sc.x, sc.y, 's']]; }
   const sg = (L.sigs||[]).find(q => q.f === f);
-  if(sg && sg.seq && sg.seq.n < 1){ if(sg.seq.step === 0 && sg.vari) return [[sg.vari.x - sg.vari.dx*14, sg.vari.y - sg.vari.dy*14]]; if(sg.seq.step === 1 && sg.cap) return [[sg.cap.x, sg.cap.y0 + 14]]; if(sg.seq.step === 1 && sg.bp) return [[sg.bp.x, sg.bp.y + (sg.era === 4 ? -6 : 12), sg.era === 1 ? 's' : '']]; }
+  if(sg && sg.seq && sg.seq.n < 1 && !window.TTBot.noSeq){ if(sg.seq.step === 0 && sg.vari) return [[sg.vari.x - sg.vari.dx*14, sg.vari.y - sg.vari.dy*14]]; if(sg.seq.step === 1 && sg.cap) return [[sg.cap.x, sg.cap.y0 + 14]]; if(sg.seq.step === 1 && sg.bp) return [[sg.bp.x, sg.bp.y + (sg.era === 4 ? -6 : 12), sg.era === 1 ? 's' : '']]; }
   for(const q of [fl.rail, fl.extra]) if(q && !q.locked && q.type !== 'elev') out.push([(q.mx0+q.mx1)/2, q.y0 + 6]);
   return out;
 }
@@ -75,7 +76,7 @@ function miss(g, tx, ty, grav, kind){
   return Math.abs(x - tx);
 }
 function makeBot(o){
-  const st = { hold:{L:0,R:0}, cool:{L:0,R:0}, pend:{L:-1,R:-1}, flips:0, aimed:0 };
+  const st = { hold:{L:0,R:0}, cool:{L:0,R:0}, pend:{L:-1,R:-1}, flips:0, aimed:0, lapses:0 };
   const press = k => { G.press[k] = true; st.hold[k] = .2; st.flips++; st.pend[k] = -1; };
   return function step(dt){
     const L = G.L, b = G.ball, grav = (G.grav||1000)*(G.gravMul||1), upW = T.FLIP_W*(1+.07*S.up.power)*(G.curses && G.curses.has('slow') ? .42 : 1), inv = !!(G.curses && G.curses.has('invert'));
@@ -98,7 +99,10 @@ function makeBot(o){
         // no aim solution: flip anyway before the ball rolls off the tip, or as a reflex on a fast ball
         if(dist < 30 && (t > .82 || (Math.hypot(b.vx,b.vy) > 520 && t > .25))) fire = true;
       }
-      if(fire){ if(aimed) st.aimed++; const d = o.jitter*(Math.random()+Math.random()-1); if(d > 0) st.pend[k] = d; else press(k); }
+      if(fire){
+        // human model: now and then the flip is missed altogether, and it always comes a little late
+        if(o.lapse && Math.random() < o.lapse){ st.cool[k] = .3; st.lapses++; continue; }
+        if(aimed) st.aimed++; const d = o.jitter*(Math.random()+Math.random()-1) + (o.late||0)*(Math.random()+Math.random()); if(d > 0) st.pend[k] = d; else press(k); }
     }
     return st;
   };
@@ -116,9 +120,13 @@ function playOnce(pi, o){
   return { win:!!G.done, fichas:G.fichasRun + Math.floor(G.score/T.SCORE_PER_FICHA), t, drains, maxF, floorT, score:G.score, discos:G.discos||0, flips:st.flips, aimed:st.aimed, searches:G.searches||0, bossHp: L.boss ? L.boss.hp : null };
 }
 const TTBot = {
+  // human-like presets: wider aim, late and noisy timing, missed flips
+  HUMAN:{ bom:{ tol:22, jitter:.025, late:.02, lapse:.03, seq:false }, medio:{ tol:30, jitter:.04, late:.035, lapse:.07, seq:false }, novato:{ tol:44, jitter:.06, late:.055, lapse:.14, seq:false } },
+  noSeq:false,   // true: ignore the signature sequence and just climb (set by run({ seq:false }))
   targets, ghost, playOnce, makeBot, state:null,
   run(opt){
-    const o = Object.assign({ phases:[...Array(50).keys()], trials:4, jitter:.02, tol:16, maxT:420, upgrades:null }, opt||{});
+    const o = Object.assign({ phases:[...Array(50).keys()], trials:4, jitter:.02, tol:16, maxT:420, upgrades:null }, opt && opt.human ? TTBot.HUMAN[opt.human] : null, opt||{});
+    TTBot.noSeq = o.seq === false;
     const keepUp = JSON.parse(JSON.stringify(S.up)), keepParts = S.parts.slice();
     const setUp = pi => { const era = Math.floor(pi/10); S.parts.length = 0; T.UPG.forEach(u => { S.up[u.id] = o.loadout === 'era' ? u.era.filter(e => e < era).length : o.upgrades ? (o.upgrades[u.id]||0) : 0; }); if(o.loadout === 'era' && era >= 3) S.parts.push('coin'); };
     const res = [], q = []; for(const pi of o.phases) for(let k = 0; k < o.trials; k++) q.push(pi);
