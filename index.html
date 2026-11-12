@@ -1681,12 +1681,12 @@ function startPhase(pi, attract=false){
   G.balls = attract ? 3 : 3 + S.up.balls; G.score = 0; G.fichasRun = 0; G.golds = 0; G.lost = false;
   G.kickCharges = attract ? 0 : [0,1,2,3][S.up.kick]; G.tilt = false; G.nudges = []; G.bonusX = 1; G.combo = { n:1, last:-10 }; G.replayIdx = 0; G.helperCharges = attract ? 99 : Math.max(1, 3 - Math.floor(DIFF(pi)*3)); G.grav = GRAV*(1 + .14*DIFF(pi)); G.floorKick = {}; G.midT = 0; G.midCool = 0; G.continued = false; G.turboCool = 0; G.extra = []; G.multi = null; G.multiDone = false; G.shots = []; G.dblT = 0; G.bumpT = 0; G.lowG = 0; G.wave = null; G.discos = 0; G.rewind = 0; G.bossCurse = null; G.curses = new Set(); G.smoke = []; G.darkK = 0; G.gravMul = 1; G.windX = 0; G.bonusDone = false; G.bonus = null; G.tally = null; G.fly = []; G.ssp = []; G.fichaPulse = 0;
   G.popups = []; G.parts = []; G.done = false; G.doneT = 0; G.shake = 0; G.gi = 1; G.floorMsg = null;
-  G.press.L = G.press.R = false;
+  G.press.L = G.press.R = false; G.autoLaunchT = 0;   // a timer left over from the attract demo used to fire the first ball by itself
   newBall(); G.cam = clamp(G.ball.y - view.vh*.58, Y(G.L.n-1,0)-100, FH+20-view.vh); G.startTime = G.t;
   disp.reels = [0,0,0,0,0,0,0];
   if(!attract){
     const P = PHASES[pi];
-    G.banner = { title:`FASE ${pi+1}`, sub:P.name.toUpperCase(), hint:P.tip+(G.L.quest ? ' Há um cofre trancado nesta torre.' : '')+' REPLAY em '+TH(pi).replay[0].toLocaleString('pt-BR')+' pontos.', t:0, dur:3.6 };
+    G.banner = { title:`FASE ${pi+1}`, sub:P.name.toUpperCase(), hint:P.tip+(G.L.quest ? ' Há um cofre trancado nesta torre.' : '')+' REPLAY em '+TH(pi).replay[0].toLocaleString('pt-BR')+' pontos.', t:0, dur:3.6, intro:true };
   } else G.banner = null;
 }
 
@@ -2432,7 +2432,7 @@ function update(dt){
       if(Math.abs(b.x-mx) < 46 && b.y < F.py+6 && b.y > F.py-46 && b.vy > -80 && G.autoT[key] <= 0 && Math.random()<.5) G.autoT[key] = .2;
     }
     if(G.inPlunger){ G.autoLaunchT -= dt; if(G.autoLaunchT <= 0){ launch(); G.autoLaunchT = 1; } }
-  } else if(G.autoLaunchT > 0 && G.inPlunger){ G.autoLaunchT -= dt; if(G.autoLaunchT <= 0) launch(); }
+  } else if(G.autoLaunchT > 0 && G.inPlunger && !(G.banner && G.banner.intro)){ G.autoLaunchT -= dt; if(G.autoLaunchT <= 0) launch(); }
 
   if(G.mode==='play' || G.mode==='attract'){
     const ts = slowScale(); if(G.slowT > 0){ G.slowT -= dt; if(G.slowT <= .7 && !G.slowUp){ G.slowUp = true; Snd.tone(140,.9,'sine',.07,520); } }
@@ -2526,7 +2526,7 @@ function update(dt){
   G.parts = G.parts.filter(p=>p.t<p.life);
   for(const p of G.popups){ p.t += dt; p.y -= 30*dt; }
   G.popups = G.popups.filter(p=>p.t<p.life);
-  if(G.banner){ G.banner.t += dt; if(G.banner.t > G.banner.dur && !(G.inPlunger && G.banner.title.startsWith('FASE'))) G.banner = null; }
+  if(G.banner){ G.banner.t += dt; if(G.banner.t > G.banner.dur && !G.banner.intro) G.banner = null; }
   if(G.floorMsg){ G.floorMsg.t += dt; if(G.floorMsg.t > 1.8) G.floorMsg = null; }
   if(G.done){ G.doneT += dt; if(G.doneT > 1.4 && G.mode==='play'){ if(G.sp && G.sp.kind==='endless') endlessNext(); else if(!G.sp && !G.bonusDone && Math.random() < .1){ G.bonusDone = true; startBonus(); } else startTally('win'); } }
   updateTally(dt); achUpdate(dt);
@@ -5690,30 +5690,34 @@ function missionText(f){
 function drawBanner(vh){
   const bn = G.banner;
   if(bn){
-    const t = bn.t, a = Math.min(1, t*4, bn.title.startsWith('FASE') && G.inPlunger ? 1 : (bn.dur-t)*3);
+    const t = bn.t, a = Math.min(1, t*4, bn.intro ? 1 : (bn.dur-t)*3);
     if(a > 0){
       ctx.save(); ctx.globalAlpha = a;
-      const y = vh*.36;
-      ctx.fillStyle='rgba(12,6,2,.72)'; ctx.fillRect(0,y-58,W,bn.hint?132:96);
-      ctx.fillStyle='#e0b062'; ctx.fillRect(0,y-58,W,2); ctx.fillRect(0,y+(bn.hint?72:36),W,2);
+      const HF = '500 12px "Chakra Petch", sans-serif'; ctx.font = HF;
+      const lines = bn.hint ? wrap(bn.hint, 0, 0, W-48, 15, true) : 0, hh = lines ? 22 + lines*15 : 0, foot = bn.intro ? 26 : 0;
+      const y = Math.max(96, vh*.36 - (hh + foot)/3), bot = y + 36 + hh + foot;
+      ctx.fillStyle='rgba(12,6,2,.8)'; ctx.fillRect(0,y-58,W,bot-(y-58));
+      ctx.fillStyle='#e0b062'; ctx.fillRect(0,y-58,W,2); ctx.fillRect(0,bot,W,2);
       ctx.textAlign='center';
       ctx.fillStyle='#6fc7b8'; ctx.font='13px Bungee, sans-serif'; ctx.fillText(bn.title, W/2, y-32);
       ctx.fillStyle='#ffb347'; ctx.font=`${bn.sub.length>16?22:28}px Bungee, Impact, sans-serif`; ctx.fillText(bn.sub, W/2, y+2);
-      if(bn.hint){ ctx.fillStyle='#f3e6c4'; ctx.font='500 12px "Chakra Petch", sans-serif'; wrap(bn.hint, W/2, y+26, W-48, 15); }
+      if(bn.hint){ ctx.fillStyle='#f3e6c4'; ctx.font = HF; wrap(bn.hint, W/2, y+26, W-48, 15); }
+      if(bn.intro && t > .4){ ctx.fillStyle=`rgba(255,217,160,${.55+.45*Math.sin(T*5)})`; ctx.font='13px Bungee, sans-serif'; ctx.fillText('TOQUE PARA COMEÇAR', W/2, bot-12); }
       ctx.restore();
     }
   }
-  if(G.inPlunger && G.mode==='play' && !G.ball.rail && G.autoLaunchT <= 0){
+  if(G.inPlunger && G.mode==='play' && !G.ball.rail && G.autoLaunchT <= 0 && !(bn && bn.intro)){
     const a = .55+.45*Math.sin(T*5);
     ctx.fillStyle=`rgba(255,217,160,${a})`; ctx.font='14px Bungee, sans-serif'; ctx.textAlign='center'; ctx.fillText('TOQUE PARA LANÇAR', W/2, vh-26);
   }
   if(G.freeze && G.mode==='play'){ const a = .6+.4*Math.sin(T*5); ctx.fillStyle='rgba(12,6,2,.7)'; ctx.fillRect(0,vh-58,W,40); ctx.fillStyle=`rgba(255,217,160,${a})`; ctx.font='13px Bungee, sans-serif'; ctx.textAlign='center'; ctx.fillText('TOQUE NUM FLIPPER PARA SOLTAR', W/2, vh-33); }
   if(G.floorMsg){ const t = G.floorMsg.t, a = Math.min(1, t*5, (1.8-t)*3); ctx.save(); ctx.globalAlpha = a; ctx.fillStyle='#ffd860'; ctx.font='34px Bungee, Impact, sans-serif'; ctx.textAlign='center'; ctx.fillText(G.floorMsg.text, W/2, vh*.3 - t*20); ctx.restore(); }
 }
-function wrap(text, x, y, maxW, lh){
-  const words = text.split(' '); let line = '', yy = y;
-  for(const w of words){ const test = line ? line+' '+w : w; if(ctx.measureText(test).width > maxW && line){ ctx.fillText(line, x, yy); line = w; yy += lh; } else line = test; }
-  if(line) ctx.fillText(line, x, yy);
+function wrap(text, x, y, maxW, lh, dry){
+  const words = text.split(' '); let line = '', yy = y, n = 0;
+  for(const w of words){ const test = line ? line+' '+w : w; if(ctx.measureText(test).width > maxW && line){ if(!dry) ctx.fillText(line, x, yy); n++; line = w; yy += lh; } else line = test; }
+  if(line){ if(!dry) ctx.fillText(line, x, yy); n++; }
+  return n;
 }
 
 /* ---- 3D view: the finished playfield frame is re-projected onto a tilted plane (far edge narrower and
@@ -5851,6 +5855,12 @@ function draw(){
    ========================================================= */
 const pointers = new Map();
 function sideOf(x){ const r = cv.getBoundingClientRect(); return (x - r.left) < r.width/2 ? 'L' : 'R'; }
+// the table intro stays up until the player taps: that first tap only closes it (it never flips or launches)
+function introTap(){
+  const bn = G.banner; if(!bn || !bn.intro || G.mode!=='play') return false;
+  if(bn.t > .4){ bn.intro = false; bn.t = Math.max(bn.t, bn.dur - .3); SFX.lane(); }
+  return true;
+}
 function setPress(side, on){
   if(G.press[side] === on) return;
   G.press[side] = on;
@@ -5866,7 +5876,8 @@ function setPress(side, on){
 }
 cv.addEventListener('pointerdown', e => {
   Snd.init(); if(G.mode==='bonus'){ if(G.bonus && G.bonus.phase==='intro') G.bonus.t = Math.max(G.bonus.t, 1.6); } else if(G.mode!=='play' || G.paused) return;
-  e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch(_){}
+  e.preventDefault(); if(G.mode==='play' && introTap()) return;
+  try { cv.setPointerCapture(e.pointerId); } catch(_){}
   const side = sideOf(e.clientX); pointers.set(e.pointerId, { side, x:e.clientX, y:e.clientY, t:performance.now(), swiped:false });
   setPress(side, true);
   if(G.inPlunger && G.mode==='play') launch();
@@ -5885,6 +5896,7 @@ window.addEventListener('keydown', e => {
   if(G.mode==='bonus' && G.bonus){ const B = G.bonus; if(KEYS[e.code]){ e.preventDefault(); G.press[KEYS[e.code]] = true; } if(B.phase==='intro' && (KEYS[e.code] || e.code==='Space' || e.code==='Enter')) B.t = Math.max(B.t, 1.6); return; }
   if(e.code==='Escape' || e.code==='KeyP'){ if(G.mode==='play') togglePause(); return; }
   if(G.mode!=='play' || G.paused) return;
+  if((KEYS[e.code] || e.code==='Space' || e.code==='Enter') && introTap()){ e.preventDefault(); return; }
   if(KEYS[e.code]){ e.preventDefault(); setPress(KEYS[e.code], true); if(G.inPlunger) launch(); }
   if(e.code==='Space' || e.code==='Enter'){ e.preventDefault(); launch(); }
   if(e.code==='ArrowUp' || e.code==='KeyW'){ e.preventDefault(); nudge(G.press.L && !G.press.R ? -1 : G.press.R && !G.press.L ? 1 : 0); }
@@ -6106,7 +6118,7 @@ function playDaily(){
   const d = dailyInfo();
   G.sp = { kind:'daily', key:d.key, mod:d.mod.id, name:d.mod.name, mul:d.mod.id==='dbl' ? 2 : d.mod.id==='one' ? 3 : 1 };
   achNew = []; startPhase(d.pi); if(d.mod.id==='one') G.balls = 1;
-  G.banner = { title:'DESAFIO DO DIA', sub:d.mod.name, hint:d.mod.desc + ' Fase ' + (d.pi+1) + ': ' + PHASES[d.pi].name + '. Vença para ganhar o prêmio do dia.', t:0, dur:4 };
+  G.banner = { title:'DESAFIO DO DIA', sub:d.mod.name, hint:d.mod.desc + ' Fase ' + (d.pi+1) + ': ' + PHASES[d.pi].name + '. Vença para ganhar o prêmio do dia.', t:0, dur:4, intro:true };
   G.paused = false; show(null);
 }
 /* ---- endless tower: one unlocked tower after another, score and balls carry over ---- */
@@ -6121,7 +6133,7 @@ function endlessStage(first){
   const pi = endlessPick(sp.stage); startPhase(pi);
   if(keep){ G.score = keep.score; G.balls = Math.min(6, keep.balls+1); G.fichasRun = keep.fr + 3; S.fichas += 3; G.lost = keep.lost; }
   G.replayIdx = 99; G.grav *= 1 + Math.min(.3, .03*sp.stage);
-  G.banner = { title:'TORRE ' + (sp.stage+1), sub:PHASES[pi].name.toUpperCase(), hint:first ? 'Vença uma torre atrás da outra. Os pontos e as bolas continuam. Cada torre vencida dá +1 bola e +3 fichas, e a gravidade aumenta. A cada 5 torres vem um chefe.' : '+1 BOLA · +3 FICHAS', t:0, dur:first ? 4 : 2.4 };
+  G.banner = { title:'TORRE ' + (sp.stage+1), sub:PHASES[pi].name.toUpperCase(), hint:first ? 'Vença uma torre atrás da outra. Os pontos e as bolas continuam. Cada torre vencida dá +1 bola e +3 fichas, e a gravidade aumenta. A cada 5 torres vem um chefe.' : '+1 BOLA · +3 FICHAS', t:0, dur:first ? 4 : 2.4 , intro:true };
 }
 function playEndless(){ G.sp = { kind:'endless', stage:0 }; achNew = []; endlessStage(true); G.paused = false; show(null); }
 function endlessNext(){
