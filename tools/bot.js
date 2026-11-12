@@ -4,6 +4,11 @@
    Human-like play: TTBot.run({ human:'medio', loadout:'era' })  (presets: bom, medio, novato) */
 (function(){
 const T = window.__tiltTower, G = T.G, Y = T.Y, S = T.S, H = 1/600;
+function taskTargets(L, f, t, out){
+  if(t.kind === "bumps") L.bumpers.forEach(c => { if(c.f === f) out.push([c.x, c.y + c.r]); });
+  else if(t.kind === "coins") L.coins.forEach(c => { if(c.f === f && !c.taken && !c.gold) out.push([c.x, c.y]); });
+  else if(t.kind === "spin") L.spinners.forEach(q => { if(q.f === f) out.push([(q.x1+q.x2)/2, q.y + 30]); });
+}
 function targets(L, f){
   const fl = L.floors[f], out = []; if(!fl) return out;
   const B = L.boss;
@@ -31,12 +36,14 @@ function targets(L, f){
     if(L.exit.lit) return [[L.exit.x, L.exit.y, 's']];
     if(L.goalCond === 'targets') L.goalStands.forEach(t => { if(!t.lit) out.push([t.x, t.y + 10]); });
     if(L.goalCond === 'bank') L.goalBank.targets.forEach(t => { if(!t.down) out.push([t.x + t.w/2, t.y + 10]); });
+    if(L.goalTask && !L.goalTask.cleared) taskTargets(L, f, L.goalTask, out);
     return out;
   }
   const r = fl.rail;
   if(r && r.locked && fl.lockObj){
     const o = fl.lockObj;
-    if(fl.lockBy === 'bank') o.targets.forEach(t => { if(!t.down) out.push([t.x + t.w/2, t.y + 10]); });
+    if(fl.lockBy === 'task') taskTargets(L, f, o, out);
+    else if(fl.lockBy === 'bank') o.targets.forEach(t => { if(!t.down) out.push([t.x + t.w/2, t.y + 10]); });
     else if(fl.lockBy === 'roll') o.xs.forEach((x, i) => { if(!o.lit[i]) out.push([x, o.y + 30]); });
     else if(fl.lockBy === 'dance') o.tiles.forEach(t => { if(!t.lit) out.push([t.x, t.y]); });
     else if(fl.lockBy === 'code'){ const t = o.btns[o.seq[o.step]]; out.push([t.x, t.y + 10]); }

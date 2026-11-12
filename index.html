@@ -428,117 +428,117 @@ const PHASES = [
   { name:'Salão de Bar', easy:true, floors:[{m:'bumpers',up:'L'},{m:'goal',cond:'always'}],
     golds:[[0,44,250],[1,180,110],[0,180,180]], enemies:[],
     tip:'Mande a bola numa das duas rampas: a da esquerda ou a do centro.' },
-  { name:'Fichas e Spinners', floors:[{m:'sig',up:'L',sig:'vari'},{m:'orbit',up:'C'},{m:'goal',cond:'always'}],
+  { name:'Fichas e Spinners', floors:[{m:'sig',up:'L',sig:'vari'},{m:'orbit',up:'C'},{m:'goal',cond:'bumps'}],
     golds:[[0,40,200],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'Novo: o VARI-ALVO. Quanto mais forte a tacada, mais fundo ele vai e mais pontos dá.' },
+    tip:'Novo: o VARI-ALVO. Quanto mais forte a tacada, mais fundo ele vai. No topo, bata nos bumpers para abrir a saída.' },
   { name:'Alvos que Caem', floors:[{m:'drop',up:'L',lock:'bank'},{m:'sig',up:'R',sig:'cap'},{m:'goal',cond:'targets'}],
     golds:[[0,180,240],[1,316,250],[2,180,110]], enemies:[{t:'roll',f:1,y:410,x1:90,x2:270}],
     tip:'Derrube os 4 alvos para abrir a rampa. No 2º andar, bata na BOLA CATIVA para tocar o sino.' },
-  { name:'Relé Tagarela', boss:'relay', floors:[{m:'bumpers',up:'L'},{m:'elev'},{m:'boss'}],
+  { name:'Relé Tagarela', boss:'relay', floors:[{m:'shuttle',up:'L'},{m:'elev'},{m:'boss'}],
     golds:[[0,44,250],[1,180,100],[2,60,330]], enemies:[],
-    tip:'Sub-chefe! Acerte o botão de reset quando a proteção abrir.' },
-  { name:'Corredor de Arame', floors:[{m:'sig',up:'L'},{m:'elev'},{m:'drop',up:'R',lock:'bank'},{m:'goal',cond:'bank'}],
+    tip:'Sub-chefe! Os bumpers do térreo andam de um lado para o outro. Lá em cima, acerte o botão de reset quando a proteção abrir.' },
+  { name:'Corredor de Arame', floors:[{m:'sig',up:'L'},{m:'crown',up:'R',lock:'bumps'},{m:'drop',up:'L',lock:'bank'},{m:'goal',cond:'bank'}],
     golds:[[0,100,150],[2,180,240],[3,180,120]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:1,x:270,y:340}],
-    tip:'SEQUÊNCIA DA JUKEBOX: vari-alvo, bola cativa e rampa, nessa ordem, valem o DISCO DE OURO.' },
-  { name:'Mariposas', floors:[{m:'sig',up:'L'},{m:'orbit',up:'C'},{m:'roll',up:'L'},{m:'goal',cond:'targets'}],
-    golds:[[1,180,45],[2,128,92],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:410,rx:100,ry:40}],
-    tip:'Mariposas freiam a bola. Acerte-as com força para derrubá-las.' },
-  { name:'Pêndulo do Tilt', boss:'pendulum', floors:[{m:'drop',up:'L',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
-    golds:[[0,180,240],[1,180,45],[2,300,430]], enemies:[{t:'roll',f:1,y:400,x1:90,x2:270}],
-    tip:'Sub-chefe! Acerte o prumo do pêndulo com força.' },
-  { name:'Rollover T-I-L-T', floors:[{m:'roll',up:'L'},{m:'sig',up:'R'},{m:'roll',up:'L',lock:'roll'},{m:'elev'},{m:'goal',cond:'targets'}],
-    golds:[[0,224,92],[2,128,92],[4,180,110]], enemies:[{t:'hop',f:1,x:80,y:420},{t:'hop',f:1,x:280,y:420}],
-    tip:'No 3º andar, acenda as 4 letras T-I-L-T para abrir a rampa. Os flippers trocam as luzes de lugar.' },
-  { name:'Torre de Relés', floors:[{m:'sig',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'elev'},{m:'goal',cond:'bank'}],
+    tip:'SEQUÊNCIA DA JUKEBOX: vari-alvo, bola cativa e rampa valem o DISCO DE OURO. No 2º andar, entre na COROA de bumpers para abrir a rampa.' },
+  { name:'Mariposas', floors:[{m:'sig',up:'L'},{m:'orbit',up:'C'},{m:'roll',up:'L'},{m:'goal',cond:'hunt'}],
+    golds:[[1,180,45],[2,128,92],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:2,cx:180,cy:410,rx:100,ry:40},{t:'fly',f:3,cx:180,cy:385,rx:100,ry:30},{t:'fly',f:3,cx:180,cy:455,rx:90,ry:30}],
+    tip:'Mariposas freiam a bola. Acerte-as com força. No topo, derrube as duas para abrir a saída.' },
+  { name:'Pêndulo do Tilt', boss:'pendulum', floors:[{m:'pend',up:'L'},{m:'orbit',up:'C'},{m:'boss'}],
+    golds:[[0,180,330],[1,180,45],[2,300,430]], enemies:[{t:'roll',f:1,y:400,x1:90,x2:270}],
+    tip:'Sub-chefe! A BOLA DE DEMOLIÇÃO do térreo é um treino: lá em cima, acerte o prumo do pêndulo com força.' },
+  { name:'Rollover T-I-L-T', floors:[{m:'mill',up:'L'},{m:'sig',up:'R'},{m:'roll',up:'L',lock:'roll'},{m:'goal',cond:'targets'}],
+    golds:[[0,224,92],[2,128,92],[3,180,110]], enemies:[{t:'hop',f:1,x:80,y:420},{t:'hop',f:1,x:280,y:420}],
+    tip:'O CARROSSEL do térreo gira sem parar. No 3º andar, acenda T-I-L-T para abrir a rampa: os flippers trocam as luzes de lugar.' },
+  { name:'Torre de Relés', floors:[{m:'sig',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C',lock:'spin'},{m:'elev'},{m:'goal',cond:'bank'}],
     golds:[[1,180,240],[2,180,45],[4,180,120]], enemies:[{t:'roll',f:1,y:410,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:3,x:90,y:340}],
-    tip:'A torre mais alta da era. Cuidado com tudo.' },
-  { name:'Jukebox Rex', boss:'jukebox', floors:[{m:'sig',up:'L'},{m:'drop',up:'R',lock:'bank'},{m:'orbit',up:'C'},{m:'boss'}],
+    tip:'A torre mais alta da era. No 3º andar, gire os spinners das laterais para abrir a rampa do centro.' },
+  { name:'Jukebox Rex', boss:'jukebox', floors:[{m:'sig',up:'L'},{m:'crown',up:'R'},{m:'orbit',up:'C'},{m:'boss'}],
     golds:[[0,100,150],[1,180,240],[2,180,45]], enemies:[{t:'roll',f:0,y:400,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
     tip:'Chefe! Lance a bola no slot de moedas quando a grade abrir. Cada DISCO DE OURO deixa a grade aberta por mais tempo.' },
   /* ---- ERA 2 · ANOS 70 ---- */
   { name:'Pista de Dança', floors:[{m:'dance',up:'L'},{m:'bumpers',up:'R'},{m:'goal',cond:'always'}],
     golds:[[0,180,372],[1,316,250],[2,180,110]], enemies:[],
     tip:'Bem-vindo aos anos 70! Passe a bola pelos ladrilhos da pista e suba pela rampa. Sequência completa: salva-bola por 20 s.' },
-  { name:'Vinil Louco', floors:[{m:'disc',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
+  { name:'Vinil Louco', floors:[{m:'disc',up:'L',lock:'timed'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
     golds:[[0,180,356],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'O toca-discos gira e arrasta a bola. Use o giro a seu favor.' },
-  { name:'Salto Plataforma', floors:[{m:'bumpers',up:'L'},{m:'elev'},{m:'dance',up:'R',lock:'dance'},{m:'goal',cond:'always'}],
-    golds:[[0,44,250],[1,180,150],[3,180,110]], enemies:[{t:'hop',f:1,x:90,y:340},{t:'hop',f:2,x:270,y:420}],
-    tip:'Acenda os 9 ladrilhos da pista para abrir a rampa.' },
-  { name:'DJ Agulha', boss:'needle', floors:[{m:'dance',up:'L'},{m:'disc',up:'R'},{m:'boss'}],
+    tip:'O toca-discos gira e arrasta a bola. A rampa ABRE E FECHA sozinha: acerte na hora certa.' },
+  { name:'Salto Plataforma', floors:[{m:'bumpers',up:'L'},{m:'shuttle',up:'R',lock:'bumps'},{m:'dance',up:'L',lock:'dance'},{m:'goal',cond:'coins'}],
+    golds:[[0,44,250],[1,180,150],[3,180,110]], enemies:[{t:'roll',f:1,y:430,x1:90,x2:270},{t:'hop',f:2,x:270,y:420}],
+    tip:'Bata nos bumpers que andam, acenda a pista e, no topo, pegue as fichas para abrir a saída.' },
+  { name:'DJ Agulha', boss:'needle', floors:[{m:'dance',up:'L'},{m:'mill',up:'R'},{m:'boss'}],
     golds:[[0,180,372],[1,180,356],[2,60,430]], enemies:[],
-    tip:'Sub-chefe! Acerte a cabeça da agulha com força quando ela passar.' },
-  { name:'Globinhos', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'disc',up:'L'},{m:'goal',cond:'bank'}],
-    golds:[[1,180,45],[2,180,184],[3,180,120]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40}],
-    tip:'Globinhos freiam a bola. Acerte-os com força.' },
-  { name:'Noite de Sábado', floors:[{m:'drop',up:'L',lock:'bank'},{m:'dance',up:'R',lock:'dance'},{m:'elev'},{m:'goal',cond:'targets'}],
+    tip:'Sub-chefe! Passe pelo carrossel e acerte a cabeça da agulha com força quando ela passar.' },
+  { name:'Globinhos', floors:[{m:'bumpers',up:'L'},{m:'orbit',up:'C'},{m:'disc',up:'L',lock:'timed'},{m:'goal',cond:'hunt'}],
+    golds:[[1,180,45],[2,180,184],[3,180,120]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:3,cx:180,cy:385,rx:100,ry:30},{t:'fly',f:3,cx:180,cy:455,rx:90,ry:30}],
+    tip:'Globinhos freiam a bola. No 3º andar a rampa abre e fecha. No topo, derrube os dois globinhos para abrir a saída.' },
+  { name:'Noite de Sábado', twist:'dark', floors:[{m:'drop',up:'L',lock:'bank'},{m:'dance',up:'R',lock:'dance'},{m:'elev'},{m:'goal',cond:'targets'}],
     golds:[[0,180,240],[1,180,372],[3,180,110]], enemies:[{t:'roll',f:2,y:420,x1:90,x2:270}],
-    tip:'Alvos, pista e elevador. A noite é longa.' },
-  { name:'Lâmpada de Lava', boss:'lava', floors:[{m:'disc',up:'L'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
+    tip:'APAGÃO na discoteca: só dá para ver perto da bola. Alvos, pista e elevador no escuro.' },
+  { name:'Lâmpada de Lava', boss:'lava', floors:[{m:'pend',up:'L'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
     golds:[[0,180,356],[1,180,45],[3,300,430]], enemies:[{t:'hop',f:2,x:70,y:430}],
-    tip:'Sub-chefe! Acerte a base da lâmpada quando a grade abrir. Cuidado com as bolhas.' },
-  { name:'Febre do Funk', floors:[{m:'roll',up:'L',lock:'roll'},{m:'disc',up:'R'},{m:'dance',up:'L',lock:'dance'},{m:'orbit',up:'C'},{m:'goal',cond:'bank'}],
+    tip:'Sub-chefe! Desvie da bola de demolição e acerte a base da lâmpada quando a grade abrir.' },
+  { name:'Febre do Funk', floors:[{m:'roll',up:'L',lock:'roll'},{m:'disc',up:'R',lock:'timed'},{m:'crown',up:'L',lock:'bumps'},{m:'orbit',up:'C'},{m:'goal',cond:'bank'}],
     golds:[[0,224,92],[2,180,372],[4,180,120]], enemies:[{t:'roll',f:1,y:430,x1:90,x2:270},{t:'hop',f:3,x:280,y:420}],
-    tip:'Acenda F-U-N-K nos corredores. Os flippers trocam as luzes de lugar.' },
-  { name:'Escadaria de Luz', floors:[{m:'bumpers',up:'L'},{m:'dance',up:'R'},{m:'elev'},{m:'drop',up:'L',lock:'bank'},{m:'disc',up:'R'},{m:'goal',cond:'targets'}],
-    golds:[[1,180,372],[3,180,240],[5,180,110]], enemies:[{t:'fly',f:1,cx:180,cy:430,rx:110,ry:30},{t:'roll',f:3,y:420,x1:90,x2:270},{t:'hop',f:4,x:80,y:430}],
-    tip:'A torre mais alta da discoteca. Seis andares até o topo.' },
-  { name:'Rei do Globo', boss:'globe', floors:[{m:'dance',up:'L'},{m:'disc',up:'R'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
+    tip:'Acenda F-U-N-K, pegue a rampa na hora certa e entre na coroa de bumpers.' },
+  { name:'Escadaria de Luz', floors:[{m:'bumpers',up:'L'},{m:'dance',up:'R'},{m:'elev'},{m:'mill',up:'L',lock:'coins'},{m:'disc',up:'R'},{m:'goal',cond:'targets'}],
+    golds:[[1,180,372],[3,180,356],[5,180,110]], enemies:[{t:'fly',f:1,cx:180,cy:430,rx:110,ry:30},{t:'roll',f:3,y:420,x1:90,x2:270},{t:'hop',f:4,x:80,y:430}],
+    tip:'Seis andares. No carrossel, pegue as fichas para abrir a rampa.' },
+  { name:'Rei do Globo', boss:'globe', floors:[{m:'dance',up:'L'},{m:'shuttle',up:'R',lock:'bumps'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
     golds:[[0,180,372],[1,180,356],[2,180,45]], enemies:[{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
     tip:'Chefe! Passe pela brecha dos satélites e acerte o globo em cheio.' },
   /* ---- ERA 3 · ANOS 80 ---- */
   { name:'Fliperama', floors:[{m:'invaders',up:'L'},{m:'bumpers',up:'R'},{m:'goal',cond:'always'}],
     golds:[[0,180,400],[1,316,250],[2,180,110]], enemies:[],
     tip:'Bem-vindo aos anos 80! Os alvos de pixel andam de um lado para o outro. Sequência completa: +1 bola.' },
-  { name:'Fita K7', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
+  { name:'Fita K7', floors:[{m:'tape',up:'L'},{m:'pend',up:'R'},{m:'goal',cond:'bumps'}],
     golds:[[0,180,330],[1,180,45],[2,180,110]], enemies:[{t:'roll',f:1,y:455,x1:110,x2:250}],
-    tip:'A esteira da fita empurra a bola para o lado e troca de direção.' },
-  { name:'Ataque Pixel', floors:[{m:'bumpers',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'elev'},{m:'goal',cond:'bank'}],
-    golds:[[0,44,250],[1,180,400],[3,180,120]], enemies:[{t:'hop',f:0,x:270,y:430},{t:'hop',f:2,x:90,y:340}],
-    tip:'Derrube os 5 pixels que se movem para abrir a rampa.' },
-  { name:'Fita Embolada', boss:'tape', floors:[{m:'invaders',up:'L'},{m:'tape',up:'R'},{m:'boss'}],
+    tip:'A esteira da fita empurra a bola. No 2º andar, cuidado com a bola de demolição. No topo, bata nos bumpers.' },
+  { name:'Ataque Pixel', floors:[{m:'bumpers',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'shuttle',up:'L',lock:'timed'},{m:'goal',cond:'bank'}],
+    golds:[[0,44,250],[1,180,400],[3,180,120]], enemies:[{t:'hop',f:0,x:270,y:430},{t:'hop',f:2,x:90,y:430}],
+    tip:'Derrube os 5 pixels para abrir a rampa. No 3º andar, a rampa abre e fecha.' },
+  { name:'Fita Embolada', boss:'tape', floors:[{m:'invaders',up:'L'},{m:'crown',up:'R',lock:'bumps'},{m:'boss'}],
     golds:[[0,180,400],[1,180,330],[2,60,430]], enemies:[],
     tip:'Sub-chefe! Acerte o carretel que está brilhando. A fita solta gruda na bola.' },
-  { name:'Disquetes', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'invaders',up:'L',lock:'bank'},{m:'goal',cond:'targets'}],
-    golds:[[0,180,330],[1,180,45],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:1,cx:180,cy:390,rx:110,ry:30},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40}],
-    tip:'Disquetes voadores freiam a bola. Acerte-os com força.' },
-  { name:'Neon na Chuva', floors:[{m:'roll',up:'L',lock:'roll'},{m:'tape',up:'R'},{m:'elev'},{m:'goal',cond:'bank'}],
+  { name:'Disquetes', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'invaders',up:'L',lock:'bank'},{m:'goal',cond:'hunt'}],
+    golds:[[0,180,330],[1,180,45],[3,180,110]], enemies:[{t:'fly',f:0,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:2,cx:180,cy:430,rx:100,ry:40},{t:'fly',f:3,cx:180,cy:385,rx:100,ry:30},{t:'fly',f:3,cx:180,cy:455,rx:90,ry:30}],
+    tip:'Disquetes voadores freiam a bola. Derrube os dois do topo para abrir a saída.' },
+  { name:'Neon na Chuva', twist:'wind', floors:[{m:'roll',up:'L',lock:'roll'},{m:'tape',up:'R'},{m:'elev'},{m:'goal',cond:'bank'}],
     golds:[[0,224,92],[1,180,330],[3,180,120]], enemies:[{t:'roll',f:2,y:420,x1:90,x2:270}],
-    tip:'Acenda N-E-O-N nos corredores para abrir a rampa.' },
-  { name:'Robô Breakdance', boss:'robot', floors:[{m:'tape',up:'L'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
-    golds:[[0,180,330],[1,180,45],[3,300,470]], enemies:[{t:'hop',f:2,x:70,y:430}],
+    tip:'VENTANIA: as rajadas empurram a bola para o lado. Acenda N-E-O-N para abrir a rampa.' },
+  { name:'Robô Breakdance', boss:'robot', floors:[{m:'mill',up:'L',lock:'coins'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
+    golds:[[0,180,356],[1,180,45],[3,300,470]], enemies:[{t:'hop',f:2,x:70,y:430}],
     tip:'Sub-chefe! Girando ele é invencível. Acerte quando ele parar em FREEZE.' },
-  { name:'Hora do Recorde', floors:[{m:'invaders',up:'L',lock:'bank'},{m:'tape',up:'R'},{m:'roll',up:'L',lock:'roll'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}],
+  { name:'Hora do Recorde', floors:[{m:'invaders',up:'L',lock:'bank'},{m:'tape',up:'R',lock:'timed'},{m:'roll',up:'L',lock:'roll'},{m:'orbit',up:'C',lock:'spin'},{m:'goal',cond:'targets'}],
     golds:[[0,180,400],[2,224,92],[4,180,110]], enemies:[{t:'roll',f:1,y:430,x1:90,x2:270},{t:'fly',f:3,cx:180,cy:400,rx:110,ry:30}],
-    tip:'Pixels, fita e N-E-O-N. Hora de bater o recorde.' },
-  { name:'Torre de Fliperamas', floors:[{m:'bumpers',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'elev'},{m:'tape',up:'L'},{m:'roll',up:'R',lock:'roll'},{m:'goal',cond:'bank'}],
+    tip:'Pixels, rampa no tempo, N-E-O-N e spinners. Hora de bater o recorde.' },
+  { name:'Torre de Fliperamas', floors:[{m:'bumpers',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'elev'},{m:'pend',up:'L',lock:'bumps'},{m:'roll',up:'R',lock:'roll'},{m:'goal',cond:'bank'}],
     golds:[[0,44,250],[3,180,330],[5,180,120]], enemies:[{t:'fly',f:1,cx:180,cy:430,rx:110,ry:30},{t:'roll',f:3,y:420,x1:90,x2:270},{t:'hop',f:4,x:80,y:430}],
     tip:'Seis andares de fliperama até o topo.' },
-  { name:'Mestre do Fliperama', boss:'arcade', floors:[{m:'invaders',up:'L'},{m:'tape',up:'R'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
+  { name:'Mestre do Fliperama', boss:'arcade', floors:[{m:'invaders',up:'L'},{m:'shuttle',up:'R'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}],
     golds:[[0,180,400],[1,180,330],[2,180,45]], enemies:[{t:'fly',f:2,cx:180,cy:390,rx:110,ry:30},{t:'hop',f:1,x:70,y:430}],
     tip:'Chefe! Quebre os blocos da frente e acerte a tela com força.' },
   /* ---- ERA 4 · ANOS 90 ---- */
   {name: 'Internet Discada', floors: [{m: 'portal', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'drop', up: 'L', lock: 'bank'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 120], [2, 180, 240], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}], tip: 'Bem-vindo aos anos 90! Os portais WWW teletransportam a bola de um lado para o outro. Sequência completa: bônus de pontos maior.'},
-  {name: 'Código Secreto', floors: [{m: 'code', up: 'L', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'portal', up: 'R'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 120], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'hop', f: 2, x: 270, y: 430}], tip: 'Acerte os botões na ordem de cores mostrada na telinha para abrir a rampa.'},
-  {name: 'Skate Radical', floors: [{m: 'bumpers', up: 'L'}, {m: 'portal', up: 'R'}, {m: 'elev'}, {m: 'code', up: 'L', lock: 'code'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'hop', f: 3, x: 270, y: 430}], tip: 'Portais, elevador e código. Radical!'},
-  {name: 'Bichinho Virtual', boss: 'pet', floors: [{m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 120], [2, 180, 150], [3, 60, 430]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Sub-chefe! Acerte o bichinho quando ele acordar. Dormindo, ele não sente nada.'},
-  {name: 'CD Pirata', floors: [{m: 'code', up: 'L', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'portal', up: 'L'}, {m: 'invaders', up: 'R', lock: 'bank'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 120], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 270, y: 430}], tip: 'CDs rolantes no caminho. Código, pixels e portais.'},
-  {name: 'Rave na Garagem', floors: [{m: 'roll', up: 'L', lock: 'roll'}, {m: 'portal', up: 'R'}, {m: 'dance', up: 'L', lock: 'dance'}, {m: 'elev'}, {m: 'goal', cond: 'bank'}], golds: [[0, 224, 92], [2, 180, 372], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Acenda R-A-V-E e a pista de dança para subir.'},
-  {name: 'Modem Discada', boss: 'modem', floors: [{m: 'code', up: 'L', lock: 'code'}, {m: 'portal', up: 'R'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 410], [2, 180, 45], [4, 60, 430]], enemies: [{t: 'hop', f: 2, x: 270, y: 430}], tip: 'Sub-chefe! Acerte o plugue quando ele parar de piscar. Cuidado com os pacotes de dados.'},
-  {name: 'Bug do Milênio', floors: [{m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'elev'}, {m: 'roll', up: 'L', lock: 'roll'}, {m: 'orbit', up: 'C'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 120], [3, 224, 92], [5, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 270, y: 430}], tip: 'Seis andares antes da virada do milênio.'},
-  {name: 'Torre Online', floors: [{m: 'bumpers', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'portal', up: 'L'}, {m: 'invaders', up: 'R', lock: 'bank'}, {m: 'elev'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [3, 180, 400], [5, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 2, y: 420, x1: 90, x2: 270}, {t: 'hop', f: 3, x: 80, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'A torre mais alta da internet discada.'},
-  {name: 'Chefão Poligonal', boss: 'poly', floors: [{m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'tape', up: 'L'}, {m: 'boss'}], golds: [[0, 180, 120], [3, 180, 150], [5, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}], tip: 'Chefe! A cabeça gira: acerte quando os olhos vermelhos estiverem virados para você.'},
+  {name: 'Código Secreto', floors:[{m:'code',up:'L',lock:'code'},{m:'orbit',up:'C'},{m:'portal',up:'R',lock:'timed'},{m:'goal',cond:'targets'}], golds: [[0, 180, 410], [2, 180, 120], [3, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'hop', f: 2, x: 270, y: 430}], tip:'Acerte os botões na ordem de cores da telinha. No 3º andar, a rampa abre e fecha.'},
+  {name: 'Skate Radical', floors:[{m:'bumpers',up:'L'},{m:'mill',up:'R',lock:'bumps'},{m:'elev'},{m:'code',up:'L',lock:'code'},{m:'goal',cond:'coins'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'hop', f: 3, x: 270, y: 430}], tip:'Carrossel, elevador e código. No topo, pegue as fichas. Radical!'},
+  {name: 'Bichinho Virtual', boss: 'pet', floors:[{m:'portal',up:'L'},{m:'crown',up:'R',lock:'bumps'},{m:'elev'},{m:'boss'}], golds: [[0, 180, 120], [2, 180, 150], [3, 60, 430]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'Sub-chefe! Acerte o bichinho quando ele acordar. Dormindo, ele não sente nada.'},
+  {name: 'CD Pirata', floors:[{m:'code',up:'L',lock:'code'},{m:'orbit',up:'C',lock:'spin'},{m:'portal',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'goal',cond:'targets'}], golds: [[0, 180, 410], [2, 180, 120], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 270, y: 430}], tip:'CDs rolantes no caminho. Código, spinners, portais e pixels.'},
+  {name:'Rave na Garagem', twist:'dark', floors: [{m: 'roll', up: 'L', lock: 'roll'}, {m: 'portal', up: 'R'}, {m: 'dance', up: 'L', lock: 'dance'}, {m: 'elev'}, {m: 'goal', cond: 'bank'}], golds: [[0, 224, 92], [2, 180, 372], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'APAGÃO na rave: só dá para ver perto da bola. Acenda R-A-V-E e a pista de dança.'},
+  {name: 'Modem Discada', boss: 'modem', floors:[{m:'code',up:'L',lock:'code'},{m:'pend',up:'R'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}], golds: [[0, 180, 410], [2, 180, 45], [4, 60, 430]], enemies: [{t: 'hop', f: 2, x: 270, y: 430}], tip:'Sub-chefe! Acerte o plugue quando ele parar de piscar. Cuidado com os pacotes de dados.'},
+  {name: 'Bug do Milênio', floors:[{m:'portal',up:'L',lock:'timed'},{m:'code',up:'R',lock:'code'},{m:'elev'},{m:'shuttle',up:'L',lock:'coins'},{m:'orbit',up:'C'},{m:'goal',cond:'targets'}], golds: [[0, 180, 120], [3, 224, 92], [5, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 270, y: 430}], tip:'Seis andares antes da virada. Rampa no tempo, código e fichas entre os bumpers que andam.'},
+  {name: 'Torre Online', floors:[{m:'bumpers',up:'L'},{m:'code',up:'R',lock:'code'},{m:'portal',up:'L'},{m:'invaders',up:'R',lock:'bank'},{m:'elev'},{m:'goal',cond:'hunt'}], golds: [[0, 44, 250], [3, 180, 400], [5, 180, 110]], enemies:[{t:'fly',f:1,cx:180,cy:400,rx:110,ry:30},{t:'roll',f:2,y:420,x1:90,x2:270},{t:'hop',f:3,x:80,y:430},{t:'fly',f:5,cx:180,cy:385,rx:100,ry:30},{t:'hop',f:5,x:270,y:455}], tip:'A torre mais alta da internet discada. No topo, derrube os inimigos para abrir a saída.'},
+  {name: 'Chefão Poligonal', boss: 'poly', floors:[{m:'portal',up:'L'},{m:'code',up:'R',lock:'code'},{m:'orbit',up:'C',lock:'spin'},{m:'elev'},{m:'mill',up:'L'},{m:'boss'}], golds: [[0, 180, 120], [3, 180, 150], [5, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}], tip:'Chefe! A cabeça gira: acerte quando os olhos vermelhos estiverem virados para você.'},
   /* ---- ERA 5 · FUTURO ---- */
   {name: 'Estação Orbital', floors: [{m: 'holo', up: 'L'}, {m: 'bumpers', up: 'R'}, {m: 'well', up: 'L'}, {m: 'goal', cond: 'always'}], golds: [[0, 180, 400], [2, 180, 410], [3, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Bem-vindo ao futuro! Alvos holográficos somem e voltam. O poço de gravidade puxa a bola. Sequência completa: rebobina a próxima bola perdida.'},
-  {name: 'Gravidade Zero', floors: [{m: 'well', up: 'L'}, {m: 'orbit', up: 'C'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'portal', up: 'L'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 400], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Derrube os hologramas enquanto estão sólidos.'},
-  {name: 'Hologramas', floors: [{m: 'bumpers', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'elev'}, {m: 'well', up: 'L'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'roll', f: 3, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Use a gravidade para fazer curvas.'},
-  {name: 'Sentinela Drone', boss: 'drone', floors: [{m: 'well', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 410], [2, 180, 45], [4, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Sub-chefe! Depois de atirar, o drone abre as saídas de ar: acerte nessa hora.'},
-  {name: 'Cinturão de Asteroides', floors: [{m: 'well', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'holo', up: 'L', lock: 'bank'}, {m: 'elev'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [3, 180, 400], [5, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 270, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Asteroides por todo lado. Código, hologramas e gravidade.'},
-  {name: 'Cidade Neon 2099', floors: [{m: 'roll', up: 'L', lock: 'roll'}, {m: 'well', up: 'R'}, {m: 'portal', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'elev'}, {m: 'goal', cond: 'bank'}], golds: [[0, 224, 92], [3, 180, 400], [5, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 80, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Acenda N-O-V-A nos corredores para subir.'},
-  {name: 'Buraco Negro', boss: 'hole', floors: [{m: 'holo', up: 'L'}, {m: 'well', up: 'R'}, {m: 'code', up: 'L', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 400], [3, 180, 45], [5, 60, 430]], enemies: [{t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}], tip: 'Sub-chefe! Não caia no buraco: acerte o cristal que orbita em volta dele.'},
-  {name: 'Hiperespaço', floors: [{m: 'well', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [3, 180, 410], [6, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 270, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 5, y: 420, x1: 90, x2: 270}], tip: 'Sete andares em velocidade da luz.'},
-  {name: 'Torre Infinita', floors: [{m: 'bumpers', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'well', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'elev'}, {m: 'roll', up: 'L', lock: 'roll'}, {m: 'goal', cond: 'bank'}], golds: [[0, 44, 250], [3, 180, 410], [6, 180, 110]], enemies: [{t: 'fly', f: 1, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 2, y: 420, x1: 90, x2: 270}, {t: 'hop', f: 3, x: 80, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 5, y: 420, x1: 90, x2: 270}], tip: 'O penúltimo desafio. Tudo o que você aprendeu.'},
-  {name: 'IA Suprema', boss: 'ai', floors: [{m: 'well', up: 'L'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'portal', up: 'L'}, {m: 'code', up: 'R', lock: 'code'}, {m: 'orbit', up: 'C'}, {m: 'elev'}, {m: 'boss'}], golds: [[0, 180, 410], [3, 180, 410], [6, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}, {t: 'fly', f: 5, cx: 180, cy: 400, rx: 110, ry: 30}], tip: 'Chefe final! Quebre as placas do escudo e acerte o olho quando ele abrir.'},
+  {name:'Gravidade Zero', twist:'moon', floors: [{m: 'well', up: 'L'}, {m: 'orbit', up: 'C'}, {m: 'holo', up: 'R', lock: 'bank'}, {m: 'portal', up: 'L'}, {m: 'goal', cond: 'targets'}], golds: [[0, 180, 410], [2, 180, 400], [4, 180, 110]], enemies: [{t: 'roll', f: 1, y: 455, x1: 90, x2: 270}, {t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'GRAVIDADE LUNAR: a bola cai devagar e voa mais longe. Derrube os hologramas enquanto estão sólidos.'},
+  {name: 'Hologramas', floors:[{m:'bumpers',up:'L'},{m:'holo',up:'R',lock:'bank'},{m:'elev'},{m:'well',up:'L',lock:'timed'},{m:'goal',cond:'bank'}], golds: [[0, 44, 250], [2, 180, 150], [4, 180, 110]], enemies: [{t: 'hop', f: 1, x: 90, y: 340}, {t: 'roll', f: 3, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'Use a gravidade para fazer curvas. No 4º andar, a rampa abre e fecha.'},
+  {name: 'Sentinela Drone', boss: 'drone', floors:[{m:'well',up:'L'},{m:'shuttle',up:'R',lock:'bumps'},{m:'orbit',up:'C'},{m:'elev'},{m:'boss'}], golds: [[0, 180, 410], [2, 180, 45], [4, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'Sub-chefe! Depois de atirar, o drone abre as saídas de ar: acerte nessa hora.'},
+  {name: 'Cinturão de Asteroides', floors:[{m:'mill',up:'L',lock:'bumps'},{m:'code',up:'R',lock:'code'},{m:'orbit',up:'C'},{m:'holo',up:'L',lock:'bank'},{m:'elev'},{m:'goal',cond:'hunt'}], golds: [[0, 180, 410], [3, 180, 400], [5, 180, 110]], enemies:[{t:'roll',f:1,y:420,x1:90,x2:270},{t:'fly',f:2,cx:180,cy:400,rx:110,ry:30},{t:'hop',f:3,x:270,y:430},{t:'fly',f:5,cx:180,cy:385,rx:100,ry:30},{t:'roll',f:5,y:455,x1:90,x2:270}], tip:'Asteroides em órbita no térreo. No topo, derrube os inimigos para abrir a saída.'},
+  {name: 'Cidade Neon 2099', floors:[{m:'roll',up:'L',lock:'roll'},{m:'well',up:'R'},{m:'portal',up:'L',lock:'timed'},{m:'holo',up:'R',lock:'bank'},{m:'elev'},{m:'goal',cond:'bank'}], golds: [[0, 224, 92], [3, 180, 400], [5, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 80, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'Acenda N-O-V-A nos corredores. No 3º andar, a rampa abre e fecha.'},
+  {name: 'Buraco Negro', boss: 'hole', floors:[{m:'holo',up:'L'},{m:'pend',up:'R'},{m:'code',up:'L',lock:'code'},{m:'orbit',up:'C',lock:'spin'},{m:'elev'},{m:'boss'}], golds: [[0, 180, 400], [3, 180, 45], [5, 60, 430]], enemies: [{t: 'fly', f: 3, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}], tip:'Sub-chefe! Não caia no buraco: acerte o cristal que orbita em volta dele.'},
+  {name:'Hiperespaço', twist:'wind', floors:[{m:'well',up:'L'},{m:'holo',up:'R',lock:'bank'},{m:'portal',up:'L',lock:'timed'},{m:'code',up:'R',lock:'code'},{m:'orbit',up:'C'},{m:'elev'},{m:'goal',cond:'targets'}], golds: [[0, 180, 410], [3, 180, 410], [6, 180, 110]], enemies: [{t: 'roll', f: 1, y: 420, x1: 90, x2: 270}, {t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 3, x: 270, y: 430}, {t: 'fly', f: 4, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'roll', f: 5, y: 420, x1: 90, x2: 270}], tip:'VENTO SOLAR: as rajadas empurram a bola para o lado. Sete andares.'},
+  {name: 'Torre Infinita', floors:[{m:'bumpers',up:'L'},{m:'holo',up:'R',lock:'bank'},{m:'shuttle',up:'L',lock:'coins'},{m:'code',up:'R',lock:'code'},{m:'elev'},{m:'roll',up:'L',lock:'roll'},{m:'goal',cond:'hunt'}], golds: [[0, 44, 250], [3, 180, 410], [6, 180, 110]], enemies:[{t:'fly',f:1,cx:180,cy:400,rx:110,ry:30},{t:'roll',f:2,y:420,x1:90,x2:270},{t:'hop',f:3,x:80,y:430},{t:'fly',f:4,cx:180,cy:400,rx:110,ry:30},{t:'roll',f:6,y:455,x1:90,x2:270},{t:'fly',f:6,cx:180,cy:385,rx:100,ry:30}], tip:'A penúltima torre. No topo, derrube os inimigos para abrir a saída.'},
+  {name: 'IA Suprema', boss: 'ai', floors:[{m:'well',up:'L'},{m:'holo',up:'R',lock:'bank'},{m:'mill',up:'L'},{m:'code',up:'R',lock:'code'},{m:'orbit',up:'C',lock:'spin'},{m:'elev'},{m:'boss'}], golds: [[0, 180, 410], [3, 180, 410], [6, 60, 430]], enemies: [{t: 'fly', f: 2, cx: 180, cy: 400, rx: 110, ry: 30}, {t: 'hop', f: 4, x: 70, y: 430}, {t: 'fly', f: 5, cx: 180, cy: 400, rx: 110, ry: 30}], tip:'Chefe final! Quebre as placas do escudo e acerte o olho quando ele abrir.'},
 ];
 // difficulty grows steadily from phase 1 (0) to phase 50 (1)
 const DIFF = pi => clamp(pi/49, 0, 1);
@@ -918,7 +918,7 @@ const lin = (ctx,x0,y0,x1,y1,st) => { const g = ctx.createLinearGradient(x0,y0,x
    LEVEL BUILDING
    ========================================================= */
 function newLevel(pi, n){
-  return { pi, n, segs:[], circles:[], bumpers:[], slings:[], flippers:[], rails:[], saucers:[], spinners:[], lanes:[], banks:[], stands:[], coins:[], enemies:[], inserts:[], floors:[], kickers:[], dances:[], turntables:[], belts:[], portals:[], codes:[], wells:[], sigs:[], boss:null, static:[] };
+  return { pi, n, segs:[], circles:[], bumpers:[], slings:[], flippers:[], rails:[], saucers:[], spinners:[], lanes:[], banks:[], stands:[], coins:[], enemies:[], inserts:[], floors:[], kickers:[], dances:[], turntables:[], belts:[], portals:[], codes:[], wells:[], sigs:[], movers:[], tasks:[], boss:null, static:[] };
 }
 function addSeg(L,f,ax,ay,bx,by,o={}){
   const s = { f, ax, ay:Y(f,ay), bx, by:Y(f,by), r:o.r??2.5, e:o.e??.35, kind:o.kind||'wall', on:true, ref:o.ref||null, oneway:o.oneway||null, draw:o.draw??true };
@@ -1067,6 +1067,7 @@ function modElev(L,f){
 function modGoal(L,f,cond){
   const sc = { f, x:180, y:Y(f,190), kind:'exit', lit:cond==='always', visible:true, cool:0, flash:0 };
   L.saucers.push(sc); L.exit = sc; L.goalCond = cond;
+  if(TASK_KINDS[cond]){ L.goalTask = mkTask(L,f,cond); if(cond==='bumps') addBumper(L,f,180,340,18); }
   addBumper(L,f,95,290,18); addBumper(L,f,265,290,18);
   [[60,200],[300,200],[180,420]].forEach(p=>addCoin(L,f,...p));
   if(cond==='targets'){
@@ -1074,6 +1075,85 @@ function modGoal(L,f,cond){
   }
   if(cond==='bank') L.goalBank = modDrop(L,f,3,258,141,26);
 }
+/* ---- moving pieces: bumpers that orbit, swing or slide. Their paths stay clear of every wall by more than a ball, so nothing can be pinched ---- */
+const MOVER_M = { mill:1, pend:1, shuttle:1 };
+function modMovers(L,f,kind){
+  const d = DIFF(L.pi), dir = LAYR() < .5 ? 1 : -1, mv = { f, kind, t:LAYR()*6, parts:[], dir };
+  const bump = r => { const c = addBumper(L,f,180,250,r); c.mv = true; mv.parts.push(c); return c; };
+  if(kind==='mill'){          // carousel: three bumpers turning around a hub
+    mv.cx = 180; mv.cy = Y(f,250); mv.R = 74; mv.w = dir*(.5 + .5*d);
+    for(let i=0;i<3;i++) bump(15);
+    addPost(L,f,180,250,9);
+    [[180,212],[147,269],[213,269],[96,130],[264,130]].forEach(q=>addCoin(L,f,...q));
+  } else if(kind==='pend'){   // wrecking ball swinging from a pivot
+    mv.cx = 180; mv.cy = Y(f,96); mv.R = 178; mv.A = f===0 ? .45 : .6; mv.w = 1.1 + .7*d;
+    bump(19); addPost(L,f,180,96,6);
+    addBumper(L,f,84,170,16); addBumper(L,f,f===0 ? 262 : 276,170,16);
+    [[120,335],[180,345],[240,335],[180,180]].forEach(q=>addCoin(L,f,...q));
+  } else {                    // shuttle: two bumpers sliding in opposite directions
+    mv.cx = f===0 ? 172 : 180; mv.A = f===0 ? 80 : 94; mv.w = .7 + .6*d; mv.ys = [Y(f,195), Y(f,285)];
+    bump(17); bump(17);
+    [[180,240],[92,240],[268,240],[180,135]].forEach(q=>addCoin(L,f,...q));
+  }
+  L.movers.push(mv); moverPose(mv, 0);
+}
+function moverPose(mv, h){
+  mv.t += h; const q = mv.parts;
+  if(mv.kind==='mill') q.forEach((c,i) => { const a = mv.t*mv.w + i*TAU/3; c.x = mv.cx + Math.cos(a)*mv.R; c.y = mv.cy + Math.sin(a)*mv.R; });
+  else if(mv.kind==='pend'){ const th = mv.A*Math.sin(mv.t*mv.w); q[0].x = mv.cx + Math.sin(th)*mv.R; q[0].y = mv.cy + Math.cos(th)*mv.R; }
+  else q.forEach((c,i) => { c.x = mv.cx + (i ? -1 : 1)*mv.A*Math.sin(mv.t*mv.w); c.y = mv.ys[i]; });
+}
+function drawMover(mv){
+  const ln = (ax,ay,bx,by) => { ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke(); };
+  ctx.save(); ctx.lineCap = 'round';
+  if(mv.kind==='shuttle'){ for(const y of mv.ys){ ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 7; ln(mv.cx-mv.A, y, mv.cx+mv.A, y); ctx.strokeStyle = 'rgba(255,220,170,.16)'; ctx.lineWidth = 1.5; ln(mv.cx-mv.A, y-2, mv.cx+mv.A, y-2); } }
+  else for(const c of mv.parts){
+    ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 8; ln(mv.cx+2, mv.cy+4, c.x+2, c.y+4);
+    ctx.strokeStyle = '#8d8676'; ctx.lineWidth = 4.5; ln(mv.cx, mv.cy, c.x, c.y);
+    ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1.2; ln(mv.cx-1, mv.cy-1, c.x-1, c.y-1);
+  }
+  ctx.restore();
+}
+// crown: a tight ring of five bumpers, the ball rattles around once it gets inside
+function modCrown(L,f){
+  [[180,128],[120,170],[240,170],[141,236],[219,236]].forEach(q=>addBumper(L,f,q[0],q[1],16));
+  [[180,188],[84,260],[276,260],[180,300]].forEach(q=>addCoin(L,f,...q));
+}
+
+/* ---- floor tasks: other ways to open a ramp or the exit (bumper hits, coins, spinner turns, enemies) and the ramp on a timer ---- */
+const TASK_KINDS = { bumps:1, coins:1, hunt:1, spin:1, timed:1 };
+const TASK_TXT = { bumps:'Bata nos bumpers', coins:'Pegue as fichas', hunt:'Derrube os inimigos', spin:'Gire os spinners' };
+function mkTask(L,f,kind){
+  const d = DIFF(L.pi), t = { f, kind, n:0, need:1, cleared:false, flash:0, shut:false };
+  if(kind==='bumps') t.need = 3 + Math.round(5*d);
+  else if(kind==='spin') t.need = 5 + Math.round(7*d);
+  else if(kind==='timed'){ t.open = 4.4 - 1.4*d; t.close = 1.3 + .5*d; t.ph = 0; }
+  L.tasks.push(t); return t;
+}
+function taskSetup(L){   // coins and enemies are only known once the whole level is built
+  for(const t of L.tasks){
+    if(t.kind==='coins') t.need = Math.min(L.coins.filter(c => c.f===t.f && !c.gold).length, 3 + Math.round(2*DIFF(L.pi)));
+    if(t.kind==='hunt') t.need = L.enemies.filter(e => e.f===t.f).length;
+    if(t.need < 1) t.cleared = true;
+  }
+}
+function taskDone(t){
+  t.cleared = true; t.n = t.need; if(G.mode!=='play') return;
+  const goal = G.L.goalTask === t;
+  popup(goal ? 'SAÍDA ABERTA!' : 'RAMPA ABERTA!', 180, Y(t.f, goal ? 250 : 330), C.gold, 1.6); SFX.rampDone(); lightWave(); G.gi = .8; addScore(500, 180, Y(t.f,300), true);
+}
+function taskHit(kind, f){
+  const L = G.L; if(!L || !L.tasks.length) return;
+  for(const t of L.tasks) if(t.kind===kind && t.f===f && !t.cleared){ t.n++; t.flash = 1; if(t.n >= t.need) taskDone(t); }
+}
+function taskUpdate(L, dt){
+  for(const t of L.tasks){
+    t.flash = Math.max(0, t.flash - dt*2);
+    if(t.kind==='hunt' && !t.cleared){ const n = t.need - L.enemies.filter(e => e.alive && e.f===t.f).length; if(n > t.n){ t.n = n; t.flash = 1; } if(t.n >= t.need) taskDone(t); }
+    if(t.kind==='timed'){ t.ph = (t.ph + dt) % (t.open + t.close); t.shut = t.ph >= t.open; }
+  }
+}
+function taskText(t, goal){ return t.kind==='timed' ? 'A rampa abre e fecha: acerte na hora' : `${TASK_TXT[t.kind]} (${t.n}/${t.need})` + (goal ? ' para abrir a SAÍDA' : ''); }
 function modBoss(L,f,type){
   const sc = { f, x:180, y:Y(f,330), kind:'exit', lit:false, visible:false, cool:0, flash:0 };
   L.saucers.push(sc); L.exit = sc; L.goalCond = 'boss';
@@ -1408,8 +1488,12 @@ function buildLevel(pi){
     else if(F.m==='holo') lockObj = modHolo(L,f);
     else if(F.m==='well') modWell(L,f);
     else if(F.m==='sig') modSig(L,f,F.up||'L',F.sig||'full');
+    else if(MOVER_M[F.m]) modMovers(L,f,F.m);
+    else if(F.m==='crown') modCrown(L,f);
+    let lockBy = F.lock||null;
+    if(TASK_KINDS[F.lock]){ lockObj = mkTask(L,f,F.lock); lockBy = 'task'; }
     // side obstacle on the wall away from the side ramp (never on boss / orbit floors, never over the plunger lane)
-    if(F.m!=='boss' && F.m!=='orbit' && !isSig && !(pi===0 && f===0) && R() < .8){
+    if(F.m!=='boss' && F.m!=='orbit' && !MOVER_M[F.m] && !isSig && !(pi===0 && f===0) && R() < .8){
       const side = F.up==='L' ? 'R' : F.up==='R' ? 'L' : (R() < .5 ? 'L' : 'R');
       if(!(f===0 && side==='R')){
         const opts = ['lane','pins','deflect','flip','spin'], k0 = Math.floor(R()*opts.length);
@@ -1424,12 +1508,12 @@ function buildLevel(pi){
     }
     let rail = null;
     if(!top){
-      if(F.m==='orbit') rail = rampCenter(L,f);
+      if(F.m==='orbit'){ rail = rampCenter(L,f); if(lockBy==='task'){ rail.lockObj = lockObj; rail.lockBy = lockBy; } }
       else if(F.m==='elev') rail = L.saucers[L.saucers.length-1].rail;
-      else rail = rampSide(L,f,F.up||'L', F.lock?lockObj:null, F.lock||null);
+      else rail = rampSide(L,f,F.up||'L', F.lock?lockObj:null, lockBy);
     }
     LAYR = Math.random;
-    L.floors.push({ m:isSig ? 'sig' : F.m, rail, lockBy:F.lock||null, lockObj, cond:F.cond, reached:f===0 });
+    L.floors.push({ m:isSig ? 'sig' : F.m, rail, lockBy, lockObj, cond:F.cond, reached:f===0 });
   });
   for(const sg of L.sigs) sg.rail = L.floors[sg.f].rail;
   if(n > 1 && L.floors[0].rail && L.floors[0].rail.type==='ramp' && L.floors[0].m!=='sig'){
@@ -1452,6 +1536,7 @@ function buildLevel(pi){
     if(e.t==='fly'){ o.cx = e.cx; o.cy = Y(e.f,e.cy); o.rx = e.rx; o.ry = e.ry; o.x = o.cx; o.y = o.cy; o.r = 12; }
     L.enemies.push(o);
   });
+  taskSetup(L);
   return L;
 }
 
@@ -1538,7 +1623,7 @@ function collideCircle(b, c){
   if(c.kind==='vault') vaultHit(c, vn);
   if(c.kind==='bumper'){
     const out = b.vx*nx + b.vy*ny;
-    if(out < 640 && (vn < -20 || c.flash < .2)){ b.vx += nx*(640-out); b.vy += ny*(640-out); c.flash = 1; SFX.pop(); addScore((G.bumpT > 0 ? 200 : 100)*(G.sp && G.sp.mod==='bump' ? 5 : 1), c.x, c.y-c.r-8, true); sparks(c.x+nx*c.r, c.y+ny*c.r, C.warm, 7); G.gi = Math.min(G.gi,.86); G.shake = Math.max(G.shake,2); buzz(8); }
+    if(out < 640 && (vn < -20 || c.flash < .2)){ b.vx += nx*(640-out); b.vy += ny*(640-out); c.flash = 1; taskHit('bumps', c.f); SFX.pop(); addScore((G.bumpT > 0 ? 200 : 100)*(G.sp && G.sp.mod==='bump' ? 5 : 1), c.x, c.y-c.r-8, true); sparks(c.x+nx*c.r, c.y+ny*c.r, C.warm, 7); G.gi = Math.min(G.gi,.86); G.shake = Math.max(G.shake,2); buzz(8); }
   }
 }
 function hitMoving(b, cx, cy, cr, vx, vy, e){
@@ -1591,6 +1676,7 @@ function updateMovers(h){
     else { e.ph += h*.9*(e.k||1); e.x = e.cx + Math.sin(e.ph)*e.rx; e.y = e.cy + Math.sin(e.ph*2)*e.ry*.5; }
     e.vx = (e.x-ox)/h; e.vy = (e.y-oy)/h;
   }
+  for(const mv of L.movers) moverPose(mv, h);
   const B = L.boss;
   if(B && B.type==='pendulum' && !B.dead){
     B.ph += B.w*h; const th = B.A*Math.sin(B.ph), thd = B.A*B.w*Math.cos(B.ph);
@@ -1851,6 +1937,8 @@ const CURSES = {
   glue:  { name:'BOLA GRUDENTA', short:'GRUDA', col:'150,255,120' },
   dark:  { name:'APAGÃO', short:'APAGÃO', col:'255,200,90' },
   slow:  { name:'FLIPPERS LENTOS', short:'LENTO', col:'255,140,80' },
+  wind:  { name:'VENTANIA', short:'VENTO', col:'190,225,255' },
+  moon:  { name:'GRAVIDADE LUNAR', short:'LUA', col:'200,190,255' },
 };
 const CURSE_BY_TYPE = { roll:['slow','grav'], hop:['invert','glue'], fly:['smoke','dark'] };
 function curseOf(e, i){
@@ -1864,12 +1952,14 @@ function curseUpdate(dt){
     const fN = clamp(floorOf(b.y), 0, L.n-1);
     L.enemies.forEach((e, i) => { if(e.alive && e.f === fN) now.add(curseOf(e, i)); });
     if(G.sp && G.sp.mod==='dark') now.add('dark');
+    const tw = PHASES[G.pi] && PHASES[G.pi].twist; if(tw) now.add(tw);
     const bc = G.bossCurse; if(bc){ bc.t -= dt; if(bc.t <= 0) G.bossCurse = null; else if(L.boss && fN === L.boss.f) now.add(bc.c); }
   }
   for(const c of now) if(!prev.has(c)){ popup(CURSES[c].name + '!', 180, b.y-70, CURSES[c].col, 1.8); Snd.tone(240, .3, 'sawtooth', .04, 90); buzz(20); }
   G.curses = now;
-  G.gravMul = (now.has('grav') ? 1 + .6*Math.sin(G.t*1.7) : 1)*(G.lowG > 0 ? .55 : 1)*(G.sp && G.sp.mod==='low' ? .7 : G.sp && G.sp.mod==='fast' ? 1.25 : 1);
-  G.windX = now.has('grav') ? 300*Math.sin(G.t*.9) : 0;
+  G.gravMul = (now.has('grav') ? 1 + .6*Math.sin(G.t*1.7) : 1)*(G.lowG > 0 ? .55 : 1)*(G.sp && G.sp.mod==='low' ? .7 : G.sp && G.sp.mod==='fast' ? 1.25 : 1)*(now.has('moon') ? .72 : 1);
+  const gust = Math.sin(G.t*.55); G.gust = now.has('wind') && Math.abs(gust) > .3 ? Math.sign(gust)*(150 + 90*DIFF(G.pi)) : 0;
+  G.windX = (now.has('grav') ? 300*Math.sin(G.t*.9) : 0) + G.gust;
   G.smoke = G.smoke || [];
   if(now.has('smoke')){
     G.smokeT = (G.smokeT||0) + dt;
@@ -1908,6 +1998,11 @@ function drawCurseFX(vh){
   if(G.darkK > 0){
     const b = G.ball, bx = b.x, by = b.y - G.cam, g = ctx.createRadialGradient(bx, by, 36, bx, by, 140);
     g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.92*G.darkK})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, vh);
+  }
+  if(G.gust && G.mode === 'play'){
+    const d = Math.sign(G.gust); ctx.save(); ctx.strokeStyle = 'rgba(215,232,255,.2)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
+    for(let i=0;i<10;i++){ const span = W + 140, x0 = ((T*320*d + i*137) % span + span) % span - 70, yy = (i*83 + 40) % vh; ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x0 - d*(34 + (i%3)*14), yy); ctx.stroke(); }
+    ctx.restore();
   }
   if(G.curses && G.curses.size && G.mode === 'play'){
     let y = 86; ctx.textAlign = 'center'; ctx.font = '11px Bungee, sans-serif';
@@ -2236,7 +2331,7 @@ function update(dt){
   for(const bk of L.banks){ bk.flash = Math.max(0, bk.flash-dt*1.5); bk.targets.forEach(t=>t.fall=Math.max(0,t.fall-dt*4)); }
   for(const s of L.spinners){
     s.ang += s.vel*dt; s.acc += s.vel*dt; s.vel *= Math.exp(-dt*1.3);
-    while(s.acc > Math.PI){ s.acc -= Math.PI; s.revs++; addScore(10, (s.x1+s.x2)/2, s.y-10, true); SFX.spin(); if(s.revs % 4 === 0) addFichas(1, (s.x1+s.x2)/2, s.y-20); }
+    while(s.acc > Math.PI){ s.acc -= Math.PI; s.revs++; taskHit('spin', s.f); addScore(10, (s.x1+s.x2)/2, s.y-10, true); SFX.spin(); if(s.revs % 4 === 0) addFichas(1, (s.x1+s.x2)/2, s.y-20); }
   }
   for(const ln of L.lanes){
     ln.flash = Math.max(0, ln.flash-dt*2);
@@ -2249,12 +2344,15 @@ function update(dt){
     else if(r.lockBy==='roll') r.locked = !r.lockObj.ever;
     else if(r.lockBy==='dance') r.locked = !r.lockObj.cleared;
     else if(r.lockBy==='code') r.locked = !r.lockObj.cleared;
+    else if(r.lockBy==='task') r.locked = r.lockObj.kind==='timed' ? r.lockObj.shut : !r.lockObj.cleared;
     if(r.gate) r.gate.on = r.locked;
   }
   if(L.exit && L.goalCond!=='boss'){
     if(L.goalCond==='targets') L.exit.lit = L.goalStands.every(t=>t.lit);
     if(L.goalCond==='bank') L.exit.lit = L.goalBank.cleared;
+    if(L.goalTask) L.exit.lit = L.goalTask.cleared;
   }
+  taskUpdate(L, dt);
   bossUpdate(dt);
   enemyShots(dt);
   curseUpdate(dt);
@@ -2278,7 +2376,7 @@ function update(dt){
   for(const c of L.coins){
     if(c.taken) continue;
     const dx = b.x-c.x, dy = b.y-c.y, d = Math.hypot(dx,dy);
-    if(d < BR+9){ c.taken = true; if(c.gold){ G.golds++; addFichas(10, c.x, c.y); comboHit(c.x, c.y); addScore(1000, c.x, c.y-20); SFX.gold(); sparks(c.x,c.y,C.gold,20); popup(`FICHA DOURADA ${G.golds}/3`, c.x, c.y-46, C.gold, 1.6); } else { addFichas(1, c.x, c.y); addScore(25, c.x, c.y, true); SFX.coin(); sparks(c.x,c.y,C.gold,6); } }
+    if(d < BR+9){ c.taken = true; if(c.gold){ G.golds++; addFichas(10, c.x, c.y); comboHit(c.x, c.y); addScore(1000, c.x, c.y-20); SFX.gold(); sparks(c.x,c.y,C.gold,20); popup(`FICHA DOURADA ${G.golds}/3`, c.x, c.y-46, C.gold, 1.6); } else { taskHit('coins', c.f); addFichas(1, c.x, c.y); addScore(25, c.x, c.y, true); SFX.coin(); sparks(c.x,c.y,C.gold,6); } }
     else if(d < mr + BR && G.mode==='play'){ c.x += dx/d*Math.min(d, 260*dt); c.y += dy/d*Math.min(d, 260*dt); }
   }
   if(G.mode==='play' && !b.rail && !b.held && !G.done){ const fN = clamp(floorOf(b.y),0,L.n-1); if(G.lastFloor===undefined) G.lastFloor = fN; if(fN !== G.lastFloor){ G.lastFloor = fN; if(!(G.slowT > 0)) startSlow(); if(S.up.floorkick && G.mode==='play'){ G.floorKick[fN] = 1; popup('EMPURRÃO VIAJANTE', 180, b.y-50, C.gold, 1.2); } } }
@@ -2760,7 +2858,7 @@ function drawFloorStatics(x, L, f){
   const segs = L.segs.filter(s=>s.f===f && s.draw);
   x.save(); x.lineCap = 'round';
   for(const [w,a] of [[24,.05],[15,.07],[9,.09]]){ x.strokeStyle = `rgba(0,0,0,${a})`; x.lineWidth = w; for(const s of segs){ x.beginPath(); x.moveTo(s.ax+2,s.ay+3); x.lineTo(s.bx+2,s.by+3); x.stroke(); } }
-  for(const c of L.circles.filter(c=>c.f===f)){ const g = x.createRadialGradient(c.x+3,c.y+4,c.r*.4,c.x+3,c.y+4,c.r*2.8); g.addColorStop(0,'rgba(0,0,0,.4)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle = g; x.beginPath(); x.arc(c.x+3,c.y+4,c.r*2.8,0,TAU); x.fill(); }
+  for(const c of L.circles.filter(c=>c.f===f && !c.mv)){ const g = x.createRadialGradient(c.x+3,c.y+4,c.r*.4,c.x+3,c.y+4,c.r*2.8); g.addColorStop(0,'rgba(0,0,0,.4)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle = g; x.beginPath(); x.arc(c.x+3,c.y+4,c.r*2.8,0,TAU); x.fill(); }
   for(const ins of L.inserts.filter(i=>i.f===f)){
     x.fillStyle = 'rgba(0,0,0,.4)';
     if(ins.type==='arrows'){ for(let i=0;i<ins.n;i++){ const ay = ins.y-i*24; x.beginPath(); x.moveTo(ins.x,ay-13); x.lineTo(ins.x+14,ay+7); x.lineTo(ins.x,ay+11); x.lineTo(ins.x-14,ay+7); x.closePath(); x.fill(); } }
@@ -5447,9 +5545,9 @@ function missionText(f){
   const L = G.L, fl = L.floors[f];
   if(!fl) return '';
   if(fl.m==='boss') return L.boss && L.boss.dead ? 'Acerte a SAÍDA!' : 'Derrote '+BOSS_NAMES[L.boss.type];
-  if(fl.m==='goal'){ if(L.exit.lit) return 'Acerte a SAÍDA!'; return L.goalCond==='targets' ? `Acenda os 3 alvos (${L.goalStands.filter(t=>t.lit).length}/3)` : 'Derrube os alvos para abrir a SAÍDA'; }
+  if(fl.m==='goal'){ if(L.exit.lit) return 'Acerte a SAÍDA!'; if(L.goalTask) return taskText(L.goalTask, true); return L.goalCond==='targets' ? `Acenda os 3 alvos (${L.goalStands.filter(t=>t.lit).length}/3)` : 'Derrube os alvos para abrir a SAÍDA'; }
   const r = fl.rail;
-  if(r && r.locked){ if(fl.lockBy==='bank') return `Derrube os alvos (${fl.lockObj.targets.filter(t=>t.down).length}/${fl.lockObj.targets.length})`; if(fl.lockBy==='roll') return `Acenda ${fl.lockObj.letters.split('').join('-')} nos corredores`; if(fl.lockBy==='dance') return `Acenda a pista de dança (${fl.lockObj.tiles.filter(t=>t.lit).length}/9)`; if(fl.lockBy==='code') return `Acerte as cores na ordem (${fl.lockObj.step}/3)`; }
+  if(r && r.locked){ if(fl.lockBy==='task') return taskText(fl.lockObj); if(fl.lockBy==='bank') return `Derrube os alvos (${fl.lockObj.targets.filter(t=>t.down).length}/${fl.lockObj.targets.length})`; if(fl.lockBy==='roll') return `Acenda ${fl.lockObj.letters.split('').join('-')} nos corredores`; if(fl.lockBy==='dance') return `Acenda a pista de dança (${fl.lockObj.tiles.filter(t=>t.lit).length}/9)`; if(fl.lockBy==='code') return `Acerte as cores na ordem (${fl.lockObj.step}/3)`; }
   if(fl.m==='elev') return 'Acerte o ELEVADOR no centro';
   if(fl.m==='orbit') return 'Acerte a rampa do centro';
   if(fl.extra) return 'Acerte uma das rampas (esquerda ou centro)';
@@ -5565,6 +5663,7 @@ function draw(){
   for(const r of L.rails) drawGate(r);
   for(const c of L.coins) if(!c.taken && vis(c.y)) drawCoin(c);
   for(const sl of L.slings) if(vis(sl.A[1])) drawSling(sl);
+  for(const mv of L.movers) if(vis(mv.parts[0].y)) drawMover(mv);
   for(const c of L.bumpers) if(vis(c.y)) drawBumper(c);
   for(const e of L.enemies) if(e.alive && e.type!=='fly' && vis(e.y)) drawEnemy(e);
   if(L.boss) drawBoss(L.boss);
@@ -6249,7 +6348,7 @@ soundLabel();
    BOOT
    ========================================================= */
 resize();
-window.__tiltTower = { QUALITY, view, resize, playDaily, playEndless, dailyInfo, ach, openAch, ACH, SIGS, showOver, finishPhase, Ads, Shop, drawBallSphere, artSet, startBonus, G, S, PHASES, startPhase, physStep, update, play, Y, draw, Music, launch, setPress, nudge, floorOf, FLIP_W, FLIP_E, FLIP_MU, SCORE_PER_FICHA, addFichas, UPG };
+window.__tiltTower = { buildLevel, QUALITY, view, resize, playDaily, playEndless, dailyInfo, ach, openAch, ACH, SIGS, showOver, finishPhase, Ads, Shop, drawBallSphere, artSet, startBonus, G, S, PHASES, startPhase, physStep, update, play, Y, draw, Music, launch, setPress, nudge, floorOf, FLIP_W, FLIP_E, FLIP_MU, SCORE_PER_FICHA, addFichas, UPG };
 eraLabel();
 goAttract(eraUnlocked()*10);
 show('s-title');
