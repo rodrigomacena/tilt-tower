@@ -8,6 +8,10 @@ function taskTargets(L, f, t, out){
   if(t.kind === "bumps") L.bumpers.forEach(c => { if(c.f === f) out.push([c.x, c.y + c.r]); });
   else if(t.kind === "coins") L.coins.forEach(c => { if(c.f === f && !c.taken && !c.gold) out.push([c.x, c.y]); });
   else if(t.kind === "spin") L.spinners.forEach(q => { if(q.f === f) out.push([(q.x1+q.x2)/2, q.y + 30]); });
+  else if(t.kind === "order") t.tg.forEach(q => { if(q.ord === t.n) out.push([q.x, q.y + 10]); });
+  else if(t.kind === "chase" || t.kind === "zig") out.push([t.tg[t.cur].x, t.tg[t.cur].y + 10]);
+  else if(t.kind === "switch"){ if(t.shut) out.push([t.tg[0].x, t.tg[0].y + 10]); }
+  else if(t.kind === "pots") t.pots.forEach(q => { if(!q.done) out.push([q.x, q.y, "s"]); });
 }
 function targets(L, f){
   const fl = L.floors[f], out = []; if(!fl) return out;
